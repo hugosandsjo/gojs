@@ -2,6 +2,7 @@ import prisma from "@/lib/db";
 
 export default async function TestComponent() {
   const products = await prisma.product.findMany();
+  console.log(products);
   return (
     <section>
       <div>TestComponent hello</div>
