@@ -4,7 +4,7 @@ export default async function TestComponent() {
   const products = await prisma.product.findMany();
   return (
     <section>
-      <div>TestComponent</div>
+      <div>TestComponent hello</div>
       <ul>
         {products.map((product) => {
           return (
