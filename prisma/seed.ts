@@ -1,7 +1,7 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const initalProducts: Prisma.ProductCreateInput[] = [
+const initalProducts: Prisma.productCreateInput[] = [
   {
     title: "Goa gubbar",
     content: "Goa gubbar content",
