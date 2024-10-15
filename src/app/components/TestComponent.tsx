@@ -1,0 +1,20 @@
+import prisma from "@/lib/db";
+
+export default async function TestComponent() {
+  const products = await prisma.product.findMany();
+  return (
+    <section>
+      <div>TestComponent</div>
+      <ul>
+        {products.map((product) => {
+          return (
+            <li key={product.id}>
+              <p>{product.title}</p>
+              <p>{product.content}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
