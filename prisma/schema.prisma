@@ -13,19 +13,97 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model product {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  published Boolean  @default(false)
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+enum UserRole {
+  ARTIST
+  CUSTOMER
 }
 
-model dog {
-  id        String   @id @default(cuid())
-  race      String
-  eyecolor  String
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+model User {
+  id                String   @id @default(cuid())
+  firstname         String
+  lastname          String
+  alias             String?
+  email             String   @unique
+  password          String
+  role              UserRole @default(CUSTOMER)
+  location          String
+  profile_image_url String?
+  bio               String?
+  instagram         String
+  facebook          String
+  website           String
+  updated_at        DateTime @updatedAt
+  created_at        DateTime @default(now())
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  UNAVAILABLE
+}
+
+model Product {
+  id              String            @id @default(cuid())
+  title           String
+  description     String
+  price           Decimal
+  sold_out        Boolean           @default(false)
+  quantity        Int
+  image_url       String
+  height          Decimal?
+  width           Decimal?
+  depth           Decimal?
+  weight          Decimal?
+  available_stock Int
+  backorder       Boolean           @default(false)
+  status          ProductStatus     @default(DRAFT)
+  updated_at      DateTime          @updatedAt
+  created_at      DateTime          @default(now())
+  category_id     String
+  category        Category          @relation(fields: [category_id], references: [id])
+  // Relations for many-to-many connections
+  tags            ProductTag[]
+  materials       ProductMaterial[]
+}
+
+model Category {
+  id            String     @id @default(cuid())
+  title         String
+  parent        Category?  @relation("Subcategories", fields: [parent_id], references: [id])
+  subcategories Category[] @relation("Subcategories")
+  parent_id     String?
+  Product       Product[]
+}
+
+model Material {
+  id       String            @id @default(cuid())
+  title    String
+  products ProductMaterial[]
+}
+
+model Tag {
+  id       String       @id @default(cuid())
+  title    String
+  products ProductTag[]
+}
+
+model ProductTag {
+  product_id String
+  tag_id     String
+
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([product_id, tag_id]) // Composite primary key
+}
+
+model ProductMaterial {
+  product_id  String
+  material_id String
+
+  product  Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [material_id], references: [id], onDelete: Cascade)
+
+  @@id([product_id, material_id]) // Composite primary key
 }

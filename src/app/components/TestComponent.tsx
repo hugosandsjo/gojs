@@ -11,7 +11,7 @@ export default async function TestComponent() {
           return (
             <li key={product.id}>
               <p>{product.title}</p>
-              <p>{product.content}</p>
+              <p>{product.description}</p>
             </li>
           );
         })}
