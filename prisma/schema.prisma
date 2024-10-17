@@ -49,13 +49,13 @@ model Product {
   description     String
   price           Decimal
   sold_out        Boolean           @default(false)
-  quantity        Int
-  image_url       String
+  quantity        Int?
+  image_url       String?
   height          Decimal?
   width           Decimal?
   depth           Decimal?
   weight          Decimal?
-  available_stock Int
+  available_stock Int?
   backorder       Boolean           @default(false)
   status          ProductStatus     @default(DRAFT)
   updated_at      DateTime          @updatedAt
