@@ -1,30 +1,37 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
+// Define your initial data for both local and preview environments
 const initialCategories: Prisma.CategoryCreateInput[] = [
   { title: "Paintings" },
   { title: "Sculptures" },
   { title: "Digital Art" },
 ];
 
-async function main() {
-  console.log(`Start seeding categories ...`);
+async function seedDatabase() {
+  // Check for the current environment
+  const environment = process.env.VERCEL_ENV;
 
-  // Loop through initialCategories array and find or create each category
+  if (environment === "preview") {
+    console.log("Seeding the preview database...");
+  } else {
+    console.log("Seeding the local development database...");
+  }
+
+  // Seeding categories
   const categories = await Promise.all(
     initialCategories.map(async (category) => {
       const existingCategory = await prisma.category.findFirst({
         where: { title: category.title },
       });
 
-      // Create the category if it doesn't exist
       if (!existingCategory) {
         return await prisma.category.create({
           data: category,
         });
       }
 
-      return existingCategory; // Return the found category
+      return existingCategory;
     })
   );
 
@@ -36,6 +43,7 @@ async function main() {
   const [paintingsCategory, sculpturesCategory, digitalArtCategory] =
     categories;
 
+  // Seeding products
   const initialProducts: Prisma.ProductCreateInput[] = [
     {
       title: "The Great Fall",
@@ -52,7 +60,7 @@ async function main() {
       backorder: false,
       status: "PUBLISHED",
       category: {
-        connect: { id: paintingsCategory.id }, // Connect to the Paintings category
+        connect: { id: paintingsCategory.id },
       },
     },
     {
@@ -71,7 +79,7 @@ async function main() {
       backorder: true,
       status: "DRAFT",
       category: {
-        connect: { id: sculpturesCategory.id }, // Connect to the Sculptures category
+        connect: { id: sculpturesCategory.id },
       },
     },
     {
@@ -89,7 +97,7 @@ async function main() {
       backorder: false,
       status: "PUBLISHED",
       category: {
-        connect: { id: digitalArtCategory.id }, // Connect to the Digital Art category
+        connect: { id: digitalArtCategory.id },
       },
     },
   ];
@@ -102,10 +110,10 @@ async function main() {
     console.log(`Created product with id: ${newProduct.id}`);
   }
 
-  console.log(`Seeding finished`);
+  console.log("Seeding finished");
 }
 
-main()
+seedDatabase()
   .then(async () => {
     await prisma.$disconnect();
   })
