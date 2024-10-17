@@ -16,7 +16,7 @@
     "studio:prod": "dotenv -e .env.production -- npx prisma studio",
     "seed:dev": "dotenv -e .env.development -- npx prisma db seed",
     "seed:preview": "npm run transpile:seed && node prisma/seed.js",
-    "transpile:seed": "tsc prisma/seed.ts --outDir prisma --noEmit false && mv prisma/seed.js prisma/seed.js",
+    "transpile:seed": "tsc prisma/seed.ts --outDir prisma",
     "reset:dev": "dotenv -e .env.development -- npx prisma migrate reset --force"
   },
   "prisma": {
