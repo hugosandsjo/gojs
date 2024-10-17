@@ -1,6 +1,6 @@
 type HeaderProps = {};
 
-export default function Header(props: HeaderProps) {
+export default function Header() {
   return (
     <>
       <header className="flex justify-between bg-slate-400 py-6">
