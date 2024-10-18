@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "prisma generate && npx prisma migrate reset --force --skip-seed && prisma migrate deploy && npm run seed:preview",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build && npm run seed:preview",
     "postinstall": "prisma generate && prisma migrate deploy",
     "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev && npx prisma generate",
     "studio:dev": "dotenv -e .env.development -- npx prisma studio",
