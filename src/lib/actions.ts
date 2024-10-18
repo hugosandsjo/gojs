@@ -41,3 +41,13 @@ export async function createProduct(formData: FormData) {
     throw new Error("Failed to create product");
   }
 }
+
+export async function getProduct(productId: string) {
+  const product = prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+  console.log("The data:", product);
+  return product;
+}

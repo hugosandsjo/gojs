@@ -51,10 +51,10 @@ model Product {
   sold_out        Boolean           @default(false)
   quantity        Int?
   image_url       String?
-  height          Decimal?
-  width           Decimal?
-  depth           Decimal?
-  weight          Decimal?
+  height          Float?
+  width           Float?
+  depth           Float?
+  weight          Float?
   available_stock Int?
   backorder       Boolean           @default(false)
   status          ProductStatus     @default(DRAFT)
