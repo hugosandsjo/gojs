@@ -1,6 +1,5 @@
 import Button from "@/app/components/Button";
 import prisma from "@/lib/db";
-import Link from "next/link";
 
 export default async function TestComponent() {
   const products = await prisma.product.findMany();

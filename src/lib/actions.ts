@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/db";
+import { revalidatePath } from "next/cache";
 export async function createProduct(formData: FormData) {
   try {
     const title = formData.get("title") as string;
@@ -50,4 +51,16 @@ export async function getProduct(productId: string) {
   });
   console.log("The data:", product);
   return product;
+}
+
+export async function getUser(userId: string | undefined) {
+  if (!userId) return null;
+  const user = prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  console.log("The user:", user);
+  revalidatePath("/dashboard");
+  return user;
 }
