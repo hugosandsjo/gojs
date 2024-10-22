@@ -2,6 +2,23 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import dotenv from "dotenv";
+dotenv.config();
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey!,
+    secretAccessKey: secretAccessKey!,
+  },
+  region: bucketRegion!,
+});
+
 export async function createProduct(formData: FormData) {
   try {
     const title = formData.get("title") as string;
@@ -63,4 +80,26 @@ export async function getUser(userId: string | undefined) {
   console.log("The user:", user);
   revalidatePath("/dashboard");
   return user;
+}
+
+export async function uploadImage(formData: FormData): Promise<void> {
+  const imageFile = formData.get("image") as File;
+
+  if (!imageFile) {
+    throw new Error("No file uploaded");
+  }
+
+  const arrayBuffer = await imageFile.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  const params = {
+    Bucket: bucketName,
+    Key: `uploads/${Date.now()}-${imageFile.name}`,
+    Body: buffer,
+    ContentType: imageFile.type,
+  };
+
+  // Upload the image to S3
+  const command = new PutObjectCommand(params);
+  await s3.send(command);
 }
