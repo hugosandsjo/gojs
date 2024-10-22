@@ -4,8 +4,11 @@ import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
+import crypto from "crypto";
 dotenv.config();
 
+const randomImageName = (bytes = 32) =>
+  crypto.randomBytes(bytes).toString("hex");
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
@@ -66,7 +69,6 @@ export async function getProduct(productId: string) {
       id: productId,
     },
   });
-  console.log("The data:", product);
   return product;
 }
 
@@ -77,7 +79,6 @@ export async function getUser(userId: string | undefined) {
       id: userId,
     },
   });
-  console.log("The user:", user);
   revalidatePath("/dashboard");
   return user;
 }
@@ -88,13 +89,14 @@ export async function uploadImage(formData: FormData): Promise<void> {
   if (!imageFile) {
     throw new Error("No file uploaded");
   }
+  console.log("Random image name:", randomImageName());
 
   const arrayBuffer = await imageFile.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
   const params = {
     Bucket: bucketName,
-    Key: `uploads/${Date.now()}-${imageFile.name}`,
+    Key: randomImageName(),
     Body: buffer,
     ContentType: imageFile.type,
   };
