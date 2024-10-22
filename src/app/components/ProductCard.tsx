@@ -9,7 +9,6 @@ type ProductCardProps = Pick<
 export default async function ProductCard({
   id,
   title,
-  description,
   price,
   quantity,
   height,
@@ -25,7 +24,7 @@ export default async function ProductCard({
       </div>
       <div>
         <ProductParagraph>Price: {price}</ProductParagraph>
-        <ProductParagraph>Quantity: {quantity}</ProductParagraph>
+        <ProductParagraph>Quantity:{quantity}</ProductParagraph>
         <ProductParagraph>Height: {height}</ProductParagraph>
       </div>
     </div>
