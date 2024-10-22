@@ -1,4 +1,5 @@
 import { signOut } from "@/lib/auth";
+import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
 
 export function SignOut() {
   return (
@@ -8,7 +9,10 @@ export function SignOut() {
         await signOut();
       }}
     >
-      <button type="submit">Sign Out</button>
+      <button type="submit">
+        {" "}
+        <NavbarParagraph>Sign Out </NavbarParagraph>
+      </button>
     </form>
   );
 }
