@@ -1,11 +1,12 @@
 "use client";
 
+import ImageForm from "@/app/components/ImageForm";
 import { createProduct } from "@/lib/actions";
 
 export default function CreateProductPage() {
   return (
     <div>
-      <h1>Create a New Product</h1>
+      {/* <h1>Create a New Product</h1>
       <form
         action={createProduct}
         className="bg-fuchsia-300 flex flex-col gap-4 py-4"
@@ -39,7 +40,8 @@ export default function CreateProductPage() {
           <input type="number" name="available_stock" id="available_stock" />
         </div>
         <button type="submit">Create Product"</button>
-      </form>
+      </form> */}
+      <ImageForm />
     </div>
   );
 }
