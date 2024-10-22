@@ -106,7 +106,7 @@ model Product {
   id              String            @id @default(cuid())
   title           String
   description     String
-  price           Decimal
+  price           Float
   sold_out        Boolean           @default(false)
   quantity        Int?
   image_url       String?

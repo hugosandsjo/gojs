@@ -8,7 +8,7 @@ export default function SignIn() {
         await signIn("google", { redirectTo: "/dashboard" });
       }}
     >
-      <button type="submit">Signin with Google</button>
+      <button type="submit">Sign in</button>
     </form>
   );
 }
