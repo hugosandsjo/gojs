@@ -110,6 +110,7 @@ model Product {
   sold_out        Boolean           @default(false)
   quantity        Int?
   image_url       String?
+  image_key       String?
   height          Float?
   width           Float?
   depth           Float?

@@ -5,6 +5,7 @@ export default function CreateProductForm() {
     <form
       action={createProduct}
       className="bg-lime-300 flex flex-col gap-4 py-8 p-14"
+      encType="multipart/form-data"
     >
       <section className="flex gap-8">
         {" "}
