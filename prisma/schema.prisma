@@ -105,7 +105,7 @@ enum ProductStatus {
 model Product {
   id              String            @id @default(cuid())
   title           String
-  description     String
+  description     String?
   price           Float
   sold_out        Boolean           @default(false)
   quantity        Int?
@@ -115,7 +115,7 @@ model Product {
   depth           Float?
   weight          Float?
   available_stock Int?
-  backorder       Boolean           @default(false)
+  backorder       Boolean?          @default(false)
   status          ProductStatus     @default(DRAFT)
   updated_at      DateTime          @updatedAt
   created_at      DateTime          @default(now())
@@ -128,7 +128,7 @@ model Product {
 
 model Category {
   id            String     @id @default(cuid())
-  title         String
+  title         String     @unique
   parent        Category?  @relation("Subcategories", fields: [parent_id], references: [id])
   subcategories Category[] @relation("Subcategories")
   parent_id     String?

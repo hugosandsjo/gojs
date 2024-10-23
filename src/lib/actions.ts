@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 import crypto from "crypto";
-import { Product } from "@prisma/client";
+import { Category, Prisma } from "@prisma/client";
 dotenv.config();
 
 const randomImageName = (bytes = 32) =>
@@ -28,10 +28,18 @@ export async function createProduct(formData: FormData) {
     const title = formData.get("title") as string;
     const price = parseFloat(formData.get("price") as string);
     const description = formData.get("description") as string;
-    const category_id = formData.get("category_id") as string;
+    const category = formData.get("category") as string;
 
-    if (!title || !price || !description || !category_id) {
+    if (!title || !price || !description || !category) {
       throw new Error("All fields are required.");
+    }
+
+    const pickedCategory: Category | null = await prisma.category.findUnique({
+      where: { title: category },
+    });
+
+    if (!pickedCategory) {
+      throw new Error(`Category with title "${category}" not found.`);
     }
 
     // Optional fields
@@ -42,27 +50,46 @@ export async function createProduct(formData: FormData) {
     const available_stock = formData.get("available_stock")
       ? parseInt(formData.get("available_stock") as string, 10)
       : null;
+    const height = formData.get("height")
+      ? parseInt(formData.get("height") as string, 10)
+      : null;
 
-    type ProductInput = Pick<
-      Product,
-      "title" | "price" | "description" | "category_id"
-    > & {
-      quantity?: number | null;
-      image_url?: string | null;
-      available_stock?: number | null;
-    };
+    const width = formData.get("width")
+      ? parseInt(formData.get("width") as string, 10)
+      : null;
 
-    const data: ProductInput = {
+    const depth = formData.get("depth")
+      ? parseInt(formData.get("depth") as string, 10)
+      : null;
+
+    const weight = formData.get("weight")
+      ? parseFloat(formData.get("weight") as string)
+      : null;
+
+    const data: Prisma.ProductCreateInput = {
       title,
       price,
       description,
-      category_id,
+      quantity,
+      image_url,
+      available_stock,
+      height,
+      width,
+      depth,
+      weight,
+      category: {
+        connect: { id: pickedCategory.id },
+      },
     };
 
     // Add optional fields only if they are not null
     if (quantity !== null) data.quantity = quantity;
     if (image_url !== null) data.image_url = image_url;
     if (available_stock !== null) data.available_stock = available_stock;
+    if (height !== null) data.height = height;
+    if (width !== null) data.width = width;
+    if (depth !== null) data.depth = depth;
+    if (weight !== null) data.weight = weight;
 
     const product = await prisma.product.create({
       data,

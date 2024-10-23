@@ -25,9 +25,15 @@ export default function CreateProductForm() {
         </div>
         <div className="flex flex-col w-1/2">
           <div className="flex flex-col">
-            <label htmlFor="category_id">Category ID:</label>
-            <input type="text" name="category_id" id="category_id" required />
+            <label htmlFor="category">Category:</label>
+            <select name="category" id="category" required>
+              <option value="">Select Category</option>
+              <option value="Paintings">Paintings</option>
+              <option value="Sculptures">Sculptures</option>
+              <option value="Digital Art">Digital Art</option>
+            </select>
           </div>
+
           <div className="flex flex-col">
             <label htmlFor="quantity">Quantity:</label>
             <input type="number" name="quantity" id="quantity" />
@@ -35,6 +41,28 @@ export default function CreateProductForm() {
           <div className="flex flex-col">
             <label htmlFor="available_stock">Available Stock:</label>
             <input type="number" name="available_stock" id="available_stock" />
+          </div>
+
+          <div className="flex flex-col">
+            <div className="flex flex-col">
+              <label htmlFor="height">Height:</label>
+              <input type="text" name="height" id="height" />
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="width">Width:</label>
+              <input type="text" name="width" id="width" />
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="depth">Depth:</label>
+              <input type="text" name="depth" id="depth" />
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="weight">Weight:</label>
+              <input type="text" name="weight" id="weight" />
+            </div>
           </div>
         </div>
       </section>
