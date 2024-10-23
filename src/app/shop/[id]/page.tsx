@@ -1,17 +1,17 @@
 "use client";
 import { getProduct } from "@/lib/actions";
 import { useEffect, useState } from "react";
+import { Product } from "@prisma/client";
 
 export default function SingleArwork({ params }: { params: { id: string } }) {
-  const [product, setProduct] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     (async () => {
       const data = await getProduct(params.id);
       setProduct(data);
     })();
-  }, []);
+  }, [params.id]);
   return (
     <section>
       {product ? (
