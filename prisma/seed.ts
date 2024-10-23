@@ -48,7 +48,7 @@ async function seedDatabase() {
     {
       title: "The Great Fall",
       description: "A vibrant abstract painting inspired by the energy of Goa.",
-      price: new Prisma.Decimal(1200.0),
+      price: 1200,
       sold_out: false,
       quantity: 5,
       image_url: "https://example.com/images/goa-gubbar.jpg",
@@ -67,7 +67,7 @@ async function seedDatabase() {
       title: "The Penguin",
       description:
         "An artwork depicting the elegance of penguins in their natural habitat.",
-      price: 800.0,
+      price: 800,
       sold_out: false,
       quantity: 3,
       image_url: "https://example.com/images/penguin.jpg",
@@ -85,7 +85,7 @@ async function seedDatabase() {
     {
       title: "Batman",
       description: "A modern take on the classic superhero, Batman.",
-      price: new Prisma.Decimal(1500.0),
+      price: 1500,
       sold_out: false,
       quantity: 1,
       image_url: "https://example.com/images/batman.jpg",
