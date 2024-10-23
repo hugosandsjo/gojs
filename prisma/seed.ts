@@ -18,6 +18,8 @@ async function seedDatabase() {
     console.log("Seeding the local development database...");
   }
 
+  await prisma.product.deleteMany(); // Delete all existing products
+
   // Seeding categories
   const categories = await Promise.all(
     initialCategories.map(async (category) => {
