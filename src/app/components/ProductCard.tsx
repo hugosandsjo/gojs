@@ -21,7 +21,6 @@ export default function ProductCard({
   imageUrls,
   description,
 }: ProductCardProps) {
-  // console.log("Image urls,", imageUrls);
   return (
     <Link href={`shop/${id}`}>
       <div className=" max-w-40 flex flex-col gap-4">
