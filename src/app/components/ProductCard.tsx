@@ -1,12 +1,16 @@
-import { Product } from "@prisma/client";
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
 import Link from "next/link";
 import Image from "next/image";
 
-type ProductCardProps = Pick<
-  Product,
-  "id" | "title" | "description" | "price" | "quantity" | "height" | "image_key"
->;
+type ProductCardProps = {
+  id: string;
+  title: string;
+  description?: string | null;
+  price: number;
+  quantity?: number | null;
+  height?: number | null;
+  imageUrls: string[];
+};
 
 export default function ProductCard({
   id,
@@ -14,15 +18,17 @@ export default function ProductCard({
   price,
   quantity,
   height,
-  image_key,
+  imageUrls,
+  description,
 }: ProductCardProps) {
+  // console.log("Image urls,", imageUrls);
   return (
     <Link href={`shop/${id}`}>
       <div className=" max-w-40 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          {image_key ? (
+          {imageUrls ? (
             <Image
-              src={image_key}
+              src={imageUrls[0]}
               alt={title}
               width={400}
               height={400}
@@ -31,6 +37,10 @@ export default function ProductCard({
           ) : (
             <div className="w-32 h-40 bg-lime-300"></div>
           )}
+          {/* Optionally, display all images */}
+          {imageUrls.map((url, index) => (
+            <img key={index} src={url} alt={`${title} ${index + 1}`} />
+          ))}
           <p className="font-sans underline-offset-2 underline text-xs">
             {title}
           </p>
@@ -40,6 +50,7 @@ export default function ProductCard({
           <ProductParagraph>Price: {price}</ProductParagraph>
           <ProductParagraph>Quantity:{quantity}</ProductParagraph>
           <ProductParagraph>Height: {height}</ProductParagraph>
+          <ProductParagraph>Description{description}</ProductParagraph>
         </div>
       </div>
     </Link>

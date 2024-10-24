@@ -52,8 +52,7 @@ async function seedDatabase() {
       price: 1200,
       sold_out: false,
       quantity: 5,
-      image_key:
-        "9a7364028357e5da73e9b060a8c07c9a3174034e88266aff583a6c1cdac9ccf7",
+
       height: 30,
       width: 40,
       depth: 2,
@@ -72,8 +71,6 @@ async function seedDatabase() {
       price: 800,
       sold_out: false,
       quantity: 3,
-      image_key:
-        "b0c9d8276e3da37fefe71b973f199e0b6e8be3cec2c8c6f8a05de03a8b2445d9",
       height: 50,
       width: 70,
       depth: 2,
@@ -91,8 +88,7 @@ async function seedDatabase() {
       price: 1500,
       sold_out: false,
       quantity: 1,
-      image_key:
-        "9a7364028357e5da73e9b060a8c07c9a3174034e88266aff583a6c1cdac9ccf7",
+
       height: 55,
       width: 80,
       depth: 3,

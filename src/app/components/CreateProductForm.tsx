@@ -1,10 +1,20 @@
+"use client";
+
 import { createProduct } from "@/lib/actions";
 import Link from "next/link";
+import Dropzone from "@/app/components/DropZone";
+import { useState } from "react";
+
 export default function CreateProductForm() {
+  const [files, setFiles] = useState();
+  type FileWithPreview = File & {
+    preview: string;
+  };
+
   return (
     <form
       action={createProduct}
-      className="bg-lime-300 flex flex-col gap-4 py-8 p-14"
+      className="bg-fuchsia-100 flex flex-col gap-4 py-8 p-14"
       encType="multipart/form-data"
     >
       <section className="flex gap-8">
@@ -70,16 +80,17 @@ export default function CreateProductForm() {
 
       <div>
         <label>
-          Select Image:
-          <input type="file" name="image" accept="image/*" />
+          Select Images:
+          <Dropzone />
         </label>
       </div>
       <div className="flex gap-4">
         <Link href="/dashboard">
-          {" "}
-          <button className="py-4 px-6 border border-black">Cancel</button>
+          <button type="button" className="py-4 px-6 border border-black">
+            Cancel
+          </button>
         </Link>
-        <button className="py-4 px-6 border border-black">
+        <button type="submit" className="py-4 px-6 border border-black">
           Create Product
         </button>
       </div>

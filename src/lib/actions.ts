@@ -38,29 +38,6 @@ export async function createProduct(formData: FormData) {
       throw new Error(`Category with title "${category}" not found.`);
     }
 
-    const imageFile = formData.get("image") as File | null;
-    let imageName: string | null = null;
-    let imageKey: string | null = null;
-
-    if (imageFile) {
-      imageName = randomImageName();
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      const params = {
-        Bucket: bucketName,
-        Key: imageName,
-        Body: buffer,
-        ContentType: imageFile.type,
-      };
-
-      // Upload the image to S3
-      const command = new PutObjectCommand(params);
-      await s3.send(command);
-
-      imageKey = imageName;
-    }
-
     // Optional fields
     const quantity = formData.get("quantity")
       ? parseInt(formData.get("quantity") as string, 10)
@@ -100,12 +77,43 @@ export async function createProduct(formData: FormData) {
     if (width !== null) data.width = width;
     if (depth !== null) data.depth = depth;
     if (weight !== null) data.weight = weight;
-    if (imageKey !== null) data.image_key = imageKey;
 
     const product = await prisma.product.create({
       data,
     });
-    console.log("Product created:", product);
+
+    // Now, handle image uploads and associate them with the product
+    const imageFiles = formData.getAll("image") as File[];
+
+    for (const imageFile of imageFiles) {
+      if (imageFile.size > 0) {
+        const imageName = randomImageName();
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const params = {
+          Bucket: bucketName,
+          Key: imageName,
+          Body: buffer,
+          ContentType: imageFile.type,
+        };
+
+        const command = new PutObjectCommand(params);
+        await s3.send(command);
+
+        // Create an Image record associated with the product
+        await prisma.image.create({
+          data: {
+            image_key: imageName,
+            product: {
+              connect: { id: product.id },
+            },
+          },
+        });
+      }
+    }
+
+    console.log("Product created with images:", product);
   } catch (error) {
     console.error("Error creating product:", error);
     throw new Error("Failed to create product");
