@@ -5,7 +5,7 @@ import Image from "next/image";
 
 type ProductCardProps = Pick<
   Product,
-  "id" | "title" | "description" | "price" | "quantity" | "height" | "image_url"
+  "id" | "title" | "description" | "price" | "quantity" | "height" | "image_key"
 >;
 
 export default function ProductCard({
@@ -14,15 +14,15 @@ export default function ProductCard({
   price,
   quantity,
   height,
-  image_url,
+  image_key,
 }: ProductCardProps) {
   return (
     <Link href={`shop/${id}`}>
       <div className=" max-w-40 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          {image_url ? (
+          {image_key ? (
             <Image
-              src={image_url}
+              src={image_key}
               alt={title}
               width={400}
               height={400}

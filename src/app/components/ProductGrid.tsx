@@ -17,7 +17,7 @@ export default async function ProductGrid() {
         q: "75", // quality
       });
     }
-    return { ...product, image_url: imageUrl };
+    return { ...product, image_key: imageUrl };
   });
 
   return (
@@ -32,7 +32,7 @@ export default async function ProductGrid() {
             price={product.price}
             quantity={product.quantity}
             height={product.height}
-            image_url={product.image_url}
+            image_key={product.image_key}
           />
         );
       })}
