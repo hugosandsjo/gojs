@@ -2,14 +2,9 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { randomImageName } from "@/lib/utils";
 import { Category, Prisma } from "@prisma/client";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -135,13 +130,4 @@ export async function getUser(userId: string | undefined) {
   });
   revalidatePath("/dashboard");
   return user;
-}
-
-export async function getPreSignedUrl(key: string): Promise<string> {
-  const command = new GetObjectCommand({
-    Bucket: process.env.BUCKET_NAME!,
-    Key: key,
-  });
-  const url = await getSignedUrl(s3, command, { expiresIn: 3600 }); // URL valid for 1 hour
-  return url;
 }
