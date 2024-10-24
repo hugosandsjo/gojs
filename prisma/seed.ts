@@ -15,10 +15,11 @@ async function seedDatabase() {
   if (environment === "preview") {
     console.log("Seeding the preview database...");
   } else {
-    console.log("Seeding the local development database...");
+    console.log("Seeding the preview development database...");
   }
 
-  await prisma.product.deleteMany(); // Delete all existing products
+  // Delete all existing products
+  await prisma.product.deleteMany();
 
   // Seeding categories
   const categories = await Promise.all(
@@ -32,12 +33,10 @@ async function seedDatabase() {
           data: category,
         });
       }
-
       return existingCategory;
     })
   );
 
-  console.log(`Created or found categories:`);
   categories.forEach((category) =>
     console.log(`${category.title}: ${category.id}`)
   );
@@ -53,7 +52,9 @@ async function seedDatabase() {
       price: 1200,
       sold_out: false,
       quantity: 5,
-      image_url: "https://example.com/images/goa-gubbar.jpg",
+      image_url: null,
+      image_key:
+        "9a7364028357e5da73e9b060a8c07c9a3174034e88266aff583a6c1cdac9ccf7",
       height: 30,
       width: 40,
       depth: 2,
@@ -72,7 +73,9 @@ async function seedDatabase() {
       price: 800,
       sold_out: false,
       quantity: 3,
-      image_url: "https://example.com/images/penguin.jpg",
+      image_url: null,
+      image_key:
+        "b0c9d8276e3da37fefe71b973f199e0b6e8be3cec2c8c6f8a05de03a8b2445d9",
       height: 50,
       width: 70,
       depth: 2,
@@ -90,7 +93,9 @@ async function seedDatabase() {
       price: 1500,
       sold_out: false,
       quantity: 1,
-      image_url: "https://example.com/images/batman.jpg",
+      image_url: null,
+      image_key:
+        "9a7364028357e5da73e9b060a8c07c9a3174034e88266aff583a6c1cdac9ccf7",
       height: 55,
       width: 80,
       depth: 3,
