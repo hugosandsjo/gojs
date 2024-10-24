@@ -3,21 +3,24 @@ import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
 
 export default async function ProductGrid() {
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    include: {
+      images: true,
+    },
+  });
 
   const productsWithUrls = products.map((product) => {
-    let imageUrl = null;
-    if (product.image_key) {
-      imageUrl = getImgixUrl(product.image_key, {
-        // Add transformation parameters as needed
-        w: "400", // width
-        h: "400", // height
-        fit: "crop", // crop to fit dimensions
-        auto: "format", // automatically choose the best image format
-        q: "75", // quality
-      });
-    }
-    return { ...product, image_key: imageUrl };
+    const imageUrls = product.images.map((image) =>
+      getImgixUrl(image.image_key, {
+        w: "400",
+        h: "400",
+        fit: "crop",
+        auto: "format",
+        q: "75",
+      })
+    );
+    console.log("Image urls array:", imageUrls);
+    return { ...product, imageUrls };
   });
 
   return (
@@ -32,7 +35,7 @@ export default async function ProductGrid() {
             price={product.price}
             quantity={product.quantity}
             height={product.height}
-            image_key={product.image_key}
+            imageUrls={product.imageUrls}
           />
         );
       })}

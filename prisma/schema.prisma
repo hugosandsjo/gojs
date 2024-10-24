@@ -109,7 +109,7 @@ model Product {
   price           Float
   sold_out        Boolean           @default(false)
   quantity        Int?
-  image_key       String?
+  images          Image[]
   height          Float?
   width           Float?
   depth           Float?
@@ -121,9 +121,15 @@ model Product {
   created_at      DateTime          @default(now())
   category_id     String
   category        Category          @relation(fields: [category_id], references: [id])
-  // Relations for many-to-many connections
   tags            ProductTag[]
   materials       ProductMaterial[]
+}
+
+model Image {
+  id        Int     @id @default(autoincrement())
+  image_key String
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Category {
