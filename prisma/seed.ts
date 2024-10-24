@@ -20,6 +20,7 @@ async function seedDatabase() {
 
   // Delete all existing products
   await prisma.product.deleteMany();
+  await prisma.image.deleteMany();
 
   // Seeding categories
   const categories = await Promise.all(
@@ -52,7 +53,6 @@ async function seedDatabase() {
       price: 1200,
       sold_out: false,
       quantity: 5,
-
       height: 30,
       width: 40,
       depth: 2,
@@ -88,7 +88,6 @@ async function seedDatabase() {
       price: 1500,
       sold_out: false,
       quantity: 1,
-
       height: 55,
       width: 80,
       depth: 3,
@@ -103,11 +102,27 @@ async function seedDatabase() {
   ];
 
   console.log(`Start seeding products ...`);
-  for (const product of initialProducts) {
+  for (let index = 0; index < initialProducts.length; index++) {
+    const product = initialProducts[index];
     const newProduct = await prisma.product.create({
       data: product,
     });
     console.log(`Created product with id: ${newProduct.id}`);
+
+    const imageKey =
+      index === 0
+        ? "b0c9d8276e3da37fefe71b973f199e0b6e8be3cec2c8c6f8a05de03a8b2445d9"
+        : "9a7364028357e5da73e9b060a8c07c9a3174034e88266aff583a6c1cdac9ccf7";
+
+    await prisma.image.create({
+      data: {
+        image_key: imageKey,
+        product: {
+          connect: { id: newProduct.id },
+        },
+      },
+    });
+    console.log(`Added image for product with id: ${newProduct.id}`);
   }
 
   console.log("Seeding finished");

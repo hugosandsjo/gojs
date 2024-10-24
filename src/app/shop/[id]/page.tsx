@@ -9,24 +9,26 @@ import { getImgixUrl } from "@/lib/utils";
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
   const [product, setProduct] = useState<
-    (Product & { image_url: string | null }) | null
+    (Product & { imageUrls: string[] }) | null
   >(null);
 
   useEffect(() => {
     (async () => {
       const data = await getProduct(params.id);
-      let imgUrl: string | null = null; // Initialize as null
 
-      if (data?.image_key) {
-        imgUrl = getImgixUrl(data.image_key, {
-          w: "400",
-          h: "400",
-          fit: "crop",
-          auto: "format",
-        });
+      if (data) {
+        const imageUrls = data.images.map((image) =>
+          getImgixUrl(image.image_key, {
+            w: "400",
+            h: "400",
+            fit: "crop",
+            auto: "format",
+            q: "75",
+          })
+        );
+
+        setProduct({ ...data, imageUrls });
       }
-
-      setProduct(data ? { ...data, image_url: imgUrl } : null);
     })();
   }, [params.id]);
 
@@ -37,9 +39,9 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
     <section className="flex flex-col items-center gap-8 p-10">
       <h1 className="text-3xl font-bold">{product.title}</h1>
 
-      {product.image_url ? (
+      {product.imageUrls && product.imageUrls.length > 0 ? (
         <Image
-          src={product.image_url}
+          src={product.imageUrls[0]} // Display the first image
           alt={product.title}
           width={400}
           height={400}
@@ -50,6 +52,19 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
           <span>No Image Available</span>
         </div>
       )}
+      {/* Optionally, display all images */}
+      <div className="flex gap-4">
+        {product.imageUrls.map((url, index) => (
+          <Image
+            key={index}
+            src={url}
+            alt={`${product.title} ${index + 1}`}
+            width={100}
+            height={100}
+            className="w-20 h-20 object-cover"
+          />
+        ))}
+      </div>
 
       <div className="text-lg flex flex-col gap-4">
         <ProductParagraph>Price: ${product.price}</ProductParagraph>

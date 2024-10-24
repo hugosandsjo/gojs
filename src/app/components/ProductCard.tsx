@@ -36,10 +36,7 @@ export default function ProductCard({
           ) : (
             <div className="w-32 h-40 bg-lime-300"></div>
           )}
-          {/* Optionally, display all images */}
-          {imageUrls.map((url, index) => (
-            <img key={index} src={url} alt={`${title} ${index + 1}`} />
-          ))}
+
           <p className="font-sans underline-offset-2 underline text-xs">
             {title}
           </p>
