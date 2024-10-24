@@ -125,6 +125,9 @@ export async function getProduct(productId: string) {
     where: {
       id: productId,
     },
+    include: {
+      images: true,
+    },
   });
   return product;
 }

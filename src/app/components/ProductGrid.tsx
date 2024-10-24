@@ -19,7 +19,7 @@ export default async function ProductGrid() {
         q: "75",
       })
     );
-    console.log("Image urls array:", imageUrls);
+
     return { ...product, imageUrls };
   });
 
