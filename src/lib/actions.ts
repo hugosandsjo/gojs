@@ -21,12 +21,13 @@ const s3 = new S3Client({
 
 export async function createProduct(formData: FormData) {
   try {
+    const userId = formData.get("userId") as string;
     const title = formData.get("title") as string;
     const price = parseFloat(formData.get("price") as string);
     const description = formData.get("description") as string;
     const category = formData.get("category") as string;
 
-    if (!title || !price || !description || !category) {
+    if (!userId || !title || !price || !description || !category) {
       throw new Error("All fields are required.");
     }
 
@@ -67,6 +68,9 @@ export async function createProduct(formData: FormData) {
       description,
       category: {
         connect: { id: pickedCategory.id },
+      },
+      user: {
+        connect: { id: userId },
       },
     };
 
@@ -141,4 +145,20 @@ export async function getUser(userId: string | undefined) {
   });
   revalidatePath("/dashboard");
   return user;
+}
+
+export async function getUserProducts(id: string | undefined) {
+  if (!id) return null;
+  const products = prisma.product.findMany({
+    where: { userId: id },
+    include: {
+      images: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  return products;
 }

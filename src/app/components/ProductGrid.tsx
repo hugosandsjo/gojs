@@ -6,6 +6,11 @@ export default async function ProductGrid() {
   const products = await prisma.product.findMany({
     include: {
       images: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
 
@@ -20,7 +25,11 @@ export default async function ProductGrid() {
       })
     );
 
-    return { ...product, imageUrls };
+    return {
+      ...product,
+      imageUrls,
+      user: product.user?.name,
+    };
   });
 
   return (
@@ -36,6 +45,7 @@ export default async function ProductGrid() {
             quantity={product.quantity}
             height={product.height}
             imageUrls={product.imageUrls}
+            user={product.user}
           />
         );
       })}

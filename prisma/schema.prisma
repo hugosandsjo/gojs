@@ -20,7 +20,7 @@ enum UserRole {
 
 model User {
   id            String          @id @default(cuid())
-  name          String?
+  name          String
   firstname     String?
   lastname      String?
   alias         String?
@@ -37,6 +37,7 @@ model User {
   instagram     String?
   facebook      String?
   website       String?
+  products      Product[]       @relation("UserProducts") // New relation field
   updated_at    DateTime        @updatedAt
   created_at    DateTime        @default(now())
 }
@@ -123,6 +124,8 @@ model Product {
   category        Category          @relation(fields: [category_id], references: [id])
   tags            ProductTag[]
   materials       ProductMaterial[]
+  userId          String
+  user            User              @relation("UserProducts", fields: [userId], references: [id])
 }
 
 model Image {

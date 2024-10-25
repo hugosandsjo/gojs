@@ -10,6 +10,7 @@ type ProductCardProps = {
   quantity?: number | null;
   height?: number | null;
   imageUrls: string[];
+  user: string;
 };
 
 export default function ProductCard({
@@ -20,6 +21,7 @@ export default function ProductCard({
   height,
   imageUrls,
   description,
+  user,
 }: ProductCardProps) {
   return (
     <Link href={`shop/${id}`}>
@@ -40,7 +42,7 @@ export default function ProductCard({
           <p className="font-sans underline-offset-2 underline text-xs">
             {title}
           </p>
-          <ProductParagraph>Kreatör: Hugo Sandsjö</ProductParagraph>
+          <ProductParagraph>Creator: {user} </ProductParagraph>
         </div>
         <div>
           <ProductParagraph>Price: {price}</ProductParagraph>
