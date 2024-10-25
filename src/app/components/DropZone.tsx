@@ -56,8 +56,7 @@ export default function Dropzone() {
           e.stopPropagation();
           removeFile(file.name);
         }}
-        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center 
-                   opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
       >
         ×
       </button>
@@ -98,9 +97,6 @@ export default function Dropzone() {
           <div className="text-center">
             <p className="text-gray-600">
               Drag &apos;n&apos; drop some files here, or click to select files
-            </p>
-            <p className="text-sm text-gray-500 mt-2">
-              (Only image files will be accepted)
             </p>
           </div>
         )}

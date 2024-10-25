@@ -3,12 +3,17 @@ import { createProduct } from "@/lib/actions";
 import Link from "next/link";
 import Dropzone from "@/app/components/DropZone";
 
-export default function CreateProductForm() {
+type CreateProductFormProps = {
+  userId: string;
+};
+
+export default function CreateProductForm({ userId }: CreateProductFormProps) {
   return (
     <form
       action={createProduct}
       className="bg-amber-100 flex flex-col gap-4 py-8 p-14"
     >
+      <input type="hidden" name="userId" value={userId} />
       <section className="flex gap-8">
         {" "}
         <div className="flex flex-col w-1/2">
