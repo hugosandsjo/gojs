@@ -7,6 +7,7 @@ import Link from "next/link";
 import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
 import H2 from "@/app/components/typography/H2";
+import DeleteButton from "@/app/components/DeleteButton";
 
 export default async function Dashboard() {
   unstable_noStore();
@@ -44,35 +45,36 @@ export default async function Dashboard() {
       <section>
         <H2>Dashboard</H2>
       </section>
+
       <section className="flex justify-between w-full">
         <div>
-          <h1 className="text-4xl font-serif">Hello {user?.name}!</h1>
-        </div>
-
-        <div>
-          <p>Name: {user?.name}</p>
+          <p>Hello {user?.name}</p>
           <p>Email: {user?.email}</p>
           <p>Role: {user?.role}</p>
         </div>
       </section>
-      <section className="flex flex-col w-full gap-4">
+
+      <section className="flex flex-col w-2/3 gap-4">
         <div>
           <H2>My artworks:</H2>
         </div>
         <div className="flex flex-wrap gap-4">
           {productsWithUrls?.map((product) => {
             return (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                title={product.title}
-                description={product.description}
-                price={product.price}
-                quantity={product.quantity}
-                height={product.height}
-                imageUrls={product.imageUrls}
-                user={product.user}
-              />
+              <div key={product.id}>
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  title={product.title}
+                  description={product.description}
+                  price={product.price}
+                  quantity={product.quantity}
+                  height={product.height}
+                  imageUrls={product.imageUrls}
+                  user={product.user}
+                />
+                <DeleteButton id={product.id} />
+              </div>
             );
           })}
         </div>

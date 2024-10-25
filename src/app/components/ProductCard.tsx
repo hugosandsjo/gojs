@@ -1,5 +1,4 @@
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
-import Link from "next/link";
 import Image from "next/image";
 
 type ProductCardProps = {
@@ -14,7 +13,6 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({
-  id,
   title,
   price,
   quantity,
@@ -24,33 +22,31 @@ export default function ProductCard({
   user,
 }: ProductCardProps) {
   return (
-    <Link href={`shop/${id}`}>
-      <div className=" max-w-40 flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          {imageUrls ? (
-            <Image
-              src={imageUrls[0]}
-              alt={title}
-              width={400}
-              height={400}
-              className="w-32 h-40 object-cover"
-            />
-          ) : (
-            <div className="w-32 h-40 bg-lime-300"></div>
-          )}
+    <div className=" max-w-40 flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        {imageUrls ? (
+          <Image
+            src={imageUrls[0]}
+            alt={title}
+            width={400}
+            height={400}
+            className="w-32 h-40 object-cover"
+          />
+        ) : (
+          <div className="w-32 h-40 bg-lime-300"></div>
+        )}
 
-          <p className="font-sans underline-offset-2 underline text-xs">
-            {title}
-          </p>
-          <ProductParagraph>Creator: {user} </ProductParagraph>
-        </div>
-        <div>
-          <ProductParagraph>Price: {price}</ProductParagraph>
-          <ProductParagraph>Quantity:{quantity}</ProductParagraph>
-          <ProductParagraph>Height: {height}</ProductParagraph>
-          <ProductParagraph>Description{description}</ProductParagraph>
-        </div>
+        <p className="font-sans underline-offset-2 underline text-xs">
+          {title}
+        </p>
+        <ProductParagraph>{user} </ProductParagraph>
       </div>
-    </Link>
+      <div>
+        <ProductParagraph>Price: {price}</ProductParagraph>
+        <ProductParagraph>Quantity:{quantity}</ProductParagraph>
+        <ProductParagraph>Height: {height}</ProductParagraph>
+        <ProductParagraph>Description{description}</ProductParagraph>
+      </div>
+    </div>
   );
 }
