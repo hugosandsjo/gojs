@@ -1,23 +1,42 @@
 // Dropzone.tsx
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import Image from "next/image";
+
+type PreviewFile = File & {
+  preview: string;
+};
 
 export default function Dropzone() {
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
-    useDropzone({
-      accept: { "image/*": [] },
-      multiple: true,
-    });
+  const [files, setFiles] = useState<PreviewFile[]>([]);
 
-  const files = acceptedFiles.map((file) => (
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const mappedFiles = acceptedFiles.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      })
+    );
+    setFiles((prevFiles) => [...prevFiles, ...mappedFiles]);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: { "image/*": [] },
+    multiple: true,
+    onDrop,
+  });
+
+  const thumbs = files.map((file) => (
     <div key={file.name}>
-      <img
-        src={URL.createObjectURL(file)}
-        alt={file.name}
-        style={{ width: "100px" }}
-      />
+      <Image src={file.preview} alt={file.name} width={100} height={100} />
     </div>
   ));
+
+  // Clean up the previews when component unmounts
+  useEffect(() => {
+    return () => {
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
+    };
+  }, [files]);
 
   return (
     <div>
@@ -26,10 +45,12 @@ export default function Dropzone() {
         {isDragActive ? (
           <p>Drop the files here...</p>
         ) : (
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <p>
+            Drag &apos;n&apos; drop some files here, or click to select files
+          </p>
         )}
       </div>
-      <aside className="flex flex-wrap mt-4 gap-2">{files}</aside>
+      <aside className="flex flex-wrap mt-4 gap-2">{thumbs}</aside>
     </div>
   );
 }
