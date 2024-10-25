@@ -162,3 +162,26 @@ export async function getUserProducts(id: string | undefined) {
   });
   return products;
 }
+
+export async function deleteProduct(productId: string) {
+  try {
+    await prisma.image.deleteMany({
+      where: {
+        productId: productId,
+      },
+    });
+
+    await prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
+
+    revalidatePath("/dashboard");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw new Error("Failed to delete product");
+  }
+}

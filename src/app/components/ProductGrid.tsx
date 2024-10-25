@@ -1,6 +1,7 @@
 import prisma from "@/lib/db";
 import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
+import Link from "next/link";
 
 export default async function ProductGrid() {
   const products = await prisma.product.findMany({
@@ -36,17 +37,19 @@ export default async function ProductGrid() {
     <section className="w-full flex flex-wrap gap-16 p-7">
       {productsWithUrls.map((product) => {
         return (
-          <ProductCard
-            key={product.id}
-            id={product.id}
-            title={product.title}
-            description={product.description}
-            price={product.price}
-            quantity={product.quantity}
-            height={product.height}
-            imageUrls={product.imageUrls}
-            user={product.user}
-          />
+          <Link href={`shop/${product.id}`}>
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              description={product.description}
+              price={product.price}
+              quantity={product.quantity}
+              height={product.height}
+              imageUrls={product.imageUrls}
+              user={product.user}
+            />
+          </Link>
         );
       })}
     </section>
