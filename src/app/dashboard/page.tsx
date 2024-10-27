@@ -1,4 +1,4 @@
-import Button from "@/app/components/Button";
+import Button from "@/app/components/buttons/Button";
 import { getUser, getUserProducts } from "@/lib/actions";
 import { auth } from "@/lib/auth";
 import { unstable_noStore } from "next/cache";
@@ -7,7 +7,8 @@ import Link from "next/link";
 import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
 import H2 from "@/app/components/typography/H2";
-import DeleteButton from "@/app/components/DeleteButton";
+import DeleteButton from "@/app/components/buttons/DeleteButton";
+import UpdateButton from "@/app/components/buttons/UpdateButton";
 
 export default async function Dashboard() {
   unstable_noStore();
@@ -41,7 +42,7 @@ export default async function Dashboard() {
   }
 
   return (
-    <section className="flex flex-col gap-4 items-center p-10 px-96">
+    <section className="flex flex-col gap-4 items-center p-10">
       <section>
         <H2>Dashboard</H2>
       </section>
@@ -54,7 +55,7 @@ export default async function Dashboard() {
         </div>
       </section>
 
-      <section className="flex flex-col w-2/3 gap-4">
+      <section className="flex flex-col w-full gap-4">
         <div>
           <H2>My artworks:</H2>
         </div>
@@ -73,6 +74,7 @@ export default async function Dashboard() {
                   imageUrls={product.imageUrls}
                   user={product.user}
                 />
+                <Link href={`/dashboard/${product.id}`}>Update</Link>
                 <DeleteButton id={product.id} />
               </div>
             );
