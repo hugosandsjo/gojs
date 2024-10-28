@@ -4,10 +4,10 @@ import { auth } from "@/lib/auth";
 import { unstable_noStore } from "next/cache";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
 import H2 from "@/app/components/typography/H2";
-import DeleteButton from "@/app/components/buttons/DeleteButton";
+import ProductList from "@/app/components/ProductList";
+import H3 from "@/app/components/typography/H3";
 
 export default async function Dashboard() {
   unstable_noStore();
@@ -40,54 +40,47 @@ export default async function Dashboard() {
     redirect("/");
   }
 
+  const publishedProducts = productsWithUrls?.filter(
+    (product) => product.status === "PUBLISHED"
+  );
+  const draftProducts = productsWithUrls?.filter(
+    (product) => product.status === "DRAFT"
+  );
+  const archivedProducts = productsWithUrls?.filter(
+    (product) => product.status === "ARCHIVED"
+  );
+
   return (
     <section className="flex flex-col gap-4 items-center p-10">
-      <section>
-        <H2>Dashboard</H2>
-      </section>
-
-      <section className="flex justify-between w-full">
-        <div>
-          <p>Hello {user?.name}</p>
-          <p>Email: {user?.email}</p>
-          <p>Role: {user?.role}</p>
-        </div>
-      </section>
-
-      <section className="flex flex-col w-full gap-4">
-        <div>
-          <H2>My artworks:</H2>
-        </div>
-        <div className="flex flex-wrap gap-4">
-          {productsWithUrls?.map((product) => {
-            return (
-              <div key={product.id}>
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  title={product.title}
-                  description={product.description}
-                  price={product.price}
-                  quantity={product.quantity}
-                  height={product.height}
-                  imageUrls={product.imageUrls}
-                  user={product.user}
-                />
-                <Link href={`/dashboard/${product.id}`}>
-                  <Button type="button"> Edit</Button>
-                </Link>
-                <DeleteButton id={product.id} />
-              </div>
-            );
-          })}
-        </div>
-        <div>
+      <section className="w-full flex justify-between">
+        <article>
+          <H2>Dashboard</H2>
+        </article>
+        <article>
           <Link href="dashboard/createproduct">
             <Button type="submit">
               <p className="font-sans text-sm">Create product</p>{" "}
             </Button>
           </Link>
+        </article>
+
+        <article className="flex">
+          <div>
+            <p>Hello {user?.name}</p>
+            <p>Email: {user?.email}</p>
+            <p>Role: {user?.role}</p>
+          </div>
+        </article>
+      </section>
+      <section className="flex flex-col w-full gap-4">
+        <div>
+          <H3>My artworks:</H3>
         </div>
+        <section className="flex flex-col gap-8 w-full">
+          <ProductList products={publishedProducts} status="PUBLISHED" />
+          <ProductList products={draftProducts} status="DRAFT" />
+          <ProductList products={archivedProducts} status="ARCHIVED" />
+        </section>
       </section>
     </section>
   );
