@@ -47,12 +47,12 @@ async function seedDatabase() {
     categories;
 
   const defaultUser = await prisma.user.upsert({
-    where: { email: "default@user.com" }, // Use an existing user’s email or a known identifier
+    where: { email: "hugosandsjo@gmail.com" },
     update: {},
     create: {
       email: "default@user.com",
-      name: "Default User",
-      password: "defaultpassword", // Consider using a secure password generator
+      name: "Hugo Sandsjö",
+      password: "defaultpassword",
       role: "ARTIST",
     },
   });
