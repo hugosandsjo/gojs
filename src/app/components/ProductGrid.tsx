@@ -37,7 +37,7 @@ export default async function ProductGrid() {
     <section className="w-full flex flex-wrap gap-16 p-7">
       {productsWithUrls.map((product) => {
         return (
-          <Link href={`shop/${product.id}`}>
+          <Link key={product.id} href={`shop/${product.id}`}>
             <ProductCard
               key={product.id}
               id={product.id}
