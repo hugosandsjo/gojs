@@ -6,6 +6,7 @@ import Dropzone from "@/app/components/DropZone";
 import { Product } from "@prisma/client";
 import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
+import H2 from "@/app/components/typography/H2";
 
 type UpdateProductFormProps = {
   productId: string;
@@ -41,9 +42,12 @@ export default function UpdateProductForm({
   };
   return (
     <>
-      <Link href="/dashboard">
-        <Button type="button">Dashboard</Button>
-      </Link>
+      <section className="flex gap-4 justify-between">
+        <Link href="/dashboard">
+          <Button type="button">Back</Button>
+        </Link>
+        <H2>Update product</H2>
+      </section>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 py-8 p-14 border border-black"

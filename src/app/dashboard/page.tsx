@@ -51,17 +51,18 @@ export default async function Dashboard() {
   );
 
   return (
-    <section className="flex flex-col gap-4 items-center p-10">
+    <section className="flex flex-col gap-4 items-center p-10 border border-black mx-8 my-8">
       <section className="w-full flex justify-between">
-        <article>
-          <H2>Dashboard</H2>
-        </article>
         <article>
           <Link href="dashboard/createproduct">
             <Button type="submit">
               <p className="font-sans text-sm">Create product</p>{" "}
             </Button>
           </Link>
+        </article>
+        <article>
+          {" "}
+          <H2>Dashboard</H2>
         </article>
 
         <article className="flex">
