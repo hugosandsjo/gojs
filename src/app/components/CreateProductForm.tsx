@@ -36,8 +36,8 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
             <label htmlFor="category">Category:</label>
             <select name="category" id="category" required>
               <option value="">Select Category</option>
-              <option value="Paintings">Paintings</option>
-              <option value="Sculptures">Sculptures</option>
+              <option value="Paintings">Painting</option>
+              <option value="Sculptures">Sculpture</option>
               <option value="Digital Art">Digital Art</option>
             </select>
           </div>

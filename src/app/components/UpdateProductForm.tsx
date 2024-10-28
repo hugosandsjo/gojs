@@ -4,7 +4,6 @@ import { getCategory, getProduct, updateProduct } from "@/lib/actions";
 import Link from "next/link";
 import Dropzone from "@/app/components/DropZone";
 import { Product, Prisma } from "@prisma/client";
-import { redirect } from "next/navigation";
 
 type UpdateProductFormProps = {
   productId: string;
@@ -17,8 +16,8 @@ export default function UpdateProductForm({
 }: UpdateProductFormProps) {
   const [product, setProduct] = useState<Product>();
   const [categories, setCategories] = useState<string[]>([
-    "Paintings",
-    "Sculptures",
+    "Painting",
+    "Sculpture",
     "Digital Art",
   ]);
   const [currentCategory, setCurrentCategory] = useState<string>("");
