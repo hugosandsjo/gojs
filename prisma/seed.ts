@@ -19,6 +19,7 @@ async function seedDatabase() {
   }
 
   // Delete all existing products
+  await prisma.user.deleteMany();
   await prisma.product.deleteMany();
   await prisma.image.deleteMany();
 
@@ -45,6 +46,17 @@ async function seedDatabase() {
   const [paintingsCategory, sculpturesCategory, digitalArtCategory] =
     categories;
 
+  const defaultUser = await prisma.user.upsert({
+    where: { email: "default@user.com" }, // Use an existing user’s email or a known identifier
+    update: {},
+    create: {
+      email: "default@user.com",
+      name: "Default User",
+      password: "defaultpassword", // Consider using a secure password generator
+      role: "ARTIST",
+    },
+  });
+
   // Seeding products
   const initialProducts: Prisma.ProductCreateInput[] = [
     {
@@ -63,7 +75,9 @@ async function seedDatabase() {
       category: {
         connect: { id: paintingsCategory.id },
       },
+      user: { connect: { id: defaultUser.id } },
     },
+
     {
       title: "The Penguin",
       description:
@@ -81,6 +95,7 @@ async function seedDatabase() {
       category: {
         connect: { id: sculpturesCategory.id },
       },
+      user: { connect: { id: defaultUser.id } },
     },
     {
       title: "Batman",
@@ -98,6 +113,7 @@ async function seedDatabase() {
       category: {
         connect: { id: digitalArtCategory.id },
       },
+      user: { connect: { id: defaultUser.id } },
     },
   ];
 
