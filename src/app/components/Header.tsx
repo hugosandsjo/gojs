@@ -3,6 +3,7 @@ import { SignOut } from "@/app/components/SignOut";
 import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
+import Button from "@/app/components/buttons/Button";
 
 export default async function Header() {
   const session = await auth();
@@ -29,10 +30,11 @@ export default async function Header() {
         <Link href={"/"}>
           <h1 className="text-6xl font-serif">Gojs</h1>
         </Link>
-        <div className="flex">
-          {" "}
-          <p>Logo</p>
-        </div>
+        <Link href="/dashboard/createproduct">
+          <Button type="submit">
+            <p className="font-sans text-sm">Create product</p>{" "}
+          </Button>
+        </Link>
       </header>
     </>
   );

@@ -9,7 +9,7 @@ type ProductCardProps = {
   quantity?: number | null;
   height?: number | null;
   imageUrls: string[];
-  user: string;
+  user: string | undefined;
 };
 
 export default function ProductCard({

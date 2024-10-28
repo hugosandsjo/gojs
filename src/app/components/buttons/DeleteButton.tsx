@@ -31,7 +31,7 @@ export default function DeleteButton({ id }: DeleteButtonProps) {
       <button
         onClick={handleDeleteClick}
         disabled={isDeleting}
-        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-400"
+        className="py-4 px-6 border border-black hover:text-white hover:bg-red-600 hover:shadow-lg hover:border-red-600"
       >
         {isDeleting ? "Deleting..." : "Delete"}
       </button>
