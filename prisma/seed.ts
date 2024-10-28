@@ -3,8 +3,8 @@ const prisma = new PrismaClient();
 
 // Define your initial data for both local and preview environments
 const initialCategories: Prisma.CategoryCreateInput[] = [
-  { title: "Paintings" },
-  { title: "Sculptures" },
+  { title: "Painting" },
+  { title: "Sculpture" },
   { title: "Digital Art" },
 ];
 

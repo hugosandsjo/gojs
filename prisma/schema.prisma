@@ -124,8 +124,8 @@ model Product {
   category        Category          @relation(fields: [category_id], references: [id])
   tags            ProductTag[]
   materials       ProductMaterial[]
-  userId          String?
-  user            User?             @relation("UserProducts", fields: [userId], references: [id])
+  userId          String
+  user            User              @relation("UserProducts", fields: [userId], references: [id])
 }
 
 model Image {
