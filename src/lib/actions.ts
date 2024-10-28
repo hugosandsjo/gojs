@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { randomImageName } from "@/lib/utils";
 import { Category, Prisma } from "@prisma/client";
+import { redirect } from "next/navigation";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -116,12 +117,13 @@ export async function createProduct(formData: FormData) {
         });
       }
     }
-
     console.log("Product created with images:", product);
   } catch (error) {
     console.error("Error creating product:", error);
     throw new Error("Failed to create product");
   }
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
 
 export async function getProduct(productId: string) {
@@ -290,10 +292,9 @@ export async function updateProduct(productId: string, formData: FormData) {
         });
       }
     }
-
-    return { success: true, product: updatedProduct };
   } catch (error) {
     console.error("Error updating product:", error);
-    return { success: false, error: "Failed to update product" };
   }
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
