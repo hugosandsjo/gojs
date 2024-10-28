@@ -1,4 +1,3 @@
-"use client";
 import { createProduct } from "@/lib/actions";
 import Link from "next/link";
 import Dropzone from "@/app/components/DropZone";
@@ -36,8 +35,8 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
             <label htmlFor="category">Category:</label>
             <select name="category" id="category" required>
               <option value="">Select Category</option>
-              <option value="Paintings">Painting</option>
-              <option value="Sculptures">Sculpture</option>
+              <option value="Painting">Painting</option>
+              <option value="Sculpture">Sculpture</option>
               <option value="Digital Art">Digital Art</option>
             </select>
           </div>

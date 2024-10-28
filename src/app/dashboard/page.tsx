@@ -8,7 +8,6 @@ import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
 import H2 from "@/app/components/typography/H2";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
-import UpdateButton from "@/app/components/buttons/UpdateButton";
 
 export default async function Dashboard() {
   unstable_noStore();
@@ -74,19 +73,20 @@ export default async function Dashboard() {
                   imageUrls={product.imageUrls}
                   user={product.user}
                 />
-                <Link href={`/dashboard/${product.id}`}>Update</Link>
+                <Link href={`/dashboard/${product.id}`}>
+                  <Button type="button"> Edit</Button>
+                </Link>
                 <DeleteButton id={product.id} />
               </div>
             );
           })}
         </div>
         <div>
-          <Button>
-            <Link href="dashboard/createproduct">
-              {" "}
+          <Link href="dashboard/createproduct">
+            <Button type="submit">
               <p className="font-sans text-sm">Create product</p>{" "}
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </section>
     </section>

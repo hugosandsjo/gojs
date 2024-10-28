@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
@@ -73,11 +74,11 @@ export default function Dropzone() {
   const rootProps = getRootProps();
 
   return (
-    <div>
+    <div className="mt-2">
       <div
         {...rootProps}
         className={`
-          border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer 
+          border-2 border-dashed border-gray-300 rounded-lg py-16 cursor-pointer 
           transition-colors duration-200 ease-in-out
           ${
             isDragActive
@@ -92,7 +93,7 @@ export default function Dropzone() {
       >
         <input {...getInputProps()} name="image" />
         {isDragActive ? (
-          <p className="text-center text-gray-600">Drop the files here...</p>
+          <p className="text-center text-gray-600 ">Drop the files here...</p>
         ) : (
           <div className="text-center">
             <p className="text-gray-600">
