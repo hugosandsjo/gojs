@@ -3,12 +3,24 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 
-type PreviewFile = File & {
-  preview: string;
+type PreviewFile = File & { preview: string };
+type PreviewImage = { name: string; preview: string };
+
+type DropzoneProps = {
+  defaultImages?: PreviewImage[];
 };
 
-export default function Dropzone() {
-  const [files, setFiles] = useState<PreviewFile[]>([]);
+export default function Dropzone({ defaultImages = [] }: DropzoneProps) {
+  const [files, setFiles] = useState<(PreviewFile | PreviewImage)[]>([]);
+
+  useEffect(() => {
+    // Add default images as previews on mount
+    const initialFiles = defaultImages.map((image) => ({
+      name: image.name, // or any unique identifier for each image
+      preview: image.preview, // URL from the server
+    }));
+    setFiles(initialFiles);
+  }, [defaultImages]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -47,6 +59,7 @@ export default function Dropzone() {
         <Image
           src={file.preview}
           alt={file.name}
+          sizes="96px"
           fill
           className="object-cover rounded-md"
         />
@@ -64,10 +77,14 @@ export default function Dropzone() {
     </div>
   ));
 
-  // Clean up the previews when component unmounts
   useEffect(() => {
     return () => {
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
+      files.forEach((file) => {
+        // Revoke URLs for `PreviewFile` types only (local files)
+        if ("preview" in file && file instanceof File) {
+          URL.revokeObjectURL(file.preview);
+        }
+      });
     };
   }, [files]);
 

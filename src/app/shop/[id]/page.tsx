@@ -82,7 +82,6 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
           <H3>{product.description || "No description available"}</H3>
         </div>
       </section>
-      {/* Back Button */}
     </section>
   );
 }

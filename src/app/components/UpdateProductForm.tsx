@@ -1,45 +1,46 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getCategory, getProduct, updateProduct } from "@/lib/actions";
+
+import { useState } from "react";
+import { updateProduct } from "@/lib/actions";
 import Link from "next/link";
 import Dropzone from "@/app/components/DropZone";
-import { Product } from "@prisma/client";
+import { Product, Image, Category } from "@prisma/client";
 import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
 import H2 from "@/app/components/typography/H2";
+import { getImgixUrl } from "@/lib/utils";
+import { useMemo } from "react";
 
 type UpdateProductFormProps = {
   productId: string;
   userId: string;
+  product: ProductWithImages;
+  category: Category;
 };
+
+type ProductWithImages = Product & { images: Image[] };
 
 export default function UpdateProductForm({
   productId,
   userId,
+  product,
+  category,
 }: UpdateProductFormProps) {
-  const [product, setProduct] = useState<Product>();
-  const categories = ["Painting", "Sculpture", "Digital Art"];
-  const [currentCategory, setCurrentCategory] = useState<string>(""); //Hardcoded for now
+  const categories = ["Painting", "Sculpture", "Digital Art"]; //Hardcoded for now
 
-  useEffect(() => {
-    (async () => {
-      const fetchedProduct = await getProduct(productId);
-      if (fetchedProduct) {
-        setProduct(fetchedProduct);
-        const fetchedCategory = await getCategory(fetchedProduct.category_id);
-        console.log("Fetched category:", fetchedCategory);
-        if (fetchedCategory) {
-          setCurrentCategory(fetchedCategory.title);
-        }
-      }
-    })();
-  }, [productId]);
+  const defaultImages = useMemo(() => {
+    return product?.images.map((img) => ({
+      name: String(img.id),
+      preview: getImgixUrl(img.image_key),
+    }));
+  }, [product]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
     await updateProduct(productId, formData);
   };
+
   return (
     <>
       <section className="flex gap-4 justify-between">
@@ -93,24 +94,21 @@ export default function UpdateProductForm({
           <div className="flex flex-col w-1/2">
             <div className="flex flex-col">
               <label htmlFor="category">Category:</label>
-              {currentCategory && (
-                <select
-                  name="category"
-                  id="category"
-                  required
-                  defaultValue={currentCategory}
-                  className="border border-black p-2"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((formCategory) => (
-                    <option key={formCategory} value={formCategory}>
-                      {formCategory}
-                    </option>
-                  ))}
-                </select>
-              )}
+              <select
+                name="category"
+                id="category"
+                required
+                defaultValue={category.title}
+                className="border border-black p-2"
+              >
+                <option value="">Select Category</option>
+                {categories.map((formCategory) => (
+                  <option key={formCategory} value={formCategory}>
+                    {formCategory}
+                  </option>
+                ))}
+              </select>
             </div>
-
             <div className="flex flex-col">
               <label htmlFor="quantity">Quantity:</label>
               <input
@@ -186,7 +184,7 @@ export default function UpdateProductForm({
         <div>
           <label>
             Select Images:
-            <Dropzone />
+            <Dropzone defaultImages={defaultImages} />
           </label>
         </div>
         <div className="flex gap-4">
