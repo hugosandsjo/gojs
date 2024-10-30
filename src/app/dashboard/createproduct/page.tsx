@@ -1,4 +1,4 @@
-import CreateProductForm from "@/app/components/CreateProductForm";
+import CreateProductForm from "@/app/components/form/CreateProductForm";
 import { auth } from "@/lib/auth";
 import { getUser } from "@/lib/actions";
 import { redirect } from "next/navigation";

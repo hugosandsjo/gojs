@@ -43,9 +43,9 @@ export default function ProductCard({
       </div>
       <div>
         <ProductParagraph>Price: {price}</ProductParagraph>
-        <ProductParagraph>Quantity:{quantity}</ProductParagraph>
+        <ProductParagraph>Quantity: {quantity}</ProductParagraph>
         <ProductParagraph>Height: {height}</ProductParagraph>
-        <ProductParagraph>Description{description}</ProductParagraph>
+        <ProductParagraph>Description {description}</ProductParagraph>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { getProduct, getUser, getCategory } from "@/lib/actions";
 import { redirect, notFound } from "next/navigation";
-import UpdateProductForm from "@/app/components/UpdateProductForm";
+import UpdateProductForm from "@/app/components/form/UpdateProductForm";
 
 export default async function UpdateProductPage({
   params,

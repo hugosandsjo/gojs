@@ -1,9 +1,13 @@
 import crypto from "crypto";
 import { IMGIX_DOMAIN } from "@/lib/config";
+import { twMerge } from "tailwind-merge";
+import { clsx, ClassValue } from "clsx";
 
+// Creates random image name
 export const randomImageName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 
+// Create imgixUrl
 export function getImgixUrl(
   key: string,
   params: Record<string, string> = {}
@@ -16,4 +20,15 @@ export function getImgixUrl(
   });
 
   return url.toString();
+}
+
+// Tailwind function
+export function cn(...inputs: ClassValue[]) {
+  twMerge(clsx(inputs));
+}
+
+// Captilize first letter
+export function capitalizeFirstLetter(str: string): string {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
