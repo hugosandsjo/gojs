@@ -73,17 +73,16 @@ export default function UpdateProductForm({
               defaultValue={product?.available_stock || ""}
             />
           </div>
-        </section>
-
-        <section className="flex gap-4 ">
-          <article>
-            <TextField title="height" defaultValue={product?.height || ""} />
-            <TextField title="width" defaultValue={product?.width || ""} />
-          </article>
-          <article>
-            <TextField title="depth" defaultValue={product?.depth || ""} />
-            <TextField title="weight" defaultValue={product?.weight || ""} />
-          </article>
+          <section className="flex gap-4">
+            <article>
+              <TextField title="height" defaultValue={product?.height || ""} />
+              <TextField title="width" defaultValue={product?.width || ""} />
+            </article>
+            <article>
+              <TextField title="depth" defaultValue={product?.depth || ""} />
+              <TextField title="weight" defaultValue={product?.weight || ""} />
+            </article>
+          </section>
         </section>
 
         <div className="flex flex-col">

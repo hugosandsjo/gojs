@@ -7,14 +7,14 @@ type TextAreaProps = {
 
 export default function TextArea({ title, defaultValue }: TextAreaProps) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1">
       <label htmlFor={title}>{capitalizeFirstLetter(title)}:</label>
       <textarea
         name={title}
         id={title}
         defaultValue={defaultValue}
         required
-        className="border border-black p-2"
+        className="border border-black p-2 min-h-52"
       />
     </div>
   );

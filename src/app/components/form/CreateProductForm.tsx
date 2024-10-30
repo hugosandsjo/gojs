@@ -31,31 +31,28 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         <input type="hidden" name="userId" value={userId} />
 
         <section className="flex gap-4">
-          <div className="flex flex-col w-1/2">
+          <div className="flex flex-col w-1/2 gap-4">
             <TextField title="title" />
             <TextField title="price" />
             <NumberPicker title="quantity" />
           </div>
-          <div className="flex flex-col w-1/2">
+          <div className="flex flex-col w-1/2 gap-4">
             <Dropdown title="category" />
             <NumberPicker title="Available stock" />
           </div>
-        </section>
-
-        <section className="flex gap-4">
-          <article>
-            <TextField title="height" />
-            <TextField title="width" />
-          </article>
-          <article>
-            <div className="flex flex-col w-1/2">
+          <section className="flex gap-4">
+            <article className="flex flex-col gap-4">
+              <TextField title="height" />
+              <TextField title="width" />
+            </article>
+            <article className="flex flex-col gap-4">
               <TextField title="depth" />
               <TextField title="weight" />
-            </div>
-          </article>
+            </article>
+          </section>
         </section>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col max-w-md">
           <TextArea title="description" />
         </div>
 

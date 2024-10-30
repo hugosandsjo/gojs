@@ -10,16 +10,17 @@ type DropzoneProps = {
   defaultImages?: PreviewImage[];
 };
 
-export default function Dropzone({ defaultImages = [] }: DropzoneProps) {
+export default function Dropzone({ defaultImages }: DropzoneProps) {
   const [files, setFiles] = useState<(PreviewFile | PreviewImage)[]>([]);
 
   useEffect(() => {
-    // Add default images as previews on mount
-    const initialFiles = defaultImages.map((image) => ({
-      name: image.name, // or any unique identifier for each image
-      preview: image.preview, // URL from the server
-    }));
-    setFiles(initialFiles);
+    if (defaultImages && defaultImages.length > 0) {
+      const initialFiles = defaultImages.map((image) => ({
+        name: image.name,
+        preview: image.preview,
+      }));
+      setFiles(initialFiles);
+    }
   }, [defaultImages]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -86,7 +87,7 @@ export default function Dropzone({ defaultImages = [] }: DropzoneProps) {
         }
       });
     };
-  }, [files]);
+  }, []);
 
   const rootProps = getRootProps();
 
