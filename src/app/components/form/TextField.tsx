@@ -7,7 +7,7 @@ type TextFieldProps = {
 
 export default function TextField({ title, defaultValue }: TextFieldProps) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1">
       <label htmlFor={title}>{capitalizeFirstLetter(title)}:</label>
       <input
         type="text"

@@ -10,7 +10,7 @@ export default function NumberPicker({
   defaultValue,
 }: NumberPickerProps) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1">
       <label htmlFor={title}>{capitalizeFirstLetter(title)}</label>
       <input
         type="number"
