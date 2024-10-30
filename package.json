@@ -23,12 +23,14 @@
     "@auth/prisma-adapter": "^2.7.2",
     "@aws-sdk/client-s3": "^3.678.0",
     "@prisma/client": "^5.21.1",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "next": "14.2.15",
     "next-auth": "^5.0.0-beta.25",
     "react": "^18",
     "react-dom": "^18",
-    "react-dropzone": "^14.2.10"
+    "react-dropzone": "^14.2.10",
+    "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
     "@types/node": "^20",
