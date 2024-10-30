@@ -1,6 +1,14 @@
+"use client";
+
 import { createProduct } from "@/lib/actions";
 import Link from "next/link";
 import Dropzone from "@/app/components/DropZone";
+import Button from "@/app/components/buttons/Button";
+import H2 from "@/app/components/typography/H2";
+import TextField from "@/app/components/form/TextField";
+import TextArea from "@/app/components/form/TextArea";
+import Dropdown from "@/app/components/form/Dropdown";
+import NumberPicker from "@/app/components/form/NumberPicker";
 
 type CreateProductFormProps = {
   userId: string;
@@ -8,88 +16,63 @@ type CreateProductFormProps = {
 
 export default function CreateProductForm({ userId }: CreateProductFormProps) {
   return (
-    <form
-      action={createProduct}
-      className="bg-amber-100 flex flex-col gap-4 py-8 p-14"
-    >
-      <input type="hidden" name="userId" value={userId} />
-      <section className="flex gap-8">
-        {" "}
-        <div className="flex flex-col w-1/2">
-          <div className="flex flex-col">
-            <label htmlFor="title">Title:</label>
-            <input type="text" name="title" id="title" required />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="price">Price:</label>
-
-            <input type="text" name="price" id="price" required />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="description">Description:</label>
-            <textarea name="description" id="description" required />
-          </div>
-        </div>
-        <div className="flex flex-col w-1/2">
-          <div className="flex flex-col">
-            <label htmlFor="category">Category:</label>
-            <select name="category" id="category" required>
-              <option value="">Select Category</option>
-              <option value="Painting">Painting</option>
-              <option value="Sculpture">Sculpture</option>
-              <option value="Digital Art">Digital Art</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="quantity">Quantity:</label>
-            <input type="number" name="quantity" id="quantity" />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="available_stock">Available Stock:</label>
-            <input type="number" name="available_stock" id="available_stock" />
-          </div>
-
-          <div className="flex flex-col">
-            <div className="flex flex-col">
-              <label htmlFor="height">Height:</label>
-              <input type="text" name="height" id="height" />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="width">Width:</label>
-              <input type="text" name="width" id="width" />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="depth">Depth:</label>
-              <input type="text" name="depth" id="depth" />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="weight">Weight:</label>
-              <input type="text" name="weight" id="weight" />
-            </div>
-          </div>
-        </div>
+    <>
+      <section className="flex gap-4 justify-between">
+        <Link href="/dashboard">
+          <Button type="button">Back</Button>
+        </Link>
+        <H2>Create Product</H2>
       </section>
 
-      <div>
-        <label>
-          Select Images:
-          <Dropzone />
-        </label>
-      </div>
-      <div className="flex gap-4">
-        <Link href="/dashboard">
-          <button type="button" className="py-4 px-6 border border-black">
-            Cancel
-          </button>
-        </Link>
-        <button type="submit" className="py-4 px-6 border border-black">
-          Create Product
-        </button>
-      </div>
-    </form>
+      <form
+        action={createProduct}
+        className="flex flex-col gap-8 py-8 p-14 border border-black"
+      >
+        <input type="hidden" name="userId" value={userId} />
+
+        <section className="flex gap-4">
+          <div className="flex flex-col w-1/2">
+            <TextField title="title" />
+            <TextField title="price" />
+            <NumberPicker title="quantity" />
+          </div>
+          <div className="flex flex-col w-1/2">
+            <Dropdown title="category" />
+            <NumberPicker title="Available stock" />
+          </div>
+        </section>
+
+        <section className="flex gap-4">
+          <article>
+            <TextField title="height" />
+            <TextField title="width" />
+          </article>
+          <article>
+            <div className="flex flex-col w-1/2">
+              <TextField title="depth" />
+              <TextField title="weight" />
+            </div>
+          </article>
+        </section>
+
+        <div className="flex flex-col">
+          <TextArea title="description" />
+        </div>
+
+        <div>
+          <label>
+            Select Images:
+            <Dropzone />
+          </label>
+        </div>
+
+        <div className="flex gap-4">
+          <Link href="/dashboard">
+            <Button type="button">Cancel</Button>
+          </Link>
+          <Button type="submit">Create Product</Button>
+        </div>
+      </form>
+    </>
   );
 }

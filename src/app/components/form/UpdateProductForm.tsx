@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import { updateProduct } from "@/lib/actions";
 import Link from "next/link";
 import Dropzone from "@/app/components/DropZone";
@@ -51,11 +49,13 @@ export default function UpdateProductForm({
         </Link>
         <H2>Update product</H2>
       </section>
+
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-8 py-8 p-14 border border-black "
       >
         <input type="hidden" name="userId" value={userId} />
+
         <section className="flex gap-4">
           {" "}
           <div className="flex flex-col w-1/2">
@@ -73,16 +73,17 @@ export default function UpdateProductForm({
               defaultValue={product?.available_stock || ""}
             />
           </div>
-          <section className="flex gap-4 ">
-            <article>
-              <TextField title="height" defaultValue={product?.height || ""} />
-              <TextField title="width" defaultValue={product?.width || ""} />
-            </article>
-            <article>
-              <TextField title="depth" defaultValue={product?.depth || ""} />
-              <TextField title="weight" defaultValue={product?.weight || ""} />
-            </article>
-          </section>
+        </section>
+
+        <section className="flex gap-4 ">
+          <article>
+            <TextField title="height" defaultValue={product?.height || ""} />
+            <TextField title="width" defaultValue={product?.width || ""} />
+          </article>
+          <article>
+            <TextField title="depth" defaultValue={product?.depth || ""} />
+            <TextField title="weight" defaultValue={product?.weight || ""} />
+          </article>
         </section>
 
         <div className="flex flex-col">
