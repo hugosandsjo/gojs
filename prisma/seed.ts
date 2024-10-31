@@ -19,9 +19,11 @@ async function seedDatabase() {
   }
 
   // Delete all existing products
-  await prisma.user.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.image.deleteMany();
+  await prisma.$transaction([
+    prisma.product.deleteMany(),
+    prisma.image.deleteMany(),
+    prisma.user.deleteMany(),
+  ]);
 
   // Seeding categories
   const categories = await Promise.all(
