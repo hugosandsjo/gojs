@@ -19,7 +19,9 @@ export default function TextField({
         name={name}
         id={name}
         defaultValue={defaultValue}
-        className={`border p-2 ${error ? "border-red-500" : "border-black"}`}
+        className={`border px-3 py-2 ${
+          error ? "border-red-500" : "border-black"
+        }`}
       />
       {error && <p className="text-red-500">{error}</p>}
     </div>

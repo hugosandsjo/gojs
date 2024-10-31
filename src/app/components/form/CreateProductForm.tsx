@@ -11,6 +11,8 @@ import Dropdown from "@/app/components/form/Dropdown";
 import NumberPicker from "@/app/components/form/NumberPicker";
 import { useFormState } from "react-dom";
 import { DealFormState, StringMap } from "@/lib/types";
+import BackButton from "@/app/components/buttons/BackButton";
+import H3 from "@/app/components/typography/H3";
 
 type CreateProductFormProps = {
   userId: string;
@@ -22,12 +24,11 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
   const [serverState, formAction] = useFormState(createProduct, initialState);
 
   return (
-    <>
-      <section className="flex gap-4 justify-between">
-        <Link href="/dashboard">
-          <Button type="button">Back</Button>
-        </Link>
+    <section className="flex flex-col gap-6">
+      <section className="w-full flex gap-4 justify-between px-2">
+        <BackButton />
         <H2>Create Product</H2>
+        <div></div>
       </section>
 
       <form
@@ -35,66 +36,75 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         className="flex flex-col gap-8 py-8 p-14 border border-black"
       >
         <input type="hidden" name="userId" value={userId} />
+        <H3>INFO</H3>
+        <section className="flex flex-wrap gap-4 w-full">
+          <article className="w-full flex gap-6">
+            {" "}
+            <div className="flex flex-col gap-2 w-2/3">
+              <TextField
+                title="Title"
+                name="title"
+                error={serverState.errors?.title}
+              />{" "}
+              <div className="flex gap-4">
+                <NumberPicker
+                  title="Quantity"
+                  name="quantity"
+                  error={serverState.errors?.quantity}
+                />
+                <TextField
+                  title="Price"
+                  name="price"
+                  error={serverState.errors?.price}
+                />
+              </div>
+            </div>
+            <div className="w-1/3">
+              <Dropdown
+                title="Category"
+                name="category"
+                error={serverState.errors?.category}
+              />
+            </div>
+          </article>
 
-        <section className="flex gap-4">
-          <div className="flex flex-col w-1/2 gap-4">
-            <TextField
-              title="Title"
-              name="title"
-              error={serverState.errors?.title}
-            />
-            <TextField
-              title="Price"
-              name="price"
-              error={serverState.errors?.price}
-            />
-            <NumberPicker
-              title="Quantity"
-              name="quantity"
-              error={serverState.errors?.quantity}
-            />
-          </div>
-          <div className="flex flex-col w-1/2 gap-4">
-            <Dropdown
-              title="Category"
-              name="category"
-              error={serverState.errors?.category}
-            />
-            <NumberPicker
-              title="Available Stock"
-              name="available_stock" // Use underscore to match Zod schema
-              error={serverState.errors?.available_stock}
-            />
-          </div>
-          <section className="flex gap-4">
-            <article className="flex flex-col gap-4">
-              <TextField
-                title="Height"
-                name="height"
-                error={serverState.errors?.height}
-              />
-              <TextField
-                title="Width"
-                name="width"
-                error={serverState.errors?.width}
-              />
-            </article>
-            <article className="flex flex-col gap-4">
-              <TextField
-                title="Depth"
-                name="depth"
-                error={serverState.errors?.depth}
-              />
-              <TextField
-                title="Weight"
-                name="weight"
-                error={serverState.errors?.weight}
-              />
-            </article>
-          </section>
+          <div className="w-full flex gap-4"></div>
         </section>
-
-        <div className="flex flex-col max-w-md">
+        <H3>PROPERTIES</H3>
+        {/* <div className="flex flex-col w-1/2 gap-4">
+          <NumberPicker
+            title="Available Stock"
+            name="available_stock" // Use underscore to match Zod schema
+            error={serverState.errors?.available_stock}
+          />
+        </div> */}
+        <section className="flex gap-4">
+          <article className="flex flex-col gap-4">
+            <TextField
+              title="Height"
+              name="height"
+              error={serverState.errors?.height}
+            />
+            <TextField
+              title="Width"
+              name="width"
+              error={serverState.errors?.width}
+            />
+          </article>
+          <article className="flex flex-col gap-4">
+            <TextField
+              title="Depth"
+              name="depth"
+              error={serverState.errors?.depth}
+            />
+            <TextField
+              title="Weight"
+              name="weight"
+              error={serverState.errors?.weight}
+            />
+          </article>
+        </section>
+        <div className="flex flex-col w-full">
           <TextArea
             title="Description"
             name="description"
@@ -109,18 +119,17 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
           </label>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 justify-end">
           <Link href="/dashboard">
             <Button type="button">Cancel</Button>
           </Link>
           <Button type="submit">Create Product</Button>
         </div>
 
-        {/* Display general errors */}
         {serverState.errors?.general && (
           <p className="text-red-500">{serverState.errors.general}</p>
         )}
       </form>
-    </>
+    </section>
   );
 }

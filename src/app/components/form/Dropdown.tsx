@@ -20,7 +20,9 @@ export default function Dropdown({
         name={name}
         id={name}
         defaultValue={defaultValue}
-        className={`border p-2 ${error ? "border-red-500" : "border-black"}`}
+        className={`border py-2.5 px-6 ${
+          error ? "border-red-500" : "border-black"
+        }`}
       >
         <option value="">Select Category</option>
         {categories.map((formCategory) => (

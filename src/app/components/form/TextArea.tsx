@@ -18,7 +18,7 @@ export default function TextArea({
         name={name}
         id={name}
         defaultValue={defaultValue}
-        className={`border p-2 min-h-52${
+        className={`border p-2 min-h-52 ${
           error ? "border-red-500" : "border-black"
         }`}
       />
