@@ -1,22 +1,27 @@
-import { capitalizeFirstLetter } from "@/lib/utils";
-
 type TextFieldProps = {
   title: string;
+  name: string;
   defaultValue?: string | number;
+  error?: string;
 };
 
-export default function TextField({ title, defaultValue }: TextFieldProps) {
+export default function TextField({
+  title,
+  defaultValue,
+  error,
+  name,
+}: TextFieldProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={title}>{capitalizeFirstLetter(title)}:</label>
+      <label htmlFor={name}>{title}:</label>
       <input
         type="text"
-        name={title}
-        id={title}
+        name={name}
+        id={name}
         defaultValue={defaultValue}
-        required
-        className="border border-black p-2"
+        className={`border p-2 ${error ? "border-red-500" : "border-black"}`}
       />
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }

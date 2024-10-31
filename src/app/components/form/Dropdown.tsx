@@ -1,22 +1,26 @@
-import { capitalizeFirstLetter } from "@/lib/utils";
-
 type DropdownProps = {
   title: string;
+  name: string;
   defaultValue?: string | number;
+  error?: string;
 };
 
 const categories = ["Painting", "Sculpture", "Digital Art"]; //Hardcoded for now
 
-export default function Dropdown({ title, defaultValue }: DropdownProps) {
+export default function Dropdown({
+  title,
+  defaultValue,
+  error,
+  name,
+}: DropdownProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={title}>{capitalizeFirstLetter(title)}</label>
+      <label htmlFor={name}>{title}</label>
       <select
-        name={title}
-        id={title}
-        required
+        name={name}
+        id={name}
         defaultValue={defaultValue}
-        className="border border-black p-2.5"
+        className={`border p-2 ${error ? "border-red-500" : "border-black"}`}
       >
         <option value="">Select Category</option>
         {categories.map((formCategory) => (
@@ -25,6 +29,7 @@ export default function Dropdown({ title, defaultValue }: DropdownProps) {
           </option>
         ))}
       </select>
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }

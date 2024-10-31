@@ -1,24 +1,27 @@
-import { capitalizeFirstLetter } from "@/lib/utils";
-
 type NumberPickerProps = {
   title: string;
+  name: string;
   defaultValue?: string | number;
+  error?: string;
 };
 
 export default function NumberPicker({
   title,
   defaultValue,
+  error,
+  name,
 }: NumberPickerProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={title}>{capitalizeFirstLetter(title)}</label>
+      <label htmlFor={name}>{title}</label>
       <input
         type="number"
-        name={title}
-        id={title}
+        name={name}
+        id={name}
         defaultValue={defaultValue}
-        className="border border-black p-2"
+        className={`border p-2 ${error ? "border-red-500" : "border-black"}`}
       />
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
