@@ -59,28 +59,58 @@ export default function UpdateProductForm({
         <section className="flex gap-4">
           {" "}
           <div className="flex flex-col w-1/2">
-            <TextField title="title" defaultValue={product?.title || ""} />
-            <TextField title="price" defaultValue={product?.price || ""} />
+            <TextField
+              title="title"
+              name="title"
+              defaultValue={product?.title || ""}
+            />
+            <TextField
+              title="price"
+              name="price"
+              defaultValue={product?.price || ""}
+            />
             <NumberPicker
               title="quantity"
+              name="quantity"
               defaultValue={product?.quantity || ""}
             />
           </div>
           <div className="flex flex-col w-1/2">
-            <Dropdown title="category" defaultValue={category.title} />
+            <Dropdown
+              title="category"
+              name="category"
+              defaultValue={category.title}
+            />
             <NumberPicker
               title="Available stock"
+              name="available_stock"
               defaultValue={product?.available_stock || ""}
             />
           </div>
           <section className="flex gap-4">
             <article>
-              <TextField title="height" defaultValue={product?.height || ""} />
-              <TextField title="width" defaultValue={product?.width || ""} />
+              <TextField
+                title="height"
+                name="height"
+                defaultValue={product?.height || ""}
+              />
+              <TextField
+                title="width"
+                name="width"
+                defaultValue={product?.width || ""}
+              />
             </article>
             <article>
-              <TextField title="depth" defaultValue={product?.depth || ""} />
-              <TextField title="weight" defaultValue={product?.weight || ""} />
+              <TextField
+                title="depth"
+                name="depth"
+                defaultValue={product?.depth || ""}
+              />
+              <TextField
+                title="weight"
+                name="weight"
+                defaultValue={product?.weight || ""}
+              />
             </article>
           </section>
         </section>
@@ -88,6 +118,7 @@ export default function UpdateProductForm({
         <div className="flex flex-col">
           <TextArea
             title="description"
+            name="description"
             defaultValue={product?.description || ""}
           />
         </div>

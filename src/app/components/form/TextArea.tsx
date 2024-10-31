@@ -1,20 +1,26 @@
-import { capitalizeFirstLetter } from "@/lib/utils";
-
 type TextAreaProps = {
   title: string;
+  name: string;
   defaultValue?: string | number;
+  error?: string;
 };
 
-export default function TextArea({ title, defaultValue }: TextAreaProps) {
+export default function TextArea({
+  title,
+  defaultValue,
+  error,
+  name,
+}: TextAreaProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={title}>{capitalizeFirstLetter(title)}:</label>
+      <label htmlFor={name}>{title}:</label>
       <textarea
-        name={title}
-        id={title}
+        name={name}
+        id={name}
         defaultValue={defaultValue}
-        required
-        className="border border-black p-2 min-h-52"
+        className={`border p-2 min-h-52${
+          error ? "border-red-500" : "border-black"
+        }`}
       />
     </div>
   );
