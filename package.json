@@ -7,24 +7,31 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
-    "postinstall": "prisma generate && prisma migrate deploy",
-    "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev",
-    "migrate:prod": "dotenv -e .env.production -- npx prisma migrate deploy",
-    "db:push:dev": "dotenv -e .env.development -- npx prisma db push",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build && npm run seed:preview",
+    "postinstall": "prisma generate",
+    "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev && npx prisma generate",
     "studio:dev": "dotenv -e .env.development -- npx prisma studio",
-    "studio:prod": "dotenv -e .env.production -- npx prisma studio",
     "seed:dev": "dotenv -e .env.development -- npx prisma db seed",
+    "seed:preview": "npm run transpile:seed && node prisma/seed.js",
+    "transpile:seed": "tsc prisma/seed.ts --outDir prisma",
     "reset:dev": "dotenv -e .env.development -- npx prisma migrate reset --force"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^5.20.0",
+    "@auth/prisma-adapter": "^2.7.2",
+    "@aws-sdk/client-s3": "^3.678.0",
+    "@prisma/client": "^5.21.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "next": "14.2.15",
+    "next-auth": "^5.0.0-beta.25",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-dropzone": "^14.2.10",
+    "tailwind-merge": "^2.5.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -34,7 +41,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
-    "prisma": "^5.20.0",
+    "prisma": "^5.21.1",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5"

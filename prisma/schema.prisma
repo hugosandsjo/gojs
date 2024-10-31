@@ -19,21 +19,81 @@ enum UserRole {
 }
 
 model User {
-  id                String   @id @default(cuid())
-  firstname         String
-  lastname          String
-  alias             String?
-  email             String   @unique
-  password          String
-  role              UserRole @default(CUSTOMER)
-  location          String
-  profile_image_url String?
-  bio               String?
-  instagram         String
-  facebook          String
-  website           String
-  updated_at        DateTime @updatedAt
-  created_at        DateTime @default(now())
+  id            String          @id @default(cuid())
+  name          String
+  firstname     String?
+  lastname      String?
+  alias         String?
+  email         String          @unique
+  emailVerified DateTime?
+  password      String?
+  role          UserRole        @default(CUSTOMER)
+  location      String?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  Authenticator Authenticator[]
+  bio           String?
+  instagram     String?
+  facebook      String?
+  website       String?
+  products      Product[]       @relation("UserProducts") // New relation field
+  updated_at    DateTime        @updatedAt
+  created_at    DateTime        @default(now())
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
 }
 
 enum ProductStatus {
@@ -46,30 +106,38 @@ enum ProductStatus {
 model Product {
   id              String            @id @default(cuid())
   title           String
-  description     String
-  price           Decimal
+  description     String?
+  price           Float
   sold_out        Boolean           @default(false)
-  quantity        Int
-  image_url       String
-  height          Decimal?
-  width           Decimal?
-  depth           Decimal?
-  weight          Decimal?
-  available_stock Int
-  backorder       Boolean           @default(false)
+  quantity        Int?
+  images          Image[]
+  height          Float?
+  width           Float?
+  depth           Float?
+  weight          Float?
+  available_stock Int?
+  backorder       Boolean?          @default(false)
   status          ProductStatus     @default(DRAFT)
   updated_at      DateTime          @updatedAt
   created_at      DateTime          @default(now())
   category_id     String
   category        Category          @relation(fields: [category_id], references: [id])
-  // Relations for many-to-many connections
   tags            ProductTag[]
   materials       ProductMaterial[]
+  userId          String
+  user            User              @relation("UserProducts", fields: [userId], references: [id])
+}
+
+model Image {
+  id        Int     @id @default(autoincrement())
+  image_key String
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Category {
   id            String     @id @default(cuid())
-  title         String
+  title         String     @unique
   parent        Category?  @relation("Subcategories", fields: [parent_id], references: [id])
   subcategories Category[] @relation("Subcategories")
   parent_id     String?
