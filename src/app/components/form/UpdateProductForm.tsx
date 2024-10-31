@@ -52,7 +52,7 @@ export default function UpdateProductForm({
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-8 py-8 p-14 border border-black "
+        className="flex flex-col gap-8 py-8 p-14 border border-black"
       >
         <input type="hidden" name="userId" value={userId} />
 

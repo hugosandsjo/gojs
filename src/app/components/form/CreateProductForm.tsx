@@ -24,13 +24,13 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
   const router = useRouter();
   const [serverState, formAction] = useFormState(createProduct, initialState);
 
-  useEffect(() => {
-    console.log(serverState);
+  // useEffect(() => {
+  //   console.log(serverState);
 
-    if (serverState.success) {
-      router.push("/dashboard");
-    }
-  }, [serverState, router]);
+  //   if (serverState.success) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [serverState, router]);
 
   return (
     <>
@@ -41,7 +41,10 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         <H2>Create Product</H2>
       </section>
 
-      <form action={formAction}>
+      <form
+        action={formAction}
+        className="flex flex-col gap-8 py-8 p-14 border border-black"
+      >
         <input type="hidden" name="userId" value={userId} />
 
         <section className="flex gap-4">

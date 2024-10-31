@@ -18,7 +18,7 @@ export default function NumberPicker({
         type="number"
         name={name}
         id={name}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue ? defaultValue : 1}
         className={`border p-2 ${error ? "border-red-500" : "border-black"}`}
       />
       {error && <p className="text-red-500">{error}</p>}
