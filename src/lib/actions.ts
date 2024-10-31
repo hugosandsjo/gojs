@@ -31,10 +31,7 @@ export async function createProduct(
       formDataObject[key] = value;
     });
 
-    console.log("FormdataObject:", formDataObject);
-
     const validated = productSchema.safeParse(formDataObject);
-    // console.log("Validated data:", validated.error);
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
@@ -116,13 +113,14 @@ export async function createProduct(
         }
       }
     }
-    revalidatePath("/dashboard");
 
-    return { success: true };
+    revalidatePath("/dashboard");
+    // return { success: true };
   } catch (error) {
     console.error("Error creating product:", error);
     return { errors: { general: "Failed to create product." } };
   }
+  redirect("/dashboard");
 }
 
 export async function getProduct(productId: string) {
@@ -291,8 +289,7 @@ export async function updateProduct(productId: string, formData: FormData) {
         });
       }
     }
-
-    return { success: true };
+    // return { success: true };
   } catch (error) {
     console.error("Error updating product:", error);
   }
