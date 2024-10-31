@@ -64,4 +64,6 @@ export type StringtoBooleanMap = {
   [key: string]: boolean;
 };
 
+export type FormDataValue = string | File;
+
 export default productSchema;

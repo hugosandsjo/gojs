@@ -6,7 +6,12 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { productSchema, DealFormState, StringMap } from "@/lib/types";
+import {
+  productSchema,
+  DealFormState,
+  StringMap,
+  FormDataValue,
+} from "@/lib/types";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -26,9 +31,11 @@ export async function createProduct(
   formData: FormData
 ): Promise<DealFormState<StringMap>> {
   try {
-    const formDataObject: { [key: string]: any } = {};
+    const formDataObject: Record<string, FormDataValue> = {};
     formData.forEach((value, key) => {
-      formDataObject[key] = value;
+      if (typeof value === "string" || value instanceof File) {
+        formDataObject[key] = value;
+      }
     });
 
     const validated = productSchema.safeParse(formDataObject);
@@ -289,7 +296,6 @@ export async function updateProduct(productId: string, formData: FormData) {
         });
       }
     }
-    // return { success: true };
   } catch (error) {
     console.error("Error updating product:", error);
   }
