@@ -81,13 +81,12 @@ export default function Dropzone({ defaultImages }: DropzoneProps) {
   useEffect(() => {
     return () => {
       files.forEach((file) => {
-        // Revoke URLs for `PreviewFile` types only (local files)
         if ("preview" in file && file instanceof File) {
           URL.revokeObjectURL(file.preview);
         }
       });
     };
-  }, []);
+  });
 
   const rootProps = getRootProps();
 

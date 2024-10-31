@@ -2,7 +2,7 @@
 
 import { createProduct } from "@/lib/actions";
 import Link from "next/link";
-import Dropzone from "@/app/components/DropZone";
+import Dropzone from "@/app/components/form/DropZone";
 import Button from "@/app/components/buttons/Button";
 import H2 from "@/app/components/typography/H2";
 import TextField from "@/app/components/form/TextField";
@@ -10,9 +10,7 @@ import TextArea from "@/app/components/form/TextArea";
 import Dropdown from "@/app/components/form/Dropdown";
 import NumberPicker from "@/app/components/form/NumberPicker";
 import { useFormState } from "react-dom";
-import { useEffect } from "react";
 import { DealFormState, StringMap } from "@/lib/types";
-import { useRouter } from "next/navigation";
 
 type CreateProductFormProps = {
   userId: string;
@@ -21,16 +19,7 @@ type CreateProductFormProps = {
 const initialState: DealFormState<StringMap> = {};
 
 export default function CreateProductForm({ userId }: CreateProductFormProps) {
-  const router = useRouter();
   const [serverState, formAction] = useFormState(createProduct, initialState);
-
-  // useEffect(() => {
-  //   console.log(serverState);
-
-  //   if (serverState.success) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [serverState, router]);
 
   return (
     <>

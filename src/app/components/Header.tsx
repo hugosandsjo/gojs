@@ -3,7 +3,6 @@ import { SignOut } from "@/app/components/SignOut";
 import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
-import Button from "@/app/components/buttons/Button";
 
 export default async function Header() {
   const session = await auth();
@@ -18,7 +17,7 @@ export default async function Header() {
           {session ? (
             <Link href={"/dashboard"}>
               {" "}
-              <NavbarParagraph>Dashboard </NavbarParagraph>{" "}
+              <NavbarParagraph>Dashboard</NavbarParagraph>{" "}
             </Link>
           ) : null}
         </div>

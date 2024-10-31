@@ -1,7 +1,7 @@
 "use client";
 import { updateProduct } from "@/lib/actions";
 import Link from "next/link";
-import Dropzone from "@/app/components/DropZone";
+import Dropzone from "@/app/components/form/DropZone";
 import { Product, Image, Category } from "@prisma/client";
 import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
