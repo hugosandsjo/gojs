@@ -32,13 +32,22 @@ export async function createProduct(
 ): Promise<DealFormState<StringMap>> {
   try {
     const formDataObject: Record<string, FormDataValue> = {};
+
     formData.forEach((value, key) => {
       if (typeof value === "string" || value instanceof File) {
         formDataObject[key] = value;
       }
     });
-
-    const validated = productSchema.safeParse(formDataObject);
+    console.log("formDataObject", formDataObject);
+    // Convert all empty strings in formDataObject to undefined
+    const cleanedData = Object.fromEntries(
+      Object.entries(formDataObject).map(([key, value]) => [
+        key,
+        value === "" ? undefined : value,
+      ])
+    );
+    // Validate data
+    const validated = productSchema.safeParse(cleanedData);
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
