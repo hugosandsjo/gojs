@@ -13,6 +13,7 @@ import { useFormState } from "react-dom";
 import { DealFormState, StringMap } from "@/lib/types";
 import BackButton from "@/app/components/buttons/BackButton";
 import H3 from "@/app/components/typography/H3";
+import SubmitButton from "@/app/components/buttons/SubmitButton";
 
 type CreateProductFormProps = {
   userId: string;
@@ -123,7 +124,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
           <Link href="/dashboard">
             <Button type="button">Cancel</Button>
           </Link>
-          <Button type="submit">Create Product</Button>
+          <SubmitButton />
         </div>
 
         {serverState.errors?.general && (
