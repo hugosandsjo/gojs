@@ -51,6 +51,7 @@ export async function createProduct(
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
+      console.log("Errors", errors);
       return { errors };
     } else {
       const {
