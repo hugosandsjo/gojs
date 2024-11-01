@@ -3,49 +3,48 @@ import { z } from "zod";
 export const productSchema = z.object({
   userId: z.string().cuid(),
   title: z.string().min(1, "Title is required"),
-  price: z.preprocess(
-    (value) => parseFloat(value as string),
-    z.number().positive("Price must be a positive number")
-  ),
+  price: z.preprocess((value) => {
+    console.log("Preprocess price:", value);
+    return value === "" ? undefined : parseFloat(value as string);
+  }, z.number().positive("Price must be a positive number")),
   description: z.string().optional(),
   category: z.string().min(1, "Category is required"),
   quantity: z
-    .preprocess(
-      (value) => (value ? parseInt(value as string, 10) : undefined),
-      z.number().int().positive()
-    )
+    .preprocess((value) => {
+      console.log("Preprocess quantity:", value);
+      return value === "" ? undefined : parseInt(value as string, 10);
+    }, z.number().int().positive())
     .optional(),
   available_stock: z
-    .preprocess(
-      (value) => (value ? parseInt(value as string, 10) : undefined),
-      z.number().int().nonnegative()
-    )
+    .preprocess((value) => {
+      console.log("Preprocess available_stock:", value);
+      return value === "" ? undefined : parseInt(value as string, 10);
+    }, z.number().int().nonnegative())
     .optional(),
   height: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      console.log("Preprocess height:", value);
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
   width: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      console.log("Preprocess width:", value);
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
   depth: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      console.log("Preprocess depth:", value);
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
   weight: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      console.log("Preprocess weight:", value);
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
-  // Add any other fields you need to validate from the form
 });
 
 export type DealFormState<T> = {

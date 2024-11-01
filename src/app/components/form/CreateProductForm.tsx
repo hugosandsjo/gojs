@@ -82,7 +82,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         <section className="flex gap-4">
           <article className="flex flex-col gap-4">
             <TextField
-              title="Height"
+              title="Height (mm)"
               name="height"
               error={serverState.errors?.height}
             />
