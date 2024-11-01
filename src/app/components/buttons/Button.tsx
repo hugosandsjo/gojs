@@ -8,8 +8,10 @@ export default function Button({ children, type }: ButtonProps) {
     <button
       type={type}
       className="py-4 px-6 border border-black hover:text-white hover:bg-black hover:shadow-lg"
+    
     >
       {children}
+ 
     </button>
   );
 }
