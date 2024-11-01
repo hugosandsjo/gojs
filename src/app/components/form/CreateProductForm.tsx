@@ -14,6 +14,8 @@ import { DealFormState, StringMap } from "@/lib/types";
 import BackButton from "@/app/components/buttons/BackButton";
 import H3 from "@/app/components/typography/H3";
 import SubmitButton from "@/app/components/buttons/SubmitButton";
+import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 
 type CreateProductFormProps = {
   userId: string;
@@ -23,6 +25,14 @@ const initialState: DealFormState<StringMap> = {};
 
 export default function CreateProductForm({ userId }: CreateProductFormProps) {
   const [serverState, formAction] = useFormState(createProduct, initialState);
+
+  useEffect(() => {
+    if (serverState.errors) {
+      Object.entries(serverState.errors).forEach(([field, message]) => {
+        toast.error(`${field}: ${message}`);
+      });
+    }
+  }, [serverState.errors, serverState.success]);
 
   return (
     <section className="flex flex-col gap-6">
