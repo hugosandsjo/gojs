@@ -1,7 +1,7 @@
 "use client";
 import { updateProduct } from "@/lib/actions";
 import Dropzone from "@/app/components/form/DropZone";
-import { Product, Image, Category } from "@prisma/client";
+import { Product, Image, Category, ProductStatus } from "@prisma/client";
 import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
 import H2 from "@/app/components/typography/H2";
@@ -13,12 +13,14 @@ import TextArea from "@/app/components/form/TextArea";
 import Dropdown from "@/app/components/form/Dropdown";
 import NumberPicker from "@/app/components/form/NumberPicker";
 import BackButton from "@/app/components/buttons/BackButton";
+import DropdownStatus from "@/app/components/form/DropDownStatus";
 
 type UpdateProductFormProps = {
   productId: string;
   userId: string;
   product: ProductWithImages;
   category: Category;
+  status: ProductStatus;
 };
 
 type ProductWithImages = Product & { images: Image[] };
@@ -28,6 +30,7 @@ export default function UpdateProductForm({
   userId,
   product,
   category,
+  status,
 }: UpdateProductFormProps) {
   const defaultImages = useMemo(() => {
     return product?.images.map((img) => ({
@@ -76,6 +79,11 @@ export default function UpdateProductForm({
                   name="price"
                   defaultValue={product?.price || ""}
                 />
+                <DropdownStatus
+                  title="Status"
+                  name="status"
+                  defaultValue={product?.status || ""}
+                />
               </div>
             </div>
 
@@ -89,11 +97,6 @@ export default function UpdateProductForm({
           </article>
         </section>
         <H3>PROPERTIES</H3>
-        {/* <NumberPicker
-              title="Available stock"
-              name="available_stock"
-              defaultValue={product?.available_stock || ""}
-            /> */}
         <section className="flex gap-4">
           <article className="flex flex-col gap-4">
             <TextField

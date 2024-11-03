@@ -35,14 +35,6 @@ export function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Format ZOD-errors
-// export const convertZodErrors = (error: ZodError): StringMap => {
-//   return error.issues.reduce((acc: { [key: string]: string }, issue) => {
-//     acc[issue.path[0]] = issue.message;
-//     return acc;
-//   }, {});
-// };
-
 // convertZodErrors.ts
 export const convertZodErrors = (error: ZodError): StringMap => {
   return error.errors.reduce((acc: StringMap, issue) => {

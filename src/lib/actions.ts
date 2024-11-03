@@ -4,7 +4,7 @@ import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { convertZodErrors, randomImageName } from "@/lib/utils";
-import { Category, Prisma } from "@prisma/client";
+import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import {
   productSchema,
@@ -39,7 +39,7 @@ export async function createProduct(
       }
     });
     console.log("formDataObject", formDataObject);
-    // Convert all empty strings in formDataObject to undefined
+
     const cleanedData = Object.fromEntries(
       Object.entries(formDataObject).map(([key, value]) => [
         key,
@@ -51,13 +51,13 @@ export async function createProduct(
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
-      console.log("Errors", errors);
       return { errors };
     } else {
       const {
         userId,
         title,
         price,
+        status,
         description,
         category,
         quantity,
@@ -80,6 +80,7 @@ export async function createProduct(
         title,
         price,
         description,
+        status,
         category: {
           connect: { id: pickedCategory.id },
         },
@@ -99,7 +100,7 @@ export async function createProduct(
         data,
       });
 
-      // Now, handle image uploads and associate them with the product
+      // Handle image uploads and associate them with the product
       const imageFiles = formData.getAll("image") as File[];
 
       for (const imageFile of imageFiles) {
@@ -118,7 +119,6 @@ export async function createProduct(
           const command = new PutObjectCommand(params);
           await s3.send(command);
 
-          // Create an Image record associated with the product
           await prisma.image.create({
             data: {
               image_key: imageName,
@@ -218,6 +218,7 @@ export async function updateProduct(productId: string, formData: FormData) {
     const price = parseFloat(formData.get("price") as string);
     const description = formData.get("description") as string;
     const category = formData.get("category") as string;
+    const status = formData.get("status") as string;
 
     if (!userId || !title || !price || !description || !category) {
       throw new Error("All required fields must be filled.");
@@ -255,6 +256,7 @@ export async function updateProduct(productId: string, formData: FormData) {
       title,
       price,
       description,
+      status: status.toUpperCase() as ProductStatus,
       category: {
         connect: { id: pickedCategory.id },
       },
