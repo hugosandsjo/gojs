@@ -34,12 +34,17 @@ export function capitalizeFirstLetter(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
-// convertZodErrors.ts
+// Convert ZOD-errors
 export const convertZodErrors = (error: ZodError): StringMap => {
   return error.errors.reduce((acc: StringMap, issue) => {
-    const key = issue.path[0] as string;
+    const key = issue.path.join("."); // Join path elements to capture nested errors
     acc[key] = issue.message;
     return acc;
   }, {});
 };
+
+export function truncateText(text: string | null, maxLength: number): string {
+  if (!text) return ""; // Return an empty string if text is null
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + "...";
+}

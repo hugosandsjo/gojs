@@ -66,10 +66,10 @@ export default async function Dashboard() {
         </article>
 
         <article className="flex">
-          <div>
-            <p>Hello {user?.name}</p>
-            <p>Email: {user?.email}</p>
-            <p>Role: {user?.role}</p>
+          <div className="text-right">
+            <p>{user?.name}</p>
+            <p>{user?.email}</p>
+            <p>{user?.role}</p>
           </div>
         </article>
       </section>

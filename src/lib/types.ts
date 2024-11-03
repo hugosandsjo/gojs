@@ -9,9 +9,7 @@ export const productSchema = z.object({
   }, z.number().positive("Price must be a positive number")),
   description: z.string().optional(),
   category: z.string().min(1, "Category is required"),
-  status: z
-    .enum(["Draft", "Published", "Archived"])
-    .transform((val) => val.toUpperCase() as ProductStatus),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
   quantity: z
     .preprocess((value) => {
       console.log("Preprocess quantity:", value);
@@ -48,6 +46,13 @@ export const productSchema = z.object({
       return value === "" ? undefined : parseFloat(value as string);
     }, z.number().positive())
     .optional(),
+  images: z
+    .array(
+      z.object({
+        image_key: z.string().min(1, "Image key is required"),
+      })
+    )
+    .min(1, "At least one image is required"),
 });
 
 export type DealFormState<T> = {

@@ -42,7 +42,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         className="flex flex-col gap-8 py-14 px-20 border border-black"
       >
         <section className="w-full flex gap-4 justify-between px-2">
-          <BackButton />
+          <BackButton destination="/dashboard" size={12} />
           <H2>Create Product</H2>
           <div></div>
         </section>
@@ -67,7 +67,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
                 <TextField
                   title="Price"
                   name="price"
-                  placeholder="in SEK"
+                  placeholder="kr"
                   error={serverState.errors?.price}
                 />
                 <DropdownStatus
@@ -93,13 +93,15 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         <section className="flex gap-4">
           <article className="flex flex-col gap-4">
             <TextField
-              title="Height (mm)"
+              title="Height"
               name="height"
+              placeholder="mm"
               error={serverState.errors?.height}
             />
             <TextField
               title="Width"
               name="width"
+              placeholder="mm"
               error={serverState.errors?.width}
             />
           </article>
@@ -107,11 +109,13 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
             <TextField
               title="Depth"
               name="depth"
+              placeholder="mm"
               error={serverState.errors?.depth}
             />
             <TextField
               title="Weight"
               name="weight"
+              placeholder="kg"
               error={serverState.errors?.weight}
             />
           </article>
@@ -120,6 +124,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
           <TextArea
             title="Description"
             name="description"
+            placeholder="Write something about your artwork"
             error={serverState.errors?.description}
           />
         </div>
@@ -129,6 +134,15 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
             Select Images:
             <Dropzone />
           </label>
+          {serverState.errors?.images && (
+            <p className="text-red-500">{serverState.errors.images}</p>
+          )}
+
+          {(serverState.errors ?? {})["images[0].image_key"] && (
+            <p className="text-red-500">
+              {(serverState.errors ?? {})["images[0].image_key"]}
+            </p>
+          )}
         </div>
 
         <div className="flex gap-4 justify-end">

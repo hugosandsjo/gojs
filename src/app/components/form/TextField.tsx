@@ -3,6 +3,7 @@ type TextFieldProps = {
   name: string;
   defaultValue?: string | number;
   placeholder?: string;
+  unitOfMeasure?: string;
   error?: string;
 };
 
@@ -12,10 +13,16 @@ export default function TextField({
   error,
   name,
   placeholder,
+  unitOfMeasure,
 }: TextFieldProps) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={name}>{title}:</label>
+      <div className="flex justify-between">
+        <label htmlFor={name}>{title}</label>
+        {unitOfMeasure ? (
+          <p className="text-slate-500">{unitOfMeasure}</p>
+        ) : null}
+      </div>
       <input
         type="text"
         name={name}
