@@ -2,6 +2,8 @@ import H3 from "@/app/components/typography/H3";
 import EditButton from "@/app/components/buttons/EditButton";
 import ProductCard from "@/app/components/ProductCard";
 import Link from "next/link";
+import { Category } from "@prisma/client";
+import { truncateText } from "@/lib/utils";
 
 type ProductWithUrls = {
   id: string;
@@ -13,6 +15,7 @@ type ProductWithUrls = {
   imageUrls: string[];
   user: string | undefined;
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNAVAILABLE";
+  category: Category;
 };
 
 type ProductListProps = {
@@ -52,10 +55,10 @@ export default function ProductList({ products, status }: ProductListProps) {
               <ProductCard
                 id={product.id}
                 title={product.title}
-                description={product.description}
+                description={truncateText(product.description, 90)}
                 price={product.price}
                 quantity={product.quantity}
-                height={product.height}
+                category={product.category.title}
                 imageUrls={product.imageUrls}
                 user={product.user}
               />

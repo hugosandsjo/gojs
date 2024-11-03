@@ -141,12 +141,13 @@ export async function createProduct(
 }
 
 export async function getProduct(productId: string) {
-  const product = prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: {
       id: productId,
     },
     include: {
       images: true,
+      category: true,
     },
   });
   return product;
@@ -183,6 +184,7 @@ export async function getUserProducts(id: string | undefined) {
           name: true,
         },
       },
+      category: true,
     },
   });
   return products;
@@ -203,7 +205,7 @@ export async function deleteProduct(productId: string) {
     });
 
     revalidatePath("/dashboard");
-
+    // redirect("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error deleting product:", error);

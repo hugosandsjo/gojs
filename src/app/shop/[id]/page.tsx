@@ -1,18 +1,22 @@
 "use client";
 import { getProduct } from "@/lib/actions";
 import { useEffect, useState } from "react";
-import { Product } from "@prisma/client";
-import Link from "next/link";
-import Image from "next/image";
 import { getImgixUrl } from "@/lib/utils";
-import H2 from "@/app/components/typography/H2";
-import H3 from "@/app/components/typography/H3";
-import Button from "@/app/components/buttons/Button";
+import SingleProductParagraph from "@/app/components/typography/SingleProductParagraph";
+import BackButton from "@/app/components/buttons/BackButton";
+import { Product, Category, Image as PrismaImage } from "@prisma/client";
+import Image from "next/image";
+
+type ProductWithCategoryAndImages = Product & {
+  category: Category;
+  images: PrismaImage[];
+  imageUrls: string[];
+};
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
-  const [product, setProduct] = useState<
-    (Product & { imageUrls: string[] }) | null
-  >(null);
+  const [product, setProduct] = useState<ProductWithCategoryAndImages | null>(
+    null
+  );
 
   useEffect(() => {
     (async () => {
@@ -38,14 +42,12 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
     return <p>Loading...</p>;
   }
   return (
-    <section className="flex flex-col items-center gap-8 p-10">
-      <H2>{product.title}</H2>
-      <div>
-        <Link href="/shop">
-          <Button type="button">Back to Shop</Button>
-        </Link>
+    <section className="flex flex-col justify-center gap-8 p-10 w-full">
+      <div className="flex">
+        <BackButton destination="/shop" size={12} />
       </div>
-      <section className="flex gap-4">
+
+      <section className="flex flex-col gap-4 w-full px-20">
         <div className="flex flex-col gap-4">
           {product.imageUrls && product.imageUrls.length > 0 ? (
             <Image
@@ -56,7 +58,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
               className="w-80 h-80 object-cover"
             />
           ) : (
-            <div className="w-80 h-80 bg-gray-200 flex items-center justify-center">
+            <div className="w-80 h-80 flex items-center justify-center">
               <span>No Image Available</span>
             </div>
           )}
@@ -75,12 +77,40 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        <div className="text-lg flex flex-col gap-4">
-          <H3>Price: ${product.price}</H3>
-          <H3>Quantity: {product.quantity || "N/A"}</H3>
-          <H3>Height: {product.height ? `${product.height} cm` : "N/A"}</H3>
-          <H3>{product.description || "No description available"}</H3>
-        </div>
+        <section className="text-lg flex justify-between gap-2">
+          <div>
+            <div className="mb-2 underline-offset-2 underline">
+              <SingleProductParagraph>{product.title}</SingleProductParagraph>
+            </div>
+
+            <SingleProductParagraph>
+              {product.category.title}
+            </SingleProductParagraph>
+            <SingleProductParagraph>{product.price} kr</SingleProductParagraph>
+            <SingleProductParagraph>
+              {product.quantity || "N/A"} st
+            </SingleProductParagraph>
+          </div>
+          <div className="max-w-96">
+            <SingleProductParagraph>
+              {product.description || "No description available"}
+            </SingleProductParagraph>
+          </div>
+          <div>
+            <SingleProductParagraph>
+              Height: {product.height ? `${product.height} cm` : "N/A"}
+            </SingleProductParagraph>
+            <SingleProductParagraph>
+              Weight: {product.weight ? `${product.weight} kg` : "N/A"}
+            </SingleProductParagraph>
+            <SingleProductParagraph>
+              Depth: {product.weight ? `${product.depth} mm` : "N/A"}
+            </SingleProductParagraph>
+            <SingleProductParagraph>
+              Width: {product.weight ? `${product.width} mm` : "N/A"}
+            </SingleProductParagraph>
+          </div>
+        </section>
       </section>
     </section>
   );

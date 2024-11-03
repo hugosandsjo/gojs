@@ -30,7 +30,6 @@ export default function UpdateProductForm({
   userId,
   product,
   category,
-  status,
 }: UpdateProductFormProps) {
   const defaultImages = useMemo(() => {
     return product?.images.map((img) => ({
@@ -48,16 +47,16 @@ export default function UpdateProductForm({
   return (
     <section className="flex flex-col gap-6">
       <section className="flex flex-col gap-6"></section>
-      <section className="w-full flex gap-4 justify-between px-2">
-        <BackButton />
-        <H2>Update product</H2>
-        <div></div>
-      </section>
 
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-8 py-8 p-14 border border-black"
       >
+        <section className="w-full flex gap-4 justify-between px-2">
+          <BackButton destination="/dashboard" size={12} />
+          <H2>Update product</H2>
+          <div></div>
+        </section>
         <input type="hidden" name="userId" value={userId} />
         <H3>INFO</H3>
         <section className="flex flex-wrap gap-4 w-full">
