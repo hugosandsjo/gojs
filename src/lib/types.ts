@@ -9,6 +9,9 @@ export const productSchema = z.object({
   }, z.number().positive("Price must be a positive number")),
   description: z.string().optional(),
   category: z.string().min(1, "Category is required"),
+  status: z
+    .enum(["Draft", "Published", "Archived"])
+    .transform((val) => val.toUpperCase() as ProductStatus),
   quantity: z
     .preprocess((value) => {
       console.log("Preprocess quantity:", value);
@@ -64,5 +67,7 @@ export type StringtoBooleanMap = {
 };
 
 export type FormDataValue = string | File;
+
+type ProductStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
 export default productSchema;

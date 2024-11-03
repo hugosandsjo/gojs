@@ -16,6 +16,7 @@ import H3 from "@/app/components/typography/H3";
 import SubmitButton from "@/app/components/buttons/SubmitButton";
 import { toast } from "react-hot-toast";
 import { useEffect } from "react";
+import DropdownStatus from "@/app/components/form/DropDownStatus";
 
 type CreateProductFormProps = {
   userId: string;
@@ -36,16 +37,15 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
 
   return (
     <section className="flex flex-col gap-6">
-      <section className="w-full flex gap-4 justify-between px-2">
-        <BackButton />
-        <H2>Create Product</H2>
-        <div></div>
-      </section>
-
       <form
         action={formAction}
-        className="flex flex-col gap-8 py-8 p-14 border border-black"
+        className="flex flex-col gap-8 py-14 px-20 border border-black"
       >
+        <section className="w-full flex gap-4 justify-between px-2">
+          <BackButton />
+          <H2>Create Product</H2>
+          <div></div>
+        </section>
         <input type="hidden" name="userId" value={userId} />
         <H3>INFO</H3>
         <section className="flex flex-wrap gap-4 w-full">
@@ -55,6 +55,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
               <TextField
                 title="Title"
                 name="title"
+                placeholder="Choose a title"
                 error={serverState.errors?.title}
               />{" "}
               <div className="flex gap-4">
@@ -66,7 +67,14 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
                 <TextField
                   title="Price"
                   name="price"
+                  placeholder="in SEK"
                   error={serverState.errors?.price}
+                />
+                <DropdownStatus
+                  title="Status"
+                  name="status"
+                  defaultValue="Draft"
+                  error={serverState.errors?.status}
                 />
               </div>
             </div>
@@ -82,13 +90,6 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
           <div className="w-full flex gap-4"></div>
         </section>
         <H3>PROPERTIES</H3>
-        {/* <div className="flex flex-col w-1/2 gap-4">
-          <NumberPicker
-            title="Available Stock"
-            name="available_stock" // Use underscore to match Zod schema
-            error={serverState.errors?.available_stock}
-          />
-        </div> */}
         <section className="flex gap-4">
           <article className="flex flex-col gap-4">
             <TextField

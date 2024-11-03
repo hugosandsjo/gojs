@@ -20,9 +20,9 @@ async function seedDatabase() {
 
   // Delete all existing products
   await prisma.$transaction([
-    prisma.image.deleteMany(), // Delete images first
-    prisma.product.deleteMany(), // Then products
-    prisma.user.deleteMany(), // Finally, users
+    prisma.image.deleteMany(),
+    prisma.product.deleteMany(),
+    prisma.user.deleteMany(),
   ]);
 
   // Seeding categories

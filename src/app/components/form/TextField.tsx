@@ -2,6 +2,7 @@ type TextFieldProps = {
   title: string;
   name: string;
   defaultValue?: string | number;
+  placeholder?: string;
   error?: string;
 };
 
@@ -10,6 +11,7 @@ export default function TextField({
   defaultValue,
   error,
   name,
+  placeholder,
 }: TextFieldProps) {
   return (
     <div className="flex flex-col gap-1">
@@ -19,6 +21,7 @@ export default function TextField({
         name={name}
         id={name}
         defaultValue={defaultValue}
+        placeholder={placeholder}
         className={`border px-3 py-2 ${
           error ? "border-red-500" : "border-black"
         }`}

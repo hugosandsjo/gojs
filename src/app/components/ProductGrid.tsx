@@ -5,6 +5,9 @@ import Link from "next/link";
 
 export default async function ProductGrid() {
   const products = await prisma.product.findMany({
+    where: {
+      status: "PUBLISHED",
+    },
     include: {
       images: true,
       user: {
