@@ -31,8 +31,10 @@ export default function UpdateProductForm({
   product,
   category,
 }: UpdateProductFormProps) {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [removedImages, setRemovedImages] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<Map<string, File>>(
+    new Map()
+  );
+  const [removedImages, setRemovedImages] = useState<Set<string>>(new Set());
 
   const defaultImages = useMemo(() => {
     return product?.images.map((img) => ({
@@ -44,19 +46,57 @@ export default function UpdateProductForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
-    selectedFiles.forEach((file) => formData.append("images", file));
-    removedImages.forEach((id) => formData.append("removedImages", id));
+
+    // Clear any existing 'images' fields
+    formData.delete("images");
+
+    // Add each file only once
+    const uniqueFiles = new Map(
+      Array.from(selectedFiles.values()).map((file) => [file.name, file])
+    );
+    uniqueFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    // Add each removed image ID only once
+    Array.from(removedImages).forEach((id) => {
+      formData.append("removedImages", id);
+    });
+
     await updateProduct(productId, formData);
   };
 
   const handleFilesChange = useCallback((files: File[]) => {
-    setSelectedFiles(files);
+    console.log(
+      "UpdateProductForm: handleFilesChange called with files:",
+      files.length
+    );
+
+    setSelectedFiles((prev) => {
+      const newMap = new Map(prev);
+      files.forEach((file) => {
+        const fileId = file.name; // Using just the name as ID since it's the same file
+        if (!newMap.has(fileId)) {
+          newMap.set(fileId, file);
+        }
+      });
+      return newMap;
+    });
   }, []);
 
   const handleImageRemove = useCallback((imageId: string) => {
-    setRemovedImages((prev) => [...prev, imageId]);
-  }, []);
+    setRemovedImages((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(imageId);
+      return newSet;
+    });
 
+    setSelectedFiles((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(imageId);
+      return newMap;
+    });
+  }, []);
   return (
     <section className="flex flex-col gap-6">
       <section className="flex flex-col gap-6"></section>
