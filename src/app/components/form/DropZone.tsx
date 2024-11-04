@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import { MAX_FILE_SIZE, ALLOWED_FORMATS } from "@/lib/config";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 
@@ -26,7 +27,20 @@ export default function Dropzone({ defaultImages }: DropzoneProps) {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
 
-    const mappedFiles = acceptedFiles.map((file) =>
+    // Filter files based on size and format
+    const validFiles = acceptedFiles.filter((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)} MB`);
+        return false;
+      }
+      if (!ALLOWED_FORMATS.includes(file.type)) {
+        alert("Invalid file format. Only JPEG and PNG are allowed.");
+        return false;
+      }
+      return true;
+    });
+
+    const mappedFiles = validFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
       })
@@ -108,7 +122,7 @@ export default function Dropzone({ defaultImages }: DropzoneProps) {
           rootProps.onClick?.(e);
         }}
       >
-        <input {...getInputProps()} name="image" />
+        <input {...getInputProps()} name="images" />
         {isDragActive ? (
           <p className="text-center text-gray-600 ">Drop the files here...</p>
         ) : (
