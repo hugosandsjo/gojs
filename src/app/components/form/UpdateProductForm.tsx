@@ -7,7 +7,7 @@ import DeleteButton from "@/app/components/buttons/DeleteButton";
 import H2 from "@/app/components/typography/H2";
 import H3 from "@/app/components/typography/H3";
 import { getImgixUrl } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import TextField from "@/app/components/form/TextField";
 import TextArea from "@/app/components/form/TextArea";
 import Dropdown from "@/app/components/form/Dropdown";
@@ -31,6 +31,9 @@ export default function UpdateProductForm({
   product,
   category,
 }: UpdateProductFormProps) {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [removedImages, setRemovedImages] = useState<string[]>([]);
+
   const defaultImages = useMemo(() => {
     return product?.images.map((img) => ({
       name: String(img.id),
@@ -41,8 +44,18 @@ export default function UpdateProductForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
+    selectedFiles.forEach((file) => formData.append("images", file));
+    removedImages.forEach((id) => formData.append("removedImages", id));
     await updateProduct(productId, formData);
   };
+
+  const handleFilesChange = useCallback((files: File[]) => {
+    setSelectedFiles(files);
+  }, []);
+
+  const handleImageRemove = useCallback((imageId: string) => {
+    setRemovedImages((prev) => [...prev, imageId]);
+  }, []);
 
   return (
     <section className="flex flex-col gap-6">
@@ -134,7 +147,11 @@ export default function UpdateProductForm({
         <div>
           <label>
             Select Images:
-            <Dropzone defaultImages={defaultImages} />
+            <Dropzone
+              defaultImages={defaultImages}
+              onFilesChange={handleFilesChange}
+              onImageRemove={handleImageRemove}
+            />
           </label>
         </div>
         <div className="flex gap-4">

@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { MAX_FILE_SIZE, ALLOWED_FORMATS } from "@/lib/config";
 import { useDropzone } from "react-dropzone";
@@ -9,13 +8,20 @@ type PreviewImage = { name: string; preview: string };
 
 type DropzoneProps = {
   defaultImages?: PreviewImage[];
+  onFilesChange: (files: File[]) => void;
+  onImageRemove?: (imageId: string) => void;
 };
 
-export default function Dropzone({ defaultImages }: DropzoneProps) {
+export default function Dropzone({
+  defaultImages = [],
+  onFilesChange,
+  onImageRemove,
+}: DropzoneProps) {
   const [files, setFiles] = useState<(PreviewFile | PreviewImage)[]>([]);
 
+  // Only run once when component mounts or when `defaultImages` changes
   useEffect(() => {
-    if (defaultImages && defaultImages.length > 0) {
+    if (defaultImages.length > 0) {
       const initialFiles = defaultImages.map((image) => ({
         name: image.name,
         preview: image.preview,
@@ -24,10 +30,19 @@ export default function Dropzone({ defaultImages }: DropzoneProps) {
     }
   }, [defaultImages]);
 
+  // Call `onFilesChange` only when `files` updates with new File instances
+  useEffect(() => {
+    const uploadedFiles = files.filter(
+      (file): file is PreviewFile => file instanceof File
+    );
+
+    onFilesChange(uploadedFiles); // Notify parent with file changes
+  }, [files, onFilesChange]);
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
 
-    // Filter files based on size and format
+    // Validate and prepare files
     const validFiles = acceptedFiles.filter((file) => {
       if (file.size > MAX_FILE_SIZE) {
         alert(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)} MB`);
@@ -49,17 +64,24 @@ export default function Dropzone({ defaultImages }: DropzoneProps) {
     setFiles((prevFiles) => [...prevFiles, ...mappedFiles]);
   }, []);
 
-  const removeFile = useCallback((fileName: string) => {
-    setFiles((prevFiles) => {
-      const filteredFiles = prevFiles.filter((file) => file.name !== fileName);
-      // Revoke the URL for the removed file
-      const removedFile = prevFiles.find((file) => file.name === fileName);
-      if (removedFile) {
-        URL.revokeObjectURL(removedFile.preview);
-      }
-      return filteredFiles;
-    });
-  }, []);
+  const removeFile = useCallback(
+    (fileName: string) => {
+      setFiles((prevFiles) => {
+        const filteredFiles = prevFiles.filter(
+          (file) => file.name !== fileName
+        );
+
+        // Handle image removal for existing images
+        const removedFile = prevFiles.find((file) => file.name === fileName);
+        if (removedFile && onImageRemove && !(removedFile instanceof File)) {
+          onImageRemove(fileName);
+        }
+
+        return filteredFiles;
+      });
+    },
+    [onImageRemove]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { "image/*": [] },
@@ -92,6 +114,7 @@ export default function Dropzone({ defaultImages }: DropzoneProps) {
     </div>
   ));
 
+  // Clean up URL objects on unmount
   useEffect(() => {
     return () => {
       files.forEach((file) => {
@@ -100,27 +123,15 @@ export default function Dropzone({ defaultImages }: DropzoneProps) {
         }
       });
     };
-  });
-
-  const rootProps = getRootProps();
+  }, [files]);
 
   return (
     <div className="mt-2">
       <div
-        {...rootProps}
-        className={`
-          border-2 border-dashed border-gray-300 rounded-lg py-16 cursor-pointer 
-          transition-colors duration-200 ease-in-out
-          ${
-            isDragActive
-              ? "border-blue-500 bg-blue-50"
-              : "hover:border-gray-400"
-          }
-        `}
-        onClick={(e) => {
-          e.preventDefault();
-          rootProps.onClick?.(e);
-        }}
+        {...getRootProps()}
+        className={`border-2 border-dashed border-gray-300 rounded-lg py-16 cursor-pointer transition-colors duration-200 ease-in-out ${
+          isDragActive ? "border-blue-500 bg-blue-50" : "hover:border-gray-400"
+        }`}
       >
         <input {...getInputProps()} name="images" />
         {isDragActive ? (
