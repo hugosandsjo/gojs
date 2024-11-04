@@ -17,6 +17,8 @@ import SubmitButton from "@/app/components/buttons/SubmitButton";
 import { toast } from "react-hot-toast";
 import { useEffect } from "react";
 import DropdownStatus from "@/app/components/form/DropDownStatus";
+import { MAX_FILE_SIZE } from "@/lib/config";
+import { bytesToMB } from "@/lib/utils";
 
 type CreateProductFormProps = {
   userId: string;
@@ -40,6 +42,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
       <form
         action={formAction}
         className="flex flex-col gap-8 py-14 px-20 border border-black"
+        encType="multipart/form-data"
       >
         <section className="w-full flex gap-4 justify-between px-2">
           <BackButton destination="/dashboard" size={12} />
@@ -131,7 +134,10 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
 
         <div>
           <label>
-            Select Images:
+            <div className="flex justify-between">
+              <div>Select Images</div>
+              <div>Max {bytesToMB(MAX_FILE_SIZE)}</div>
+            </div>
             <Dropzone />
           </label>
           {serverState.errors?.images && (
