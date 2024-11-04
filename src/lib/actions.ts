@@ -6,7 +6,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { productSchema, DealFormState, StringMap, FormFile } from "@/lib/types";
+import { productSchema, DealFormState, StringMap } from "@/lib/types";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;

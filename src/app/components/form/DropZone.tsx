@@ -19,106 +19,102 @@ export default function Dropzone({
 }: DropzoneProps) {
   const [files, setFiles] = useState<(PreviewFile | PreviewImage)[]>([]);
 
-  // Only run once when component mounts or when `defaultImages` changes
   useEffect(() => {
     if (defaultImages.length > 0) {
-      const initialFiles = defaultImages.map((image) => ({
-        name: image.name,
-        preview: image.preview,
-      }));
-      setFiles(initialFiles);
+      setFiles(defaultImages);
     }
   }, [defaultImages]);
 
-  // Call `onFilesChange` only when `files` updates with new File instances
-  useEffect(() => {
-    const uploadedFiles = files.filter(
-      (file): file is PreviewFile => file instanceof File
-    );
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      console.log("onDrop called with files:", acceptedFiles.length);
 
-    onFilesChange(uploadedFiles); // Notify parent with file changes
-  }, [files, onFilesChange]);
+      if (acceptedFiles.length === 0) return;
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return;
+      const validFiles = acceptedFiles.filter((file) => {
+        if (file.size > MAX_FILE_SIZE) {
+          alert(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)} MB`);
+          return false;
+        }
+        if (!ALLOWED_FORMATS.includes(file.type)) {
+          alert("Invalid file format. Only JPEG and PNG are allowed.");
+          return false;
+        }
+        return true;
+      });
 
-    // Validate and prepare files
-    const validFiles = acceptedFiles.filter((file) => {
-      if (file.size > MAX_FILE_SIZE) {
-        alert(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)} MB`);
-        return false;
-      }
-      if (!ALLOWED_FORMATS.includes(file.type)) {
-        alert("Invalid file format. Only JPEG and PNG are allowed.");
-        return false;
-      }
-      return true;
-    });
+      if (validFiles.length === 0) return;
 
-    const mappedFiles = validFiles.map((file) =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      })
-    );
+      // Create a Map to ensure uniqueness
+      const uniqueFiles = new Map<string, File>();
+      validFiles.forEach((file) => {
+        uniqueFiles.set(file.name, file);
+      });
 
-    setFiles((prevFiles) => [...prevFiles, ...mappedFiles]);
-  }, []);
+      const mappedFiles = Array.from(uniqueFiles.values()).map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      );
 
-  const removeFile = useCallback(
-    (fileName: string) => {
+      setFiles((prevFiles) => {
+        // Remove any existing files with the same names
+        const existingFiles = prevFiles.filter(
+          (prevFile) => !uniqueFiles.has(prevFile.name)
+        );
+        return [...existingFiles, ...mappedFiles];
+      });
+
+      // Notify parent only of the unique valid files
+      console.log("Notifying parent of new files:", mappedFiles.length);
+      onFilesChange(mappedFiles);
+    },
+    [onFilesChange]
+  );
+
+  const handleRemoveFile = useCallback(
+    (e: React.MouseEvent, fileName: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log("Removing file:", fileName);
+
       setFiles((prevFiles) => {
         const filteredFiles = prevFiles.filter(
           (file) => file.name !== fileName
         );
 
-        // Handle image removal for existing images
         const removedFile = prevFiles.find((file) => file.name === fileName);
-        if (removedFile && onImageRemove && !(removedFile instanceof File)) {
+        if (removedFile && !(removedFile instanceof File) && onImageRemove) {
           onImageRemove(fileName);
+        } else {
+          // If it's a File instance, notify parent of remaining files
+          const remainingFiles = filteredFiles.filter(
+            (file): file is PreviewFile => file instanceof File
+          );
+          onFilesChange(remainingFiles);
         }
 
         return filteredFiles;
       });
     },
-    [onImageRemove]
+    [onFilesChange, onImageRemove]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     accept: { "image/*": [] },
     multiple: true,
     onDrop,
+    noClick: true,
     preventDropOnDocument: true,
   });
 
-  const thumbs = files.map((file) => (
-    <div key={file.name} className="relative group">
-      <div className="relative w-24 h-24">
-        <Image
-          src={file.preview}
-          alt={file.name}
-          sizes="96px"
-          fill
-          className="object-cover rounded-md"
-        />
-      </div>
-      <button
-        type="button"
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-          e.stopPropagation();
-          removeFile(file.name);
-        }}
-        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        ×
-      </button>
-    </div>
-  ));
-
-  // Clean up URL objects on unmount
+  // Cleanup previews on unmount
   useEffect(() => {
     return () => {
+      console.log("Cleaning up file previews");
       files.forEach((file) => {
-        if ("preview" in file && file instanceof File) {
+        if (file instanceof File && "preview" in file) {
           URL.revokeObjectURL(file.preview);
         }
       });
@@ -129,23 +125,55 @@ export default function Dropzone({
     <div className="mt-2">
       <div
         {...getRootProps()}
-        className={`border-2 border-dashed border-gray-300 rounded-lg py-16 cursor-pointer transition-colors duration-200 ease-in-out ${
+        className={`border-2 border-dashed border-gray-300 rounded-lg py-16 transition-colors duration-200 ease-in-out ${
           isDragActive ? "border-blue-500 bg-blue-50" : "hover:border-gray-400"
         }`}
       >
         <input {...getInputProps()} name="images" />
         {isDragActive ? (
-          <p className="text-center text-gray-600 ">Drop the files here...</p>
+          <p className="text-center text-gray-600">Drop the files here...</p>
         ) : (
           <div className="text-center">
-            <p className="text-gray-600">
-              Drag &apos;n&apos; drop some files here, or click to select files
+            <p className="text-gray-600 mb-2">
+              Drag &apos;n&apos; drop some files here
             </p>
+            <button
+              type="button"
+              onClick={open}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+            >
+              Select Files
+            </button>
           </div>
         )}
       </div>
       {files.length > 0 && (
-        <aside className="flex flex-wrap mt-4 gap-4">{thumbs}</aside>
+        <aside className="flex flex-wrap mt-4 gap-4">
+          {files.map((file) => (
+            <div
+              key={file.name}
+              className="relative group"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative w-24 h-24">
+                <Image
+                  src={file.preview}
+                  alt={file.name}
+                  sizes="96px"
+                  fill
+                  className="object-cover rounded-md"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={(e) => handleRemoveFile(e, file.name)}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </aside>
       )}
     </div>
   );
