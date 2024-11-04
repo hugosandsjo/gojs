@@ -28,20 +28,16 @@ export async function createProduct(
   try {
     const formDataObject: Record<string, unknown> = {};
 
-    // Collect images
-    // const imageFiles = formData.getAll("images") as FormFile[];
-
     const imageFiles: File[] = [];
+
     formData.getAll("images").forEach((item) => {
       if (item instanceof File) {
         imageFiles.push(item);
       }
     });
 
-    // Add images to formDataObject
     formDataObject.images = imageFiles;
 
-    // Collect other form data
     formData.forEach((value, key) => {
       if (key !== "images") {
         formDataObject[key] = value === "" ? undefined : value;
@@ -60,7 +56,6 @@ export async function createProduct(
 
     const data = validated.data;
 
-    // Destructure data
     const {
       userId,
       title,
@@ -77,7 +72,6 @@ export async function createProduct(
       images,
     } = data;
 
-    // Find category
     const pickedCategory: Category | null = await prisma.category.findUnique({
       where: { title: category },
     });
@@ -131,7 +125,6 @@ export async function createProduct(
           const command = new PutObjectCommand(params);
           await s3.send(command);
 
-          // Create image record in database
           await prisma.image.create({
             data: {
               image_key: imageName,
@@ -141,17 +134,9 @@ export async function createProduct(
             },
           });
         } catch (imageError) {
-          console.error("Error uploading image:", imageError);
-
-          // Type assertion for error
           if (imageError instanceof Error) {
-            // Optionally delete the product if image upload fails
-            await prisma.product.delete({
-              where: { id: product.id },
-            });
             throw new Error(`Failed to upload image: ${imageError.message}`);
           } else {
-            // If error is not of type Error, handle it generically
             throw new Error("Failed to upload image due to an unknown error.");
           }
         }
@@ -231,7 +216,6 @@ export async function deleteProduct(productId: string) {
     });
 
     revalidatePath("/dashboard");
-    // redirect("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error deleting product:", error);
@@ -241,6 +225,8 @@ export async function deleteProduct(productId: string) {
 
 export async function updateProduct(productId: string, formData: FormData) {
   try {
+    const removedImageIds = formData.getAll("removedImages") as string[];
+    console.log("formData provided:", formData);
     const userId = formData.get("userId") as string;
     const title = formData.get("title") as string;
     const price = parseFloat(formData.get("price") as string);
@@ -293,6 +279,8 @@ export async function updateProduct(productId: string, formData: FormData) {
       },
     };
 
+    console.log("Data updated:", data);
+
     // Add optional fields only if they are not null
     if (quantity !== null) data.quantity = quantity;
     if (available_stock !== null) data.available_stock = available_stock;
@@ -306,8 +294,13 @@ export async function updateProduct(productId: string, formData: FormData) {
       data,
     });
 
-    // Handle image updates
-    const imageFiles = formData.getAll("image") as File[];
+    await prisma.image.deleteMany({
+      where: {
+        id: { in: removedImageIds.map((id) => parseInt(id, 10)) },
+        productId: productId,
+      },
+    });
+    const imageFiles: File[] = formData.getAll("images") as File[];
 
     for (const imageFile of imageFiles) {
       if (imageFile.size > 0) {
@@ -325,7 +318,6 @@ export async function updateProduct(productId: string, formData: FormData) {
         const command = new PutObjectCommand(params);
         await s3.send(command);
 
-        // Create new image record
         await prisma.image.create({
           data: {
             image_key: imageName,

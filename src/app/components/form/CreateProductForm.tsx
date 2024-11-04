@@ -15,7 +15,7 @@ import BackButton from "@/app/components/buttons/BackButton";
 import H3 from "@/app/components/typography/H3";
 import SubmitButton from "@/app/components/buttons/SubmitButton";
 import { toast } from "react-hot-toast";
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import DropdownStatus from "@/app/components/form/DropDownStatus";
 import { MAX_FILE_SIZE } from "@/lib/config";
 import { bytesToMB } from "@/lib/utils";
@@ -28,6 +28,7 @@ const initialState: DealFormState<StringMap> = {};
 
 export default function CreateProductForm({ userId }: CreateProductFormProps) {
   const [serverState, formAction] = useFormState(createProduct, initialState);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (serverState.errors) {
@@ -37,10 +38,19 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
     }
   }, [serverState.errors, serverState.success]);
 
+  const handleFilesChange = useCallback((files: File[]) => {
+    setSelectedFiles(files);
+  }, []);
+
+  const handleFormAction = async (formData: FormData) => {
+    selectedFiles.forEach((file) => formData.append("images", file));
+    await formAction(formData);
+  };
+
   return (
     <section className="flex flex-col gap-6">
       <form
-        action={formAction}
+        action={handleFormAction}
         className="flex flex-col gap-8 py-14 px-20 border border-black"
         encType="multipart/form-data"
       >
@@ -138,7 +148,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
               <div>Select Images</div>
               <div>Max {bytesToMB(MAX_FILE_SIZE)}</div>
             </div>
-            <Dropzone />
+            <Dropzone onFilesChange={handleFilesChange} />
           </label>
           {serverState.errors?.images && (
             <p className="text-red-500">{serverState.errors.images}</p>
