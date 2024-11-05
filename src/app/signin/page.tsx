@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { signIn, providerMap } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import Button from "@/app/components/buttons/Button";
+import { SIGNIN_ERROR_URL } from "@/lib/config";
 
 export default async function SignInPage(props: {
   searchParams: { callbackUrl: string | undefined };
