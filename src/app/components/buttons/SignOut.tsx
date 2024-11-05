@@ -11,7 +11,7 @@ export function SignOut() {
     >
       <button type="submit">
         {" "}
-        <NavbarParagraph>Sign Out </NavbarParagraph>
+        <NavbarParagraph>Sign Out</NavbarParagraph>
       </button>
     </form>
   );
