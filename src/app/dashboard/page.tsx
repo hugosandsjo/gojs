@@ -55,7 +55,7 @@ export default async function Dashboard() {
       <section className="w-full flex justify-between">
         <article>
           <Link href="dashboard/createproduct">
-            <Button type="submit">
+            <Button type="submit" primary={true}>
               <p className="font-sans text-sm">Create product</p>{" "}
             </Button>
           </Link>
@@ -66,10 +66,10 @@ export default async function Dashboard() {
         </article>
 
         <article className="flex">
-          <div>
-            <p>Hello {user?.name}</p>
-            <p>Email: {user?.email}</p>
-            <p>Role: {user?.role}</p>
+          <div className="text-right">
+            <p>{user?.name}</p>
+            <p>{user?.email}</p>
+            <p>{user?.role}</p>
           </div>
         </article>
       </section>

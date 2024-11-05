@@ -7,19 +7,19 @@ type ProductCardProps = {
   description?: string | null;
   price: number;
   quantity?: number | null;
-  height?: number | null;
   imageUrls: string[];
   user: string | undefined;
+  category: string;
 };
 
 export default function ProductCard({
   title,
   price,
   quantity,
-  height,
   imageUrls,
   description,
   user,
+  category,
 }: ProductCardProps) {
   return (
     <div className=" max-w-40 flex flex-col gap-4">
@@ -42,10 +42,12 @@ export default function ProductCard({
         <ProductParagraph>{user} </ProductParagraph>
       </div>
       <div>
-        <ProductParagraph>Price: {price}</ProductParagraph>
-        <ProductParagraph>Quantity: {quantity}</ProductParagraph>
-        <ProductParagraph>Height: {height}</ProductParagraph>
-        <ProductParagraph>Description {description}</ProductParagraph>
+        <ProductParagraph>{price} kr</ProductParagraph>
+        <ProductParagraph>{quantity} st</ProductParagraph>
+        <ProductParagraph>{category}</ProductParagraph>
+      </div>
+      <div>
+        <ProductParagraph>{description}</ProductParagraph>
       </div>
     </div>
   );

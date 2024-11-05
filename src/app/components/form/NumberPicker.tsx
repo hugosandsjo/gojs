@@ -18,8 +18,11 @@ export default function NumberPicker({
         type="number"
         name={name}
         id={name}
+        min="0"
         defaultValue={defaultValue ? defaultValue : 1}
-        className={`border p-2 ${error ? "border-red-500" : "border-black"}`}
+        className={`border px-3 py-2 ${
+          error ? "border-red-500" : "border-black"
+        }`}
       />
       {error && <p className="text-red-500">{error}</p>}
     </div>

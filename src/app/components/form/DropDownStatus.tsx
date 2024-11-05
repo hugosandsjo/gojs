@@ -1,3 +1,5 @@
+import { capitalizeFirstLetter } from "@/lib/utils";
+
 type DropdownProps = {
   title: string;
   name: string;
@@ -5,9 +7,9 @@ type DropdownProps = {
   error?: string;
 };
 
-const categories = ["Painting", "Sculpture", "Digital Art"]; //Hardcoded for now
+const statusOptions = ["DRAFT", "PUBLISHED", "ARCHIVED"]; //Hardcoded for now
 
-export default function Dropdown({
+export default function DropdownStatus({
   title,
   defaultValue,
   error,
@@ -24,10 +26,9 @@ export default function Dropdown({
           error ? "border-red-500" : "border-black"
         }`}
       >
-        <option value="">Select Category</option>
-        {categories.map((formCategory) => (
-          <option key={formCategory} value={formCategory}>
-            {formCategory}
+        {statusOptions.map((formStatus) => (
+          <option key={formStatus} value={formStatus}>
+            {capitalizeFirstLetter(formStatus.toLowerCase())}{" "}
           </option>
         ))}
       </select>

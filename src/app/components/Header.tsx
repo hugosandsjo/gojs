@@ -1,5 +1,4 @@
-import SignIn from "@/app/components/SignIn";
-import { SignOut } from "@/app/components/SignOut";
+import { SignOut } from "@/app/components/buttons/SignOut";
 import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
@@ -25,7 +24,7 @@ export default async function Header() {
           <h1 className="text-6xl font-serif">Gojs</h1>
         </Link>
 
-        {session ? <SignOut /> : <SignIn />}
+        {session ? <SignOut /> : <Link href={"/signin"}> Login </Link>}
       </header>
     </>
   );

@@ -4,14 +4,9 @@ import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { convertZodErrors, randomImageName } from "@/lib/utils";
-import { Category, Prisma } from "@prisma/client";
+import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
-import {
-  productSchema,
-  DealFormState,
-  StringMap,
-  FormDataValue,
-} from "@/lib/types";
+import { productSchema, DealFormState, StringMap } from "@/lib/types";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -31,70 +26,91 @@ export async function createProduct(
   formData: FormData
 ): Promise<DealFormState<StringMap>> {
   try {
-    const formDataObject: Record<string, FormDataValue> = {};
-    formData.forEach((value, key) => {
-      if (typeof value === "string" || value instanceof File) {
-        formDataObject[key] = value;
+    const formDataObject: Record<string, unknown> = {};
+
+    const imageFiles: File[] = [];
+
+    formData.getAll("images").forEach((item) => {
+      if (item instanceof File) {
+        imageFiles.push(item);
       }
     });
 
+    formDataObject.images = imageFiles;
+
+    formData.forEach((value, key) => {
+      if (key !== "images") {
+        formDataObject[key] = value === "" ? undefined : value;
+      }
+    });
+
+    console.log("formDataObject:", formDataObject);
+
+    // Validate data
     const validated = productSchema.safeParse(formDataObject);
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
       return { errors };
-    } else {
-      const {
-        userId,
-        title,
-        price,
-        description,
-        category,
-        quantity,
-        available_stock,
-        height,
-        width,
-        depth,
-        weight,
-      } = validated.data;
+    }
 
-      const pickedCategory: Category | null = await prisma.category.findUnique({
-        where: { title: category },
-      });
+    const data = validated.data;
 
-      if (!pickedCategory) {
-        throw new Error(`Category with title "${category}" not found.`);
-      }
+    const {
+      userId,
+      title,
+      price,
+      status,
+      description,
+      category,
+      quantity,
+      available_stock,
+      height,
+      width,
+      depth,
+      weight,
+    } = data;
 
-      const data: Prisma.ProductCreateInput = {
-        title,
-        price,
-        description,
-        category: {
-          connect: { id: pickedCategory.id },
-        },
-        user: {
-          connect: { id: userId },
-        },
-      };
+    const pickedCategory: Category | null = await prisma.category.findUnique({
+      where: { title: category },
+    });
 
-      if (quantity !== undefined) data.quantity = quantity;
-      if (available_stock !== undefined) data.available_stock = available_stock;
-      if (height !== undefined) data.height = height;
-      if (width !== undefined) data.width = width;
-      if (depth !== undefined) data.depth = depth;
-      if (weight !== undefined) data.weight = weight;
+    if (!pickedCategory) {
+      throw new Error(`Category with title "${category}" not found.`);
+    }
 
-      const product = await prisma.product.create({
-        data,
-      });
+    // Prepare product data
+    const productData: Prisma.ProductCreateInput = {
+      title,
+      price,
+      description,
+      status,
+      category: {
+        connect: { id: pickedCategory.id },
+      },
+      user: {
+        connect: { id: userId },
+      },
+      quantity,
+      available_stock,
+      height,
+      width,
+      depth,
+      weight,
+    };
 
-      // Now, handle image uploads and associate them with the product
-      const imageFiles = formData.getAll("image") as File[];
+    // Create product
+    const product = await prisma.product.create({
+      data: productData,
+    });
 
-      for (const imageFile of imageFiles) {
-        if (imageFile.size > 0) {
+    // Handle image uploads and associate them with the product
+    for (const imageFile of imageFiles) {
+      if (imageFile instanceof File && imageFile.size > 0) {
+        try {
           const imageName = randomImageName();
+
+          // Convert to buffer
           const arrayBuffer = await imageFile.arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
 
@@ -108,7 +124,6 @@ export async function createProduct(
           const command = new PutObjectCommand(params);
           await s3.send(command);
 
-          // Create an Image record associated with the product
           await prisma.image.create({
             data: {
               image_key: imageName,
@@ -117,12 +132,17 @@ export async function createProduct(
               },
             },
           });
+        } catch (imageError) {
+          if (imageError instanceof Error) {
+            throw new Error(`Failed to upload image: ${imageError.message}`);
+          } else {
+            throw new Error("Failed to upload image due to an unknown error.");
+          }
         }
       }
     }
 
     revalidatePath("/dashboard");
-    // return { success: true };
   } catch (error) {
     console.error("Error creating product:", error);
     return { errors: { general: "Failed to create product." } };
@@ -131,12 +151,13 @@ export async function createProduct(
 }
 
 export async function getProduct(productId: string) {
-  const product = prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: {
       id: productId,
     },
     include: {
       images: true,
+      category: true,
     },
   });
   return product;
@@ -173,6 +194,7 @@ export async function getUserProducts(id: string | undefined) {
           name: true,
         },
       },
+      category: true,
     },
   });
   return products;
@@ -193,7 +215,6 @@ export async function deleteProduct(productId: string) {
     });
 
     revalidatePath("/dashboard");
-
     return { success: true };
   } catch (error) {
     console.error("Error deleting product:", error);
@@ -203,11 +224,14 @@ export async function deleteProduct(productId: string) {
 
 export async function updateProduct(productId: string, formData: FormData) {
   try {
+    const removedImageIds = formData.getAll("removedImages") as string[];
+    console.log("formData provided:", formData);
     const userId = formData.get("userId") as string;
     const title = formData.get("title") as string;
     const price = parseFloat(formData.get("price") as string);
     const description = formData.get("description") as string;
     const category = formData.get("category") as string;
+    const status = formData.get("status") as string;
 
     if (!userId || !title || !price || !description || !category) {
       throw new Error("All required fields must be filled.");
@@ -245,6 +269,7 @@ export async function updateProduct(productId: string, formData: FormData) {
       title,
       price,
       description,
+      status: status.toUpperCase() as ProductStatus,
       category: {
         connect: { id: pickedCategory.id },
       },
@@ -252,6 +277,8 @@ export async function updateProduct(productId: string, formData: FormData) {
         connect: { id: userId },
       },
     };
+
+    console.log("Data updated:", data);
 
     // Add optional fields only if they are not null
     if (quantity !== null) data.quantity = quantity;
@@ -266,8 +293,13 @@ export async function updateProduct(productId: string, formData: FormData) {
       data,
     });
 
-    // Handle image updates
-    const imageFiles = formData.getAll("image") as File[];
+    await prisma.image.deleteMany({
+      where: {
+        id: { in: removedImageIds.map((id) => parseInt(id, 10)) },
+        productId: productId,
+      },
+    });
+    const imageFiles: File[] = formData.getAll("images") as File[];
 
     for (const imageFile of imageFiles) {
       if (imageFile.size > 0) {
@@ -285,7 +317,6 @@ export async function updateProduct(productId: string, formData: FormData) {
         const command = new PutObjectCommand(params);
         await s3.send(command);
 
-        // Create new image record
         await prisma.image.create({
           data: {
             image_key: imageName,

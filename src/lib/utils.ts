@@ -16,7 +16,6 @@ export function getImgixUrl(
 ): string {
   const url = new URL(`https://${IMGIX_DOMAIN}/${key}`);
 
-  // Append transformation parameters to the URL
   Object.entries(params).forEach(([param, value]) => {
     url.searchParams.append(param, value);
   });
@@ -34,20 +33,33 @@ export function capitalizeFirstLetter(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
-// Format ZOD-errors
-// export const convertZodErrors = (error: ZodError): StringMap => {
-//   return error.issues.reduce((acc: { [key: string]: string }, issue) => {
-//     acc[issue.path[0]] = issue.message;
-//     return acc;
-//   }, {});
-// };
-
-// convertZodErrors.ts
+// Convert ZOD-errors
 export const convertZodErrors = (error: ZodError): StringMap => {
-  return error.errors.reduce((acc: StringMap, issue) => {
-    const key = issue.path[0] as string;
-    acc[key] = issue.message;
-    return acc;
-  }, {});
+  const { fieldErrors, formErrors } = error.flatten();
+
+  const errors: StringMap = {};
+
+  // Map field errors
+  Object.entries(fieldErrors).forEach(([key, messages]) => {
+    if (messages && messages.length > 0) {
+      errors[key] = messages[0];
+    }
+  });
+
+  if (formErrors && formErrors.length > 0) {
+    errors["general"] = formErrors[0];
+  }
+
+  return errors;
 };
+
+export function truncateText(text: string | null, maxLength: number): string {
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + "...";
+}
+
+export function bytesToMB(bytes: number): string {
+  const megabytes = bytes / (1024 * 1024);
+  return `${megabytes.toFixed(1)} MB`;
+}

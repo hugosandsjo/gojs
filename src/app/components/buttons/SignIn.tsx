@@ -11,7 +11,7 @@ export default function SignIn() {
     >
       <button type="submit">
         {" "}
-        <NavbarParagraph> Sign in</NavbarParagraph>
+        <NavbarParagraph>Sign in</NavbarParagraph>
       </button>
     </form>
   );

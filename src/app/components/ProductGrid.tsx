@@ -2,9 +2,13 @@ import prisma from "@/lib/db";
 import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
 import Link from "next/link";
+import { truncateText } from "@/lib/utils";
 
 export default async function ProductGrid() {
   const products = await prisma.product.findMany({
+    where: {
+      status: "PUBLISHED",
+    },
     include: {
       images: true,
       user: {
@@ -12,6 +16,7 @@ export default async function ProductGrid() {
           name: true,
         },
       },
+      category: true,
     },
   });
 
@@ -30,6 +35,7 @@ export default async function ProductGrid() {
       ...product,
       imageUrls,
       user: product.user?.name,
+      shortDescription: truncateText(product.description || "", 90),
     };
   });
 
@@ -42,10 +48,10 @@ export default async function ProductGrid() {
               key={product.id}
               id={product.id}
               title={product.title}
-              description={product.description}
+              description={product.shortDescription}
               price={product.price}
+              category={product.category.title}
               quantity={product.quantity}
-              height={product.height}
               imageUrls={product.imageUrls}
               user={product.user}
             />

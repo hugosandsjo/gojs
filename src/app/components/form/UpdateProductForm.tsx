@@ -1,23 +1,26 @@
 "use client";
 import { updateProduct } from "@/lib/actions";
-import Link from "next/link";
 import Dropzone from "@/app/components/form/DropZone";
-import { Product, Image, Category } from "@prisma/client";
+import { Product, Image, Category, ProductStatus } from "@prisma/client";
 import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
 import H2 from "@/app/components/typography/H2";
+import H3 from "@/app/components/typography/H3";
 import { getImgixUrl } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import TextField from "@/app/components/form/TextField";
 import TextArea from "@/app/components/form/TextArea";
 import Dropdown from "@/app/components/form/Dropdown";
 import NumberPicker from "@/app/components/form/NumberPicker";
+import BackButton from "@/app/components/buttons/BackButton";
+import DropdownStatus from "@/app/components/form/DropDownStatus";
 
 type UpdateProductFormProps = {
   productId: string;
   userId: string;
   product: ProductWithImages;
   category: Category;
+  status?: ProductStatus;
 };
 
 type ProductWithImages = Product & { images: Image[] };
@@ -28,6 +31,11 @@ export default function UpdateProductForm({
   product,
   category,
 }: UpdateProductFormProps) {
+  const [selectedFiles, setSelectedFiles] = useState<Map<string, File>>(
+    new Map()
+  );
+  const [removedImages, setRemovedImages] = useState<Set<string>>(new Set());
+
   const defaultImages = useMemo(() => {
     return product?.images.map((img) => ({
       name: String(img.id),
@@ -38,86 +46,139 @@ export default function UpdateProductForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
+
+    // Clear any existing 'images' fields
+    formData.delete("images");
+
+    // Add each file only once
+    const uniqueFiles = new Map(
+      Array.from(selectedFiles.values()).map((file) => [file.name, file])
+    );
+    uniqueFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    // Add each removed image ID only once
+    Array.from(removedImages).forEach((id) => {
+      formData.append("removedImages", id);
+    });
+
     await updateProduct(productId, formData);
   };
 
+  const handleFilesChange = useCallback((files: File[]) => {
+    console.log(
+      "UpdateProductForm: handleFilesChange called with files:",
+      files.length
+    );
+
+    setSelectedFiles((prev) => {
+      const newMap = new Map(prev);
+      files.forEach((file) => {
+        const fileId = file.name; // Using just the name as ID since it's the same file
+        if (!newMap.has(fileId)) {
+          newMap.set(fileId, file);
+        }
+      });
+      return newMap;
+    });
+  }, []);
+
+  const handleImageRemove = useCallback((imageId: string) => {
+    setRemovedImages((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(imageId);
+      return newSet;
+    });
+
+    setSelectedFiles((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(imageId);
+      return newMap;
+    });
+  }, []);
   return (
-    <>
-      <section className="flex gap-4 justify-between">
-        <Link href="/dashboard">
-          <Button type="button">Back</Button>
-        </Link>
-        <H2>Update product</H2>
-      </section>
+    <section className="flex flex-col gap-6">
+      <section className="flex flex-col gap-6"></section>
 
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-8 py-8 p-14 border border-black"
       >
+        <section className="w-full flex gap-4 justify-between px-2">
+          <BackButton destination="/dashboard" size={12} />
+          <H2>Update product</H2>
+          <div></div>
+        </section>
         <input type="hidden" name="userId" value={userId} />
+        <H3>INFO</H3>
+        <section className="flex flex-wrap gap-4 w-full">
+          <article className="w-full flex gap-6">
+            <div className="flex flex-col gap-2 w-2/3">
+              <TextField
+                title="Title"
+                name="title"
+                defaultValue={product?.title || ""}
+              />
+              <div className="flex gap-4">
+                <NumberPicker
+                  title="Quantity"
+                  name="quantity"
+                  defaultValue={product?.quantity || ""}
+                />
+                <TextField
+                  title="Price"
+                  name="price"
+                  defaultValue={product?.price || ""}
+                />
+                <DropdownStatus
+                  title="Status"
+                  name="status"
+                  defaultValue={product?.status || ""}
+                />
+              </div>
+            </div>
 
+            <div className="w-1/3">
+              <Dropdown
+                title="Category"
+                name="category"
+                defaultValue={category.title}
+              />
+            </div>
+          </article>
+        </section>
+        <H3>PROPERTIES</H3>
         <section className="flex gap-4">
-          {" "}
-          <div className="flex flex-col w-1/2">
+          <article className="flex flex-col gap-4">
             <TextField
-              title="title"
-              name="title"
-              defaultValue={product?.title || ""}
+              title="Height"
+              name="height"
+              defaultValue={product?.height || ""}
             />
             <TextField
-              title="price"
-              name="price"
-              defaultValue={product?.price || ""}
+              title="Width"
+              name="width"
+              defaultValue={product?.width || ""}
             />
-            <NumberPicker
-              title="quantity"
-              name="quantity"
-              defaultValue={product?.quantity || ""}
+          </article>
+          <article className="flex flex-col gap-4">
+            <TextField
+              title="Depth"
+              name="depth"
+              defaultValue={product?.depth || ""}
             />
-          </div>
-          <div className="flex flex-col w-1/2">
-            <Dropdown
-              title="category"
-              name="category"
-              defaultValue={category.title}
+            <TextField
+              title="Weight"
+              name="weight"
+              defaultValue={product?.weight || ""}
             />
-            <NumberPicker
-              title="Available stock"
-              name="available_stock"
-              defaultValue={product?.available_stock || ""}
-            />
-          </div>
-          <section className="flex gap-4">
-            <article>
-              <TextField
-                title="height"
-                name="height"
-                defaultValue={product?.height || ""}
-              />
-              <TextField
-                title="width"
-                name="width"
-                defaultValue={product?.width || ""}
-              />
-            </article>
-            <article>
-              <TextField
-                title="depth"
-                name="depth"
-                defaultValue={product?.depth || ""}
-              />
-              <TextField
-                title="weight"
-                name="weight"
-                defaultValue={product?.weight || ""}
-              />
-            </article>
-          </section>
+          </article>
         </section>
 
         <div className="flex flex-col">
           <TextArea
-            title="description"
+            title="Description"
             name="description"
             defaultValue={product?.description || ""}
           />
@@ -126,7 +187,11 @@ export default function UpdateProductForm({
         <div>
           <label>
             Select Images:
-            <Dropzone defaultImages={defaultImages} />
+            <Dropzone
+              defaultImages={defaultImages}
+              onFilesChange={handleFilesChange}
+              onImageRemove={handleImageRemove}
+            />
           </label>
         </div>
         <div className="flex gap-4">
@@ -134,6 +199,6 @@ export default function UpdateProductForm({
           <Button type="submit">Update product</Button>
         </div>
       </form>
-    </>
+    </section>
   );
 }

@@ -1,52 +1,65 @@
 import { z } from "zod";
+import { MAX_FILE_SIZE } from "@/lib/config";
+
+export const formFileSchema = z.object({
+  size: z
+    .number()
+    .positive("Add at least 1 image")
+    .max(
+      MAX_FILE_SIZE,
+      `File size should not exceed ${MAX_FILE_SIZE / (1024 * 1024)} MB`
+    ),
+  type: z.string(),
+  name: z.string(),
+  lastModified: z.number().optional(),
+  // arrayBuffer: z.function().returns(z.promise(z.instanceof(ArrayBuffer))),
+});
 
 export const productSchema = z.object({
   userId: z.string().cuid(),
   title: z.string().min(1, "Title is required"),
-  price: z.preprocess(
-    (value) => parseFloat(value as string),
-    z.number().positive("Price must be a positive number")
-  ),
+  price: z.preprocess((value) => {
+    return value === "" ? undefined : parseFloat(value as string);
+  }, z.number().positive("Price must be a positive number")),
   description: z.string().optional(),
   category: z.string().min(1, "Category is required"),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
   quantity: z
-    .preprocess(
-      (value) => (value ? parseInt(value as string, 10) : undefined),
-      z.number().int().positive()
-    )
+    .preprocess((value) => {
+      return value === "" ? undefined : parseInt(value as string, 10);
+    }, z.number().int().positive())
     .optional(),
   available_stock: z
-    .preprocess(
-      (value) => (value ? parseInt(value as string, 10) : undefined),
-      z.number().int().nonnegative()
-    )
+    .preprocess((value) => {
+      return value === "" ? undefined : parseInt(value as string, 10);
+    }, z.number().int().nonnegative())
     .optional(),
   height: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
   width: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
   depth: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
   weight: z
-    .preprocess(
-      (value) => (value ? parseFloat(value as string) : undefined),
-      z.number().positive()
-    )
+    .preprocess((value) => {
+      return value === "" ? undefined : parseFloat(value as string);
+    }, z.number().positive())
     .optional(),
-  // Add any other fields you need to validate from the form
+  images: z.array(formFileSchema).min(1, "At least one image is required"),
 });
+
+export type ProductFormData = z.infer<typeof productSchema>;
+
+export type FormFile = File;
 
 export type DealFormState<T> = {
   errors?: StringMap;
@@ -65,5 +78,7 @@ export type StringtoBooleanMap = {
 };
 
 export type FormDataValue = string | File;
+
+export type ProductStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
 export default productSchema;
