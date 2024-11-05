@@ -1,8 +1,6 @@
 "use client";
 
-type SigninErrorProps = {};
-
-export default function SigninError({}: SigninErrorProps) {
+export default function SigninError() {
   return (
     <>
       <p>Signin error</p>
