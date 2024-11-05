@@ -1,3 +1,5 @@
+"use client";
+
 type SigninErrorProps = {};
 
 export default function SigninError({}: SigninErrorProps) {
