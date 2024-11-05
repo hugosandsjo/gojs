@@ -20,7 +20,7 @@ type UpdateProductFormProps = {
   userId: string;
   product: ProductWithImages;
   category: Category;
-  status: ProductStatus;
+  status?: ProductStatus;
 };
 
 type ProductWithImages = Product & { images: Image[] };
