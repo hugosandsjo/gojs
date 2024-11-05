@@ -1,4 +1,3 @@
-import SignIn from "@/app/components/buttons/SignIn";
 import { SignOut } from "@/app/components/buttons/SignOut";
 import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
 import { auth } from "@/lib/auth";
