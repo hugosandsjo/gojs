@@ -69,7 +69,6 @@ export async function createProduct(
       width,
       depth,
       weight,
-      images,
     } = data;
 
     const pickedCategory: Category | null = await prisma.category.findUnique({

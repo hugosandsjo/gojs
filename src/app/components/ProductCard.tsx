@@ -1,5 +1,4 @@
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
-import { Category } from "@prisma/client";
 import Image from "next/image";
 
 type ProductCardProps = {

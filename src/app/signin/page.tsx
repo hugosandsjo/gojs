@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
-import { signIn, auth, providerMap } from "@/lib/auth";
+import { signIn, providerMap } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import Button from "@/app/components/buttons/Button";
-import TextField from "@/app/components/form/TextField";
 
 export default async function SignInPage(props: {
   searchParams: { callbackUrl: string | undefined };
@@ -37,6 +36,7 @@ export default async function SignInPage(props: {
       </form>
       {Object.values(providerMap).map((provider) => (
         <form
+          key={provider.id}
           action={async () => {
             "use server";
             try {
