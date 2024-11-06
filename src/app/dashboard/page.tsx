@@ -15,6 +15,7 @@ export default async function Dashboard() {
   const session = await auth();
 
   const user = await getUser(session?.user?.id);
+  console.log("User session dahsboard:", user);
 
   const products = await getUserProducts(user?.id);
 

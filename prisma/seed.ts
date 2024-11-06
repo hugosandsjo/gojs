@@ -1,5 +1,15 @@
+import bcrypt from "bcryptjs";
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
+
+export async function hashPassword(
+  password: string,
+  saltRounds = 10
+): Promise<string> {
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+}
 
 // Define your initial data for both local and preview environments
 const initialCategories: Prisma.CategoryCreateInput[] = [
@@ -24,6 +34,10 @@ async function seedDatabase() {
     prisma.product.deleteMany(),
     prisma.user.deleteMany(),
   ]);
+  const defaultEmail = "default@user.com";
+  const defaultPassword = "defaultpassword";
+
+  const hashedPassword = await hashPassword(defaultPassword);
 
   // Seeding categories
   const categories = await Promise.all(
@@ -52,13 +66,13 @@ async function seedDatabase() {
     where: { email: "hugosandsjo@gmail.com" },
     update: {},
     create: {
-      email: "default@user.com",
-      name: "Hugo Sandsjö",
-      password: "defaultpassword",
+      email: defaultEmail,
+      name: "Snusmumriken Svensson",
+      password: hashedPassword,
       role: "ARTIST",
     },
   });
-
+  console.log("Default user created:", defaultUser);
   // Seeding products
   const initialProducts: Prisma.ProductCreateInput[] = [
     {

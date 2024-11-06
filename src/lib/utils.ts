@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { clsx, ClassValue } from "clsx";
 import { ZodError } from "zod";
 import { StringMap } from "@/lib/types";
+import bcrypt from "bcryptjs";
 
 // Creates random image name
 export const randomImageName = (bytes = 32) =>
@@ -62,4 +63,13 @@ export function truncateText(text: string | null, maxLength: number): string {
 export function bytesToMB(bytes: number): string {
   const megabytes = bytes / (1024 * 1024);
   return `${megabytes.toFixed(1)} MB`;
+}
+
+export async function hashPassword(
+  password: string,
+  saltRounds = 10
+): Promise<string> {
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
 }
