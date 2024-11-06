@@ -185,23 +185,36 @@ export async function getUser(userId: string | undefined) {
 }
 
 export async function getUserFromDb(email: string, password: string) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        role: true,
+      },
+    });
 
-  if (!user || !user.password) {
-    throw new Error("Invalid credentials.");
+    if (!user || !user.password) {
+      return null;
+    }
+
+    const isPasswordValid = await compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  } catch (error) {
+    console.error("Error in getUserFromDb:", error);
+    return null;
   }
-
-  const isPasswordValid = await compare(password, user.password);
-
-  if (!isPasswordValid) {
-    throw new Error("Invalid credentials");
-  }
-  console.log("User from server action:", user);
-  return user;
 }
 
 export async function getUserProducts(id: string | undefined) {
