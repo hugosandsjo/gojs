@@ -73,6 +73,7 @@ async function seedDatabase() {
     },
   });
   console.log("Default user created:", defaultUser);
+
   // Seeding products
   const initialProducts: Prisma.ProductCreateInput[] = [
     {
@@ -95,7 +96,7 @@ async function seedDatabase() {
     },
 
     {
-      title: "The Penguin",
+      title: "A leaf",
       description:
         "An artwork depicting the elegance of penguins in their natural habitat.",
       price: 800,
