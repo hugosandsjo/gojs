@@ -208,8 +208,8 @@ export async function getUserFromDb(email: string, password: string) {
     if (!isPasswordValid) {
       return null;
     }
-
-    const { password: _password, ...userWithoutPassword } = user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   } catch (error) {
     console.error("Error in getUserFromDb:", error);
