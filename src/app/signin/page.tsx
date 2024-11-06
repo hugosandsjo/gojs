@@ -1,62 +1,51 @@
-// app/signin/page.tsx
-import { redirect } from "next/navigation";
-import { signIn } from "@/lib/auth";
-import { AuthError } from "next-auth";
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Button from "@/app/components/buttons/Button";
+import TextField from "@/app/components/form/TextField";
+import { useFormState } from "react-dom";
+import { loginAction } from "@/lib/actions";
+import { LoginFormState } from "@/lib/types";
+import SubmitButton from "@/app/components/buttons/SubmitButton";
+
+const initialState = {
+  errors: {},
+  success: false,
+};
 
 export default function SignInPage() {
+  const router = useRouter();
+  const [serverState, formAction] = useFormState<LoginFormState, FormData>(
+    loginAction,
+    initialState
+  );
+
+  useEffect(() => {
+    if (serverState.success) {
+      router.push("/dashboard");
+    }
+  }, [serverState.success, router]);
+
   return (
     <section className="flex justify-center h-full">
-      <div className="flex flex-col items-center gap-2 p-20 border border-black">
-        <form
-          action={async (formData) => {
-            "use server";
-
-            const email = formData.get("email");
-            const password = formData.get("password");
-
-            try {
-              const result = await signIn("credentials", {
-                email,
-                password,
-                redirectTo: "/dashboard",
-                redirect: true,
-              });
-
-              // Optional: handle the result
-              console.log("Sign in result:", result);
-            } catch (error) {
-              if (error instanceof AuthError) {
-                return redirect(`/signin?error=${error.type}`);
-              }
-              throw error;
-            }
-          }}
-        >
+      <div className="flex flex-col items-center gap-2 p-32 border border-black">
+        <form action={formAction}>
           <div className="flex flex-col gap-4">
-            <label className="flex flex-col">
-              Email
-              <input
-                name="email"
-                type="email"
-                required
-                className="border p-2"
-              />
-            </label>
-            <label className="flex flex-col">
-              Password
-              <input
-                name="password"
-                type="password"
-                required
-                className="border p-2"
-              />
-            </label>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-2 rounded"
-            >
-              Sign In
-            </button>
+            <TextField
+              title="Email"
+              name="email"
+              type="email"
+              error={serverState.errors?.email?.[0]}
+            />
+
+            <TextField
+              title="Password"
+              name="password"
+              type="password"
+              error={serverState.errors?.password?.[0]}
+            />
+
+            <SubmitButton></SubmitButton>
           </div>
         </form>
       </div>

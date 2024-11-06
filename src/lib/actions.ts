@@ -6,8 +6,16 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { productSchema, DealFormState, StringMap } from "@/lib/types";
+import {
+  productSchema,
+  DealFormState,
+  StringMap,
+  loginSchema,
+  LoginFormState,
+} from "@/lib/types";
 import { compare } from "bcryptjs";
+import { AuthError } from "next-auth";
+import { signIn } from "@/lib/auth";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -214,6 +222,77 @@ export async function getUserFromDb(email: string, password: string) {
   } catch (error) {
     console.error("Error in getUserFromDb:", error);
     return null;
+  }
+}
+
+export async function loginAction(
+  prevState: LoginFormState,
+  formData: FormData
+): Promise<LoginFormState> {
+  try {
+    const validatedFields = loginSchema.safeParse({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        success: false,
+      };
+    }
+
+    const { email, password } = validatedFields.data;
+    const user = await getUserFromDb(email, password);
+
+    if (!user) {
+      return {
+        errors: {
+          form: "Invalid email or password",
+        },
+        success: false,
+      };
+    }
+
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        return {
+          errors: {
+            form: "Authentication failed",
+          },
+          success: false,
+        };
+      }
+
+      // Return success instead of redirecting
+      return {
+        success: true,
+        errors: {},
+      };
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return {
+          errors: {
+            form: `Authentication error: ${error.type}`,
+          },
+          success: false,
+        };
+      }
+      throw error;
+    }
+  } catch (error) {
+    return {
+      errors: {
+        form: "An error occurred during login",
+      },
+      success: false,
+    };
   }
 }
 
