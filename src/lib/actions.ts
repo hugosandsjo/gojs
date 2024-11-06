@@ -209,7 +209,7 @@ export async function getUserFromDb(email: string, password: string) {
       return null;
     }
 
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _password, ...userWithoutPassword } = user;
     return userWithoutPassword;
   } catch (error) {
     console.error("Error in getUserFromDb:", error);
