@@ -63,3 +63,11 @@ export function bytesToMB(bytes: number): string {
   const megabytes = bytes / (1024 * 1024);
   return `${megabytes.toFixed(1)} MB`;
 }
+
+// export function saltAndHashPassword(password: string): string {
+//   const salt = crypto.randomBytes(16).toString("hex");
+//   const hash = crypto
+//     .pbkdf2Sync(password, salt, 1000, 64, "sha512")
+//     .toString("hex");
+//   return `${salt}:${hash}`;
+// }

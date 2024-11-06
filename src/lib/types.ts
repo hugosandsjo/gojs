@@ -12,7 +12,6 @@ export const formFileSchema = z.object({
   type: z.string(),
   name: z.string(),
   lastModified: z.number().optional(),
-  // arrayBuffer: z.function().returns(z.promise(z.instanceof(ArrayBuffer))),
 });
 
 export const productSchema = z.object({

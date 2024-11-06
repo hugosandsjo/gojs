@@ -7,6 +7,9 @@ import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { productSchema, DealFormState, StringMap } from "@/lib/types";
+import crypto from "crypto";
+import { Hash } from "crypto";
+import { compare } from "bcryptjs";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -220,6 +223,31 @@ export async function deleteProduct(productId: string) {
     console.error("Error deleting product:", error);
     throw new Error("Failed to delete product");
   }
+}
+
+export async function getUserFromDb(email: string, password: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user || !user.password) {
+    throw new Error("Invalid credentials.");
+  }
+
+  const isPasswordValid = await compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw new Error("Invalid credentials");
+  }
+
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+  };
 }
 
 export async function updateProduct(productId: string, formData: FormData) {
