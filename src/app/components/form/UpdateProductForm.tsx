@@ -118,6 +118,7 @@ export default function UpdateProductForm({
               <TextField
                 title="Title"
                 name="title"
+                type="text"
                 defaultValue={product?.title || ""}
               />
               <div className="flex gap-4">
@@ -129,6 +130,7 @@ export default function UpdateProductForm({
                 <TextField
                   title="Price"
                   name="price"
+                  type="text"
                   defaultValue={product?.price || ""}
                 />
                 <DropdownStatus
@@ -154,11 +156,13 @@ export default function UpdateProductForm({
             <TextField
               title="Height"
               name="height"
+              type="text"
               defaultValue={product?.height || ""}
             />
             <TextField
               title="Width"
               name="width"
+              type="text"
               defaultValue={product?.width || ""}
             />
           </article>
@@ -166,11 +170,13 @@ export default function UpdateProductForm({
             <TextField
               title="Depth"
               name="depth"
+              type="text"
               defaultValue={product?.depth || ""}
             />
             <TextField
               title="Weight"
               name="weight"
+              type="text"
               defaultValue={product?.weight || ""}
             />
           </article>

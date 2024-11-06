@@ -52,7 +52,6 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
       <form
         action={handleFormAction}
         className="flex flex-col gap-8 py-14 px-20 border border-black"
-        // encType="multipart/form-data"
       >
         <section className="w-full flex gap-4 justify-between px-2">
           <BackButton destination="/dashboard" size={12} />
@@ -69,6 +68,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
                 title="Title"
                 name="title"
                 placeholder="Choose a title"
+                type="text"
                 error={serverState.errors?.title}
               />{" "}
               <div className="flex gap-4">
@@ -81,6 +81,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
                   title="Price"
                   name="price"
                   placeholder="kr"
+                  type="text"
                   error={serverState.errors?.price}
                 />
                 <DropdownStatus
@@ -109,12 +110,14 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
               title="Height"
               name="height"
               placeholder="mm"
+              type="text"
               error={serverState.errors?.height}
             />
             <TextField
               title="Width"
               name="width"
               placeholder="mm"
+              type="text"
               error={serverState.errors?.width}
             />
           </article>
@@ -123,12 +126,14 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
               title="Depth"
               name="depth"
               placeholder="mm"
+              type="text"
               error={serverState.errors?.depth}
             />
             <TextField
               title="Weight"
               name="weight"
               placeholder="kg"
+              type="text"
               error={serverState.errors?.weight}
             />
           </article>

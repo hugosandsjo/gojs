@@ -12,7 +12,6 @@ export const formFileSchema = z.object({
   type: z.string(),
   name: z.string(),
   lastModified: z.number().optional(),
-  // arrayBuffer: z.function().returns(z.promise(z.instanceof(ArrayBuffer))),
 });
 
 export const productSchema = z.object({
@@ -82,3 +81,27 @@ export type FormDataValue = string | File;
 export type ProductStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
 export default productSchema;
+
+export const loginSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Invalid email format"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters"),
+  // You can add more password requirements if needed
+  // .regex(
+  //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
+  //   "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+  // ),
+});
+
+export type LoginFormState = {
+  errors?: {
+    email?: string[];
+    password?: string[];
+    form?: string;
+  };
+  success?: boolean;
+};
+
+export type LoginFormData = z.infer<typeof loginSchema>;

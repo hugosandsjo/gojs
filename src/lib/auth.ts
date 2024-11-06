@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { getUserFromDb } from "@/lib/actions";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/db";
+import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -42,6 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
       },
     }),
+    Google,
   ],
   callbacks: {
     async jwt({ token, user }) {

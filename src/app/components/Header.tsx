@@ -24,7 +24,14 @@ export default async function Header() {
           <h1 className="text-6xl font-serif">Gojs</h1>
         </Link>
 
-        {session ? <SignOut /> : <Link href={"/signin"}> Login </Link>}
+        {session ? (
+          <SignOut />
+        ) : (
+          <Link href={"/signin"}>
+            {" "}
+            <NavbarParagraph>Login </NavbarParagraph>
+          </Link>
+        )}
       </header>
     </>
   );

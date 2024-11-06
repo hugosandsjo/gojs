@@ -4,7 +4,8 @@ type TextFieldProps = {
   defaultValue?: string | number;
   placeholder?: string;
   unitOfMeasure?: string;
-  error?: string;
+  error?: string | string[];
+  type: string;
 };
 
 export default function TextField({
@@ -14,7 +15,9 @@ export default function TextField({
   name,
   placeholder,
   unitOfMeasure,
+  type,
 }: TextFieldProps) {
+  const errorMessage = Array.isArray(error) ? error[0] : error;
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between">
@@ -24,13 +27,13 @@ export default function TextField({
         ) : null}
       </div>
       <input
-        type="text"
+        type={type}
         name={name}
         id={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
         className={`border px-3 py-2 ${
-          error ? "border-red-500" : "border-black"
+          errorMessage ? "border-red-500" : "border-black"
         }`}
       />
       {error && <p className="text-red-500">{error}</p>}
