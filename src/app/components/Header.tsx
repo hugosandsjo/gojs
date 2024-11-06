@@ -13,19 +13,19 @@ export default async function Header() {
             {" "}
             <NavbarParagraph>Shop</NavbarParagraph>
           </Link>
-          {session ? (
-            <Link href={"/dashboard"}>
-              {" "}
-              <NavbarParagraph>Dashboard</NavbarParagraph>{" "}
-            </Link>
-          ) : null}
         </div>
         <Link href={"/"}>
           <h1 className="text-6xl font-serif">Gojs</h1>
         </Link>
 
         {session ? (
-          <SignOut />
+          <div className="text-right">
+            <Link href={"/dashboard"}>
+              {" "}
+              <NavbarParagraph>Dashboard</NavbarParagraph>{" "}
+            </Link>
+            <SignOut />
+          </div>
         ) : (
           <Link href={"/signin"}>
             {" "}

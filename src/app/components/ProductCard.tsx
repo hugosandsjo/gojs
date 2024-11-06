@@ -22,7 +22,7 @@ export default function ProductCard({
   category,
 }: ProductCardProps) {
   return (
-    <div className=" max-w-40 flex flex-col gap-4">
+    <div className=" max-w-40 flex flex-col gap-4 hover:text-yellow-700">
       <div className="flex flex-col gap-2">
         {imageUrls ? (
           <Image
@@ -43,6 +43,7 @@ export default function ProductCard({
       </div>
       <div>
         <ProductParagraph>{price} kr</ProductParagraph>
+
         <ProductParagraph>{quantity} st</ProductParagraph>
         <ProductParagraph>{category}</ProductParagraph>
       </div>

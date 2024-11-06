@@ -15,7 +15,6 @@ export default async function Dashboard() {
   const session = await auth();
 
   const user = await getUser(session?.user?.id);
-  console.log("User session dahsboard:", user);
 
   const products = await getUserProducts(user?.id);
 
@@ -52,12 +51,12 @@ export default async function Dashboard() {
   );
 
   return (
-    <section className="flex flex-col gap-4 items-center p-10 border border-black mx-8 my-8">
+    <section className="flex flex-col gap-4 items-center py-20 px-28 border border-black my-10 mx-40">
       <section className="w-full flex justify-between">
         <article>
           <Link href="dashboard/createproduct">
             <Button type="submit" primary={true}>
-              <p className="font-sans text-sm">Create product</p>{" "}
+              Create product
             </Button>
           </Link>
         </article>
