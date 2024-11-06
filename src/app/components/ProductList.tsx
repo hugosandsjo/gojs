@@ -38,7 +38,7 @@ function getStatusColor(status: ProductListProps["status"]) {
 
 export default function ProductList({ products, status }: ProductListProps) {
   return (
-    <section className="flex flex-col border border-black py-8 px-8 gap-8">
+    <section className="flex flex-col border border-black py-12 px-16 gap-8">
       <div className="flex items-center gap-2">
         <div
           className={`w-3 h-3 rounded-full ${getStatusColor(status)}`}
@@ -52,16 +52,18 @@ export default function ProductList({ products, status }: ProductListProps) {
         ) : (
           products.map((product) => (
             <div key={product.id} className="flex flex-col gap-4">
-              <ProductCard
-                id={product.id}
-                title={product.title}
-                description={truncateText(product.description, 90)}
-                price={product.price}
-                quantity={product.quantity}
-                category={product.category.title}
-                imageUrls={product.imageUrls}
-                user={product.user}
-              />
+              <Link key={product.id} href={`shop/${product.id}`}>
+                <ProductCard
+                  id={product.id}
+                  title={product.title}
+                  description={truncateText(product.description, 90)}
+                  price={product.price}
+                  quantity={product.quantity}
+                  category={product.category.title}
+                  imageUrls={product.imageUrls}
+                  user={product.user}
+                />
+              </Link>
               <Link href={`/dashboard/${product.id}`}>
                 <EditButton>Edit</EditButton>
               </Link>

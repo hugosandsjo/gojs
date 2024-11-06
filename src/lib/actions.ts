@@ -225,6 +225,25 @@ export async function getUserFromDb(email: string, password: string) {
   }
 }
 
+export async function getPublishedProducts() {
+  const publishedProducts = await prisma.product.findMany({
+    where: {
+      status: "PUBLISHED",
+    },
+    include: {
+      images: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      category: true,
+    },
+  });
+
+  return publishedProducts;
+}
+
 export async function loginAction(
   prevState: LoginFormState,
   formData: FormData

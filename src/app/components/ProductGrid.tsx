@@ -3,22 +3,10 @@ import ProductCard from "@/app/components/ProductCard";
 import { getImgixUrl } from "@/lib/utils";
 import Link from "next/link";
 import { truncateText } from "@/lib/utils";
+import { getPublishedProducts } from "@/lib/actions";
 
 export default async function ProductGrid() {
-  const products = await prisma.product.findMany({
-    where: {
-      status: "PUBLISHED",
-    },
-    include: {
-      images: true,
-      user: {
-        select: {
-          name: true,
-        },
-      },
-      category: true,
-    },
-  });
+  const products = await getPublishedProducts();
 
   const productsWithUrls = products.map((product) => {
     const imageUrls = product.images.map((image) =>
