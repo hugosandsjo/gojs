@@ -52,7 +52,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
       <form
         action={handleFormAction}
         className="flex flex-col gap-8 py-14 px-20 border border-black"
-        encType="multipart/form-data"
+        // encType="multipart/form-data"
       >
         <section className="w-full flex gap-4 justify-between px-2">
           <BackButton destination="/dashboard" size={12} />
