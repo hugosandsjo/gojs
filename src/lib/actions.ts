@@ -7,6 +7,7 @@ import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { productSchema, DealFormState, StringMap } from "@/lib/types";
+import { compare } from "bcryptjs";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -180,6 +181,26 @@ export async function getUser(userId: string | undefined) {
     },
   });
   revalidatePath("/dashboard");
+  return user;
+}
+
+export async function getUserFromDb(email: string, password: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user || !user.password) {
+    throw new Error("Invalid credentials.");
+  }
+
+  const isPasswordValid = await compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw new Error("Invalid credentials");
+  }
+  console.log("User from server action:", user);
   return user;
 }
 

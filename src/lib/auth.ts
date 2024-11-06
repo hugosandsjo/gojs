@@ -1,42 +1,39 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import prisma from "@/lib/db";
 import Credentials from "next-auth/providers/credentials";
-import type { Provider } from "next-auth/providers";
-import Resend from "next-auth/providers/resend";
-
-const providers: Provider[] = [
-  Credentials({
-    credentials: { password: { label: "Password", type: "password" } },
-    authorize(c) {
-      if (c.password !== "password") return null;
-      return {
-        id: "test",
-        name: "Test User",
-        email: "test@example.com",
-      };
-    },
-  }),
-  Google,
-  Resend,
-];
-
-export const providerMap = providers
-  .map((provider) => {
-    if (typeof provider === "function") {
-      const providerData = provider();
-      return { id: providerData.id, name: providerData.name };
-    } else {
-      return { id: provider.id, name: provider.name };
-    }
-  })
-  .filter((provider) => provider.id !== "credentials");
+import { getUserFromDb } from "@/lib/actions";
+import { hashPassword } from "@/lib/utils";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-  providers: providers,
-  pages: {
-    signIn: "/signin",
-  },
+  providers: [
+    Credentials({
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        let user = null;
+
+        const email = credentials.email as string;
+        const password = credentials.password as string;
+        console.log("email;", email);
+        console.log("password", password);
+        // logic to salt and hash password
+        // const pwHash = await hashPassword(password);
+        // console.log("pwhash:", pwHash);
+        // logic to verify if the user exists
+        user = await getUserFromDb(email, password);
+
+        if (!user) {
+          // No user found, so this is their first attempt to login
+          // Optionally, this is also the place you could do a user registration
+          throw new Error("Invalid credentials.");
+        }
+        console.log("User from auth.ts:", user);
+        // return user object with their profile data
+        return user;
+      },
+    }),
+  ],
 });
