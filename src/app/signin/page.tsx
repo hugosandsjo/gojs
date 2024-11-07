@@ -1,7 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Button from "@/app/components/buttons/Button";
 import TextField from "@/app/components/form/TextField";
 import { useFormState } from "react-dom";
 import { loginAction } from "@/lib/actions";
@@ -46,7 +45,6 @@ export default function SignInPage() {
               type="password"
               error={serverState.errors?.password?.[0]}
             />
-
             <SubmitButton></SubmitButton>
           </div>
         </form>

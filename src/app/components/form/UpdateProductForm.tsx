@@ -106,7 +106,7 @@ export default function UpdateProductForm({
         className="flex flex-col gap-8 py-8 p-14 border border-black"
       >
         <section className="w-full flex gap-4 justify-between px-2">
-          <BackButton destination="/dashboard" size={12} />
+          <BackButton size={12} />
           <H2>Update product</H2>
           <div></div>
         </section>

@@ -44,7 +44,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
   return (
     <section className="flex flex-col justify-center gap-8 p-10 w-full">
       <div className="flex">
-        <BackButton destination="/shop" size={12} />
+        <BackButton size={12} />
       </div>
 
       <section className="flex flex-col gap-4 w-full px-20">
@@ -62,7 +62,6 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
               <span>No Image Available</span>
             </div>
           )}
-          {/* Optionally, display all images */}
           <div className="flex gap-4">
             {product.imageUrls.map((url, index) => (
               <Image
