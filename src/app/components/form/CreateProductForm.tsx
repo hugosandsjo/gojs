@@ -54,7 +54,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         className="flex flex-col gap-8 py-14 px-20 border border-black"
       >
         <section className="w-full flex gap-4 justify-between px-2">
-          <BackButton destination="/dashboard" size={12} />
+          <BackButton size={12} />
           <H2>Create Product</H2>
           <div></div>
         </section>

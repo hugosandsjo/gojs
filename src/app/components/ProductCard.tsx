@@ -1,5 +1,7 @@
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
 import Image from "next/image";
+import { Suspense } from "react";
+import Loading from "@/app/shop/loading";
 
 type ProductCardProps = {
   id: string;
