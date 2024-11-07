@@ -17,7 +17,7 @@ import SubmitButton from "@/app/components/buttons/SubmitButton";
 import { toast } from "react-hot-toast";
 import { useEffect, useState, useCallback } from "react";
 import DropdownStatus from "@/app/components/form/DropDownStatus";
-import { MAX_FILE_SIZE } from "@/lib/config";
+import { MAX_FILE_SIZE } from "@/lib/constants";
 import { bytesToMB } from "@/lib/utils";
 
 type CreateProductFormProps = {

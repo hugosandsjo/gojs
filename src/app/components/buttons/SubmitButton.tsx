@@ -7,7 +7,7 @@ export default function SubmitButton() {
   return (
     <button
       type="submit"
-      className={`py-4 px-6 border border-black hover:text-white hover:shadow-lg ${
+      className={`py-4 px-6 border border-black hover:text-white hover:shadow-lg rounded-xl ${
         pending
           ? "bg-gray-300 opacity-30"
           : "bg-black text-white hover:bg-black"
