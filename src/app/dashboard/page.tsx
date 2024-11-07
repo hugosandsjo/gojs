@@ -51,18 +51,16 @@ export default async function Dashboard() {
   );
 
   return (
-    <section className="flex flex-col gap-4 items-center py-20 px-28 border border-black my-10 mx-40">
+    <section className="flex flex-col gap-4 items-center py-12 px-28 border rounded-lg border-black my-10 mx-40">
+      <article>
+        {" "}
+        <H2>Dashboard</H2>
+      </article>
       <section className="w-full flex justify-between">
         <article>
           <Link href="dashboard/createproduct">
-            <Button type="submit" primary={true}>
-              Create product
-            </Button>
+            <Button type="submit">Create product</Button>
           </Link>
-        </article>
-        <article>
-          {" "}
-          <H2>Dashboard</H2>
         </article>
 
         <article className="flex">
@@ -75,7 +73,7 @@ export default async function Dashboard() {
       </section>
       <section className="flex flex-col w-full gap-4">
         <div>
-          <H3>My artworks:</H3>
+          <H3>My artwork:</H3>
         </div>
         <section className="flex flex-col gap-8 w-full">
           <ProductList products={publishedProducts} status="PUBLISHED" />

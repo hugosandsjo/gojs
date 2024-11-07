@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MAX_FILE_SIZE } from "@/lib/config";
+import { MAX_FILE_SIZE } from "@/lib/constants";
 
 export const formFileSchema = z.object({
   size: z
@@ -94,6 +94,15 @@ export const loginSchema = z.object({
   //   "Password must contain at least one uppercase letter, one lowercase letter, and one number"
   // ),
 });
+
+export type LoginActionResponse = {
+  status: "error" | "success";
+  errors?: {
+    email?: string[];
+    password?: string[];
+    form?: string;
+  };
+};
 
 export type LoginFormState = {
   errors?: {

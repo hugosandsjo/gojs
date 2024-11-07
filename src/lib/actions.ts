@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
@@ -11,24 +11,13 @@ import {
   DealFormState,
   StringMap,
   loginSchema,
+  LoginActionResponse,
   LoginFormState,
 } from "@/lib/types";
+import { bucketName, s3 } from "@/lib/s3";
 import { compare } from "bcryptjs";
 import { AuthError } from "next-auth";
 import { signIn } from "@/lib/auth";
-
-const bucketName = process.env.BUCKET_NAME;
-const bucketRegion = process.env.BUCKET_REGION;
-const accessKey = process.env.ACCESS_KEY;
-const secretAccessKey = process.env.SECRET_ACCESS_KEY;
-
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: accessKey!,
-    secretAccessKey: secretAccessKey!,
-  },
-  region: bucketRegion!,
-});
 
 export async function createProduct(
   prevState: DealFormState<StringMap>,
@@ -52,8 +41,6 @@ export async function createProduct(
         formDataObject[key] = value === "" ? undefined : value;
       }
     });
-
-    console.log("formDataObject:", formDataObject);
 
     // Validate data
     const validated = productSchema.safeParse(formDataObject);
@@ -156,6 +143,7 @@ export async function createProduct(
     console.error("Error creating product:", error);
     return { errors: { general: "Failed to create product." } };
   }
+
   redirect("/dashboard");
 }
 
@@ -247,72 +235,58 @@ export async function getPublishedProducts() {
 export async function loginAction(
   prevState: LoginFormState,
   formData: FormData
-): Promise<LoginFormState> {
-  try {
-    const validatedFields = loginSchema.safeParse({
-      email: formData.get("email"),
-      password: formData.get("password"),
-    });
+): Promise<LoginActionResponse> {
+  // Validate fields
+  const validatedFields = loginSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
 
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        success: false,
-      };
-    }
-
-    const { email, password } = validatedFields.data;
-    const user = await getUserFromDb(email, password);
-
-    if (!user) {
-      return {
-        errors: {
-          form: "Invalid email or password",
-        },
-        success: false,
-      };
-    }
-
-    try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        return {
-          errors: {
-            form: "Authentication failed",
-          },
-          success: false,
-        };
-      }
-
-      // Return success instead of redirecting
-      return {
-        success: true,
-        errors: {},
-      };
-    } catch (error) {
-      if (error instanceof AuthError) {
-        return {
-          errors: {
-            form: `Authentication error: ${error.type}`,
-          },
-          success: false,
-        };
-      }
-      throw error;
-    }
-  } catch (error) {
+  if (!validatedFields.success) {
     return {
-      errors: {
-        form: "An error occurred during login",
-      },
-      success: false,
+      status: "error",
+      errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
+  const { email, password } = validatedFields.data;
+
+  const user = await getUserFromDb(email, password);
+
+  if (!user) {
+    return {
+      status: "error",
+      errors: {
+        form: "Invalid email or password",
+      },
+    };
+  }
+
+  const result = await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  });
+
+  if (result?.error) {
+    return {
+      status: "error",
+      errors: {
+        form: "Authentication failed",
+      },
+    };
+  }
+
+  if (result instanceof AuthError) {
+    return {
+      status: "error",
+      errors: {
+        form: `Authentication error: ${result.type}`,
+      },
+    };
+  }
+
+  redirect("/dashboard");
 }
 
 export async function getUserProducts(id: string | undefined) {
@@ -410,9 +384,6 @@ export async function updateProduct(productId: string, formData: FormData) {
       },
     };
 
-    console.log("Data updated:", data);
-
-    // Add optional fields only if they are not null
     if (quantity !== null) data.quantity = quantity;
     if (available_stock !== null) data.available_stock = available_stock;
     if (height !== null) data.height = height;

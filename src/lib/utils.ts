@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { IMGIX_DOMAIN } from "@/lib/config";
+import { IMGIX_DOMAIN } from "@/lib/constants";
 import { twMerge } from "tailwind-merge";
 import { clsx, ClassValue } from "clsx";
 import { ZodError } from "zod";

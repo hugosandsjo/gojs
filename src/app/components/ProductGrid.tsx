@@ -1,8 +1,3 @@
-import ProductCard from "@/app/components/ProductCard";
-import { getImgixUrl } from "@/lib/utils";
-import Link from "next/link";
-import { truncateText } from "@/lib/utils";
-import { getPublishedProducts } from "@/lib/actions";
 import ShopProductList from "@/app/components/ShopProductList";
 import { Suspense } from "react";
 import { ProductLoadingState } from "@/app/components/ProductSkeleton";
