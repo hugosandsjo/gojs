@@ -8,6 +8,26 @@ import { getImgixUrl } from "@/lib/utils";
 import H2 from "@/app/components/typography/H2";
 import ProductList from "@/app/components/ProductList";
 import H3 from "@/app/components/typography/H3";
+import { DragEndEvent, DndContext } from "@dnd-kit/core";
+import { Category } from "@prisma/client";
+
+type ProductWithUrls = {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  quantity: number | null;
+  height: number | null;
+  imageUrls: string[];
+  user: string | undefined;
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNAVAILABLE";
+  category: Category;
+};
+
+type ProductListProps = {
+  products: ProductWithUrls[] | undefined;
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+};
 
 export default async function Dashboard() {
   unstable_noStore();
@@ -76,9 +96,11 @@ export default async function Dashboard() {
           <H3>My artwork:</H3>
         </div>
         <section className="flex flex-col gap-8 w-full">
-          <ProductList products={publishedProducts} status="PUBLISHED" />
-          <ProductList products={draftProducts} status="DRAFT" />
-          <ProductList products={archivedProducts} status="ARCHIVED" />
+          <DndContext onDragEnd={handleDragEnd}>
+            <ProductList products={publishedProducts} status="PUBLISHED" />
+            <ProductList products={draftProducts} status="DRAFT" />
+            <ProductList products={archivedProducts} status="ARCHIVED" />
+          </DndContext>
         </section>
       </section>
     </section>

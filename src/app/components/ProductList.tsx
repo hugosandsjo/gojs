@@ -38,7 +38,10 @@ function getStatusColor(status: ProductListProps["status"]) {
 
 export default function ProductList({ products, status }: ProductListProps) {
   return (
-    <section className="flex flex-col border border-black rounded-xl py-12 px-16 gap-8">
+    <section
+      id={status}
+      className="flex flex-col border border-black rounded-xl py-12 px-16 gap-8"
+    >
       <div className="flex items-center gap-2">
         <div
           className={`w-3 h-3 rounded-full ${getStatusColor(status)}`}

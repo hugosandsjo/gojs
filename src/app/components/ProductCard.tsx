@@ -1,7 +1,5 @@
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
 import Image from "next/image";
-import { Suspense } from "react";
-import Loading from "@/app/shop/loading";
 
 type ProductCardProps = {
   id: string;
@@ -24,7 +22,7 @@ export default function ProductCard({
   category,
 }: ProductCardProps) {
   return (
-    <div className=" max-w-40 flex flex-col gap-4 hover:text-yellow-700">
+    <div className=" max-w-40 flex flex-col gap-4 hover:text-yellow-700 bg-slate-200">
       <div className="flex flex-col gap-2">
         {imageUrls ? (
           <Image
