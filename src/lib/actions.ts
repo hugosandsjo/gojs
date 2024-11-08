@@ -294,12 +294,15 @@ export async function getUserProducts(id: string | undefined) {
   const products = await prisma.product.findMany({
     where: { userId: id },
     include: {
-      images: true,
       user: {
         select: {
+          id: true,
           name: true,
+          email: true,
+          role: true,
         },
       },
+      images: true,
       category: true,
     },
   });
