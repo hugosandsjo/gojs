@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { MAX_FILE_SIZE, ALLOWED_FORMATS } from "@/lib/config";
+import { MAX_FILE_SIZE, ALLOWED_FORMATS } from "@/lib/constants";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 

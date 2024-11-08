@@ -27,7 +27,7 @@
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
-    "next": "14.2.15",
+    "next": "^15.0.3-canary.9",
     "next-auth": "^5.0.0-beta.25",
     "react": "^18",
     "react-dom": "^18",
