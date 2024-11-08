@@ -341,7 +341,9 @@ export async function updateProductStatus(
       status: newStatus,
     },
   });
-  return updatedProduct;
+
+  revalidatePath("/shop");
+  // return updatedProduct;
 }
 
 export async function updateProduct(productId: string, formData: FormData) {
