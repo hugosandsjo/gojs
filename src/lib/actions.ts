@@ -331,6 +331,19 @@ export async function deleteProduct(productId: string) {
   }
 }
 
+export async function updateProductStatus(
+  productId: string,
+  newStatus: ProductStatus
+) {
+  const updatedProduct = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      status: newStatus,
+    },
+  });
+  return updatedProduct;
+}
+
 export async function updateProduct(productId: string, formData: FormData) {
   try {
     const removedImageIds = formData.getAll("removedImages") as string[];
