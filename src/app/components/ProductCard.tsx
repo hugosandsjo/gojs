@@ -1,3 +1,5 @@
+"use client";
+
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
 import { useDraggable } from "@dnd-kit/core";
 import Image from "next/image";
