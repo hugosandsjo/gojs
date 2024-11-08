@@ -1,4 +1,5 @@
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
+import { useDraggable } from "@dnd-kit/core";
 import Image from "next/image";
 
 type ProductCardProps = {
@@ -20,9 +21,25 @@ export default function ProductCard({
   description,
   user,
   category,
+  id,
 }: ProductCardProps) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: id,
+  });
+  console.log("id from ProductCard", id);
+
+  const style = transform
+    ? { transform: `translate(${transform.x}px, ${transform.y}px)` }
+    : undefined;
+
   return (
-    <div className=" max-w-40 flex flex-col gap-4 hover:text-yellow-700 bg-slate-300">
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className=" max-w-40 flex flex-col gap-4 hover:text-yellow-700"
+      style={style}
+    >
       <div className="flex flex-col gap-2">
         {imageUrls ? (
           <Image

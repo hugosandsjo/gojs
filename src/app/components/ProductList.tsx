@@ -4,7 +4,7 @@ import ProductCard from "@/app/components/ProductCard";
 import Link from "next/link";
 import { Category } from "@prisma/client";
 import { truncateText } from "@/lib/utils";
-import { DragEndEvent } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 
 type ProductWithUrls = {
   id: string;
@@ -38,18 +38,16 @@ function getStatusColor(status: ProductListProps["status"]) {
 }
 
 export default function ProductList({ products, status }: ProductListProps) {
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (!over) return;
-
-    const productId = active.id as string;
-    const newStatus = over.id as ProductWithUrls["status"];
-  }
-
+  const { setNodeRef, isOver } = useDroppable({
+    id: status,
+  });
+  console.log("Status:", status);
   return (
     <section
       id={status}
-      className="flex flex-col border border-black rounded-xl py-12 px-16 gap-8"
+      className={`flex flex-col border border-black rounded-xl py-12 px-16 gap-8 
+        ${isOver ? "bg-slate-200" : null}`}
+      ref={setNodeRef}
     >
       <div className="flex items-center gap-2">
         <div
@@ -58,24 +56,22 @@ export default function ProductList({ products, status }: ProductListProps) {
         ></div>
         <H3>{status}</H3>
       </div>
-      <article className="flex gap-8 ">
+      <article className="flex gap-8">
         {!products || products.length === 0 ? (
           <p className="text-gray-500">No {status.toLowerCase()} products</p>
         ) : (
           products.map((product) => (
             <div key={product.id} className="flex flex-col gap-4">
-              <Link key={product.id} href={`shop/${product.id}`}>
-                <ProductCard
-                  id={product.id}
-                  title={product.title}
-                  description={truncateText(product.description, 90)}
-                  price={product.price}
-                  quantity={product.quantity}
-                  category={product.category.title}
-                  imageUrls={product.imageUrls}
-                  user={product.user}
-                />
-              </Link>
+              <ProductCard
+                id={product.id}
+                title={product.title}
+                description={truncateText(product.description, 90)}
+                price={product.price}
+                quantity={product.quantity}
+                category={product.category.title}
+                imageUrls={product.imageUrls}
+                user={product.user}
+              />
               <Link href={`/dashboard/${product.id}`}>
                 <EditButton>Edit</EditButton>
               </Link>
