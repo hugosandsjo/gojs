@@ -98,20 +98,18 @@ export default function UpdateProductForm({
     });
   }, []);
   return (
-    <section className="flex flex-col gap-6">
-      <section className="flex flex-col gap-6"></section>
+    <section className="flex flex-col gap-10">
+      <section className="w-full flex justify-between px-2">
+        <BackButton size={12} />
+        <H2>Update product</H2>
+        <div></div>
+      </section>
 
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-8 py-8 p-14 border border-black"
       >
-        <section className="w-full flex gap-4 justify-between px-2">
-          <BackButton size={12} />
-          <H2>Update product</H2>
-          <div></div>
-        </section>
         <input type="hidden" name="userId" value={userId} />
-        <H3>INFO</H3>
         <section className="flex flex-wrap gap-4 w-full">
           <article className="w-full flex gap-6">
             <div className="flex flex-col gap-2 w-2/3">
@@ -150,9 +148,11 @@ export default function UpdateProductForm({
             </div>
           </article>
         </section>
-        <H3>PROPERTIES</H3>
+
+        <p className="font-sans text-3xl">Properties</p>
+
         <section className="flex gap-4">
-          <article className="flex flex-col gap-4">
+          <article className="flex gap-4">
             <TextField
               title="Height"
               name="height"
@@ -166,7 +166,7 @@ export default function UpdateProductForm({
               defaultValue={product?.width || ""}
             />
           </article>
-          <article className="flex flex-col gap-4">
+          <article className="flex gap-4">
             <TextField
               title="Depth"
               name="depth"
@@ -200,7 +200,7 @@ export default function UpdateProductForm({
             />
           </label>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 justify-end">
           {product?.id && <DeleteButton id={product.id} />}
           <Button type="submit">Update product</Button>
         </div>
