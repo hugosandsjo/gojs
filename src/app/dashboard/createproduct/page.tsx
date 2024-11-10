@@ -15,7 +15,7 @@ export default async function CreateProductPage() {
 
   return (
     <Suspense fallback={<p>Loading form for you...</p>}>
-      <section className="flex flex-col px-36 py-16 justify-center gap-8 items-center">
+      <section className="flex flex-col px-36 py-16 justify-center gap-12 items-center">
         <CreateProductForm userId={user.id} />
       </section>
     </Suspense>

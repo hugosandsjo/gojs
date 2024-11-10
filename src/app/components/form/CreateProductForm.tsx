@@ -4,14 +4,12 @@ import { createProduct } from "@/lib/actions";
 import Link from "next/link";
 import Dropzone from "@/app/components/form/DropZone";
 import Button from "@/app/components/buttons/Button";
-import H2 from "@/app/components/typography/H2";
 import TextField from "@/app/components/form/TextField";
 import TextArea from "@/app/components/form/TextArea";
 import Dropdown from "@/app/components/form/Dropdown";
 import NumberPicker from "@/app/components/form/NumberPicker";
 import { useFormState } from "react-dom";
 import { DealFormState, StringMap } from "@/lib/types";
-import BackButton from "@/app/components/buttons/BackButton";
 import H3 from "@/app/components/typography/H3";
 import SubmitButton from "@/app/components/buttons/SubmitButton";
 import { toast } from "react-hot-toast";
@@ -19,6 +17,8 @@ import { useEffect, useState, useCallback } from "react";
 import DropdownStatus from "@/app/components/form/DropDownStatus";
 import { MAX_FILE_SIZE } from "@/lib/constants";
 import { bytesToMB } from "@/lib/utils";
+import BackButton from "@/app/components/buttons/BackButton";
+import H2 from "@/app/components/typography/H2";
 
 type CreateProductFormProps = {
   userId: string;
@@ -43,21 +43,31 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
   }, []);
 
   const handleFormAction = async (formData: FormData) => {
-    selectedFiles.forEach((file) => formData.append("images", file));
-    await formAction(formData);
+    const newFormData = new FormData();
+
+    for (const [key, value] of formData.entries()) {
+      if (key !== "images") {
+        newFormData.append(key, value);
+      }
+    }
+    selectedFiles.forEach((file) => {
+      newFormData.append("images", file);
+    });
+
+    formAction(newFormData);
   };
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex flex-col gap-10 max-w-screen-lg">
+      <div className="flex justify-between w-full">
+        <BackButton size={12} />
+        <H2>Create Product</H2>
+        <div></div>
+      </div>
       <form
         action={handleFormAction}
         className="flex flex-col gap-8 py-14 px-20 border border-black"
       >
-        <section className="w-full flex gap-4 justify-between px-2">
-          <BackButton size={12} />
-          <H2>Create Product</H2>
-          <div></div>
-        </section>
         <input type="hidden" name="userId" value={userId} />
         <H3>INFO</H3>
         <section className="flex flex-wrap gap-4 w-full">
@@ -105,7 +115,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         </section>
         <H3>PROPERTIES</H3>
         <section className="flex gap-4">
-          <article className="flex flex-col gap-4">
+          <article className="flex gap-4">
             <TextField
               title="Height"
               name="height"
@@ -121,7 +131,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
               error={serverState.errors?.width}
             />
           </article>
-          <article className="flex flex-col gap-4">
+          <article className="flex gap-4">
             <TextField
               title="Depth"
               name="depth"

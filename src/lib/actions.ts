@@ -34,6 +34,9 @@ export async function createProduct(
       }
     });
 
+    // Add this at the start of your createProduct function:
+    console.log("Number of images received:", formData.getAll("images").length);
+
     formDataObject.images = imageFiles;
 
     formData.forEach((value, key) => {
