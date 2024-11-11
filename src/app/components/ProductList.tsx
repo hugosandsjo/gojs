@@ -1,10 +1,9 @@
 import H3 from "@/app/components/typography/H3";
-import EditButton from "@/app/components/buttons/EditButton";
 import ProductCard from "@/app/components/ProductCard";
-import Link from "next/link";
 import { Category } from "@prisma/client";
 import { truncateText } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
+import { ProductWithRelations } from "@/lib/types";
 
 type ProductWithUrls = {
   id: string;
@@ -21,7 +20,7 @@ type ProductWithUrls = {
 
 type ProductListProps = {
   products: ProductWithUrls[] | undefined;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  status: ProductWithRelations["status"]; // This will automatically stay in sync with your schema
 };
 
 function getStatusColor(status: ProductListProps["status"]) {
