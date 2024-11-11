@@ -45,7 +45,7 @@ export default function ProductList({ products, status }: ProductListProps) {
   return (
     <section
       id={status}
-      className={`flex flex-col border border-black rounded-xl py-12 px-16 gap-8 
+      className={`flex flex-col rounded-xl py-12 px-16 gap-8 shadow-[0_4px_14px_0_rgb(0,0,0,0.2)]
         ${isOver ? "bg-slate-200" : null}`}
       ref={setNodeRef}
     >
@@ -72,9 +72,6 @@ export default function ProductList({ products, status }: ProductListProps) {
                 imageUrls={product.imageUrls}
                 user={product.user}
               />
-              <Link href={`/dashboard/${product.id}`}>
-                <EditButton>Edit</EditButton>
-              </Link>
             </div>
           ))
         )}

@@ -14,7 +14,7 @@ export default function SignInForm({}: SignInFormProps) {
     { status: "error" }
   );
   return (
-    <form action={formAction}>
+    <form action={formAction} className="w-full">
       <div className="flex flex-col gap-6">
         <TextField
           title="Email"

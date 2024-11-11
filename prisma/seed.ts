@@ -11,11 +11,63 @@ export async function hashPassword(
   return hashedPassword;
 }
 
-// Define your initial data for both local and preview environments
 const initialCategories: Prisma.CategoryCreateInput[] = [
   { title: "Painting" },
   { title: "Sculpture" },
   { title: "Digital Art" },
+];
+
+const artistUsers = [
+  {
+    name: "Erik Lindström",
+    email: "erik.lindstrom@artist.com",
+    password: "Erikart123",
+  },
+  {
+    name: "Anna Björklund",
+    email: "anna.bjorklund@artist.com",
+    password: "Annaart123",
+  },
+  {
+    name: "Lars Nilsson",
+    email: "lars.nilsson@artist.com",
+    password: "Larsart123",
+  },
+  {
+    name: "Sofia Andersson",
+    email: "sofia.andersson@artist.com",
+    password: "Sofiaart123",
+  },
+  {
+    name: "Gustav Bergman",
+    email: "gustav.bergman@artist.com",
+    password: "Gustavart123",
+  },
+  {
+    name: "Astrid Johansson",
+    email: "astrid.johansson@artist.com",
+    password: "Astridart123",
+  },
+  {
+    name: "Michael Chen",
+    email: "michael.chen@artist.com",
+    password: "Michaelart123",
+  },
+  {
+    name: "Isabella Romano",
+    email: "isabella.romano@artist.com",
+    password: "Isabellaart123",
+  },
+  {
+    name: "James McCarthy",
+    email: "james.mccarthy@artist.com",
+    password: "Jamesart123",
+  },
+  {
+    name: "Maria Santos",
+    email: "maria.santos@artist.com",
+    password: "Mariaart123",
+  },
 ];
 
 async function seedDatabase() {
@@ -34,10 +86,22 @@ async function seedDatabase() {
     prisma.product.deleteMany(),
     prisma.user.deleteMany(),
   ]);
-  const defaultEmail = "default@user.com";
-  const defaultPassword = "defaultpassword";
 
-  const hashedPassword = await hashPassword(defaultPassword);
+  const createdUsers = await Promise.all(
+    artistUsers.map(async (artist) => {
+      const hashedPassword = await hashPassword(artist.password);
+      const user = await prisma.user.create({
+        data: {
+          email: artist.email,
+          name: artist.name,
+          password: hashedPassword,
+          role: "ARTIST",
+        },
+      });
+      console.log(`Created artist: ${user.name}`);
+      return user;
+    })
+  );
 
   // Seeding categories
   const categories = await Promise.all(
@@ -62,19 +126,6 @@ async function seedDatabase() {
   const [paintingsCategory, sculpturesCategory, digitalArtCategory] =
     categories;
 
-  const defaultUser = await prisma.user.upsert({
-    where: { email: "hugosandsjo@gmail.com" },
-    update: {},
-    create: {
-      email: defaultEmail,
-      name: "Snusmumriken Svensson",
-      password: hashedPassword,
-      role: "ARTIST",
-    },
-  });
-  console.log("Default user created:", defaultUser);
-
-  // Seeding products
   const initialProducts: Prisma.ProductCreateInput[] = [
     {
       title: "The Great Fall",
@@ -92,45 +143,207 @@ async function seedDatabase() {
       category: {
         connect: { id: paintingsCategory.id },
       },
-      user: { connect: { id: defaultUser.id } },
+      user: { connect: { id: createdUsers[0].id } }, // Erik Lindström
     },
-
     {
-      title: "A leaf",
+      title: "Nordic Twilight",
       description:
-        "An artwork depicting the elegance of penguins in their natural habitat.",
-      price: 800,
+        "A serene landscape capturing the mystical Nordic twilight hours.",
+      price: 2200,
+      sold_out: false,
+      quantity: 2,
+      height: 60,
+      width: 80,
+      depth: 3,
+      weight: 2.5,
+      available_stock: 2,
+      backorder: false,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: paintingsCategory.id },
+      },
+      user: { connect: { id: createdUsers[0].id } }, // Erik Lindström
+    },
+    {
+      title: "Copper Dreams",
+      description: "Abstract sculpture made from recycled copper and bronze.",
+      price: 3500,
+      sold_out: false,
+      quantity: 1,
+      height: 45,
+      width: 30,
+      depth: 30,
+      weight: 8,
+      available_stock: 1,
+      backorder: false,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: sculpturesCategory.id },
+      },
+      user: { connect: { id: createdUsers[1].id } }, // Anna Björklund
+    },
+    {
+      title: "Forest Spirit",
+      description: "A delicate sculpture inspired by Swedish folklore.",
+      price: 1800,
       sold_out: false,
       quantity: 3,
-      height: 50,
-      width: 70,
-      depth: 2,
-      weight: 2,
+      height: 40,
+      width: 20,
+      depth: 20,
+      weight: 5,
       available_stock: 3,
       backorder: true,
       status: "DRAFT",
       category: {
         connect: { id: sculpturesCategory.id },
       },
-      user: { connect: { id: defaultUser.id } },
+      user: { connect: { id: createdUsers[1].id } }, // Anna Björklund
     },
     {
-      title: "Batman",
-      description: "A modern take on the classic superhero, Batman.",
-      price: 1500,
+      title: "Digital Dreamscape",
+      description:
+        "A surreal digital artwork exploring themes of consciousness.",
+      price: 800,
       sold_out: false,
-      quantity: 1,
-      height: 55,
-      width: 80,
-      depth: 3,
-      weight: 3,
-      available_stock: 1,
+      quantity: 10,
+      height: 0,
+      width: 0,
+      depth: 0,
+      weight: 0,
+      available_stock: 10,
       backorder: false,
       status: "PUBLISHED",
       category: {
         connect: { id: digitalArtCategory.id },
       },
-      user: { connect: { id: defaultUser.id } },
+      user: { connect: { id: createdUsers[2].id } }, // Lars Nilsson
+    },
+    {
+      title: "Urban Symphony",
+      description: "A vibrant painting capturing city life in motion.",
+      price: 1600,
+      sold_out: false,
+      quantity: 1,
+      height: 100,
+      width: 150,
+      depth: 4,
+      weight: 3,
+      available_stock: 1,
+      backorder: false,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: paintingsCategory.id },
+      },
+      user: { connect: { id: createdUsers[3].id } }, // Sofia Andersson
+    },
+    {
+      title: "Crystal Memories",
+      description: "Glass sculpture with embedded digital elements.",
+      price: 4200,
+      sold_out: false,
+      quantity: 2,
+      height: 50,
+      width: 30,
+      depth: 30,
+      weight: 10,
+      available_stock: 2,
+      backorder: true,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: sculpturesCategory.id },
+      },
+      user: { connect: { id: createdUsers[4].id } }, // Gustav Bergman
+    },
+    {
+      title: "Pixel Paradise",
+      description: "A digital artwork series exploring virtual landscapes.",
+      price: 950,
+      sold_out: false,
+      quantity: 5,
+      height: 0,
+      width: 0,
+      depth: 0,
+      weight: 0,
+      available_stock: 5,
+      backorder: false,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: digitalArtCategory.id },
+      },
+      user: { connect: { id: createdUsers[5].id } }, // Astrid Johansson
+    },
+    {
+      title: "Eastern Winds",
+      description: "Contemporary Asian-inspired digital art piece.",
+      price: 1100,
+      sold_out: false,
+      quantity: 3,
+      height: 0,
+      width: 0,
+      depth: 0,
+      weight: 0,
+      available_stock: 3,
+      backorder: false,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: digitalArtCategory.id },
+      },
+      user: { connect: { id: createdUsers[6].id } }, // Michael Chen
+    },
+    {
+      title: "Mediterranean Dreams",
+      description: "Vibrant painting inspired by Italian coastal life.",
+      price: 2800,
+      sold_out: false,
+      quantity: 1,
+      height: 80,
+      width: 120,
+      depth: 3,
+      weight: 4,
+      available_stock: 1,
+      backorder: false,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: paintingsCategory.id },
+      },
+      user: { connect: { id: createdUsers[7].id } }, // Isabella Romano
+    },
+    {
+      title: "Celtic Whispers",
+      description: "Bronze sculpture with traditional Irish motifs.",
+      price: 3200,
+      sold_out: false,
+      quantity: 2,
+      height: 60,
+      width: 40,
+      depth: 40,
+      weight: 15,
+      available_stock: 2,
+      backorder: true,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: sculpturesCategory.id },
+      },
+      user: { connect: { id: createdUsers[8].id } }, // James McCarthy
+    },
+    {
+      title: "Tropical Fusion",
+      description: "Digital art blending Brazilian tropical elements.",
+      price: 750,
+      sold_out: false,
+      quantity: 8,
+      height: 0,
+      width: 0,
+      depth: 0,
+      weight: 0,
+      available_stock: 8,
+      backorder: false,
+      status: "PUBLISHED",
+      category: {
+        connect: { id: digitalArtCategory.id },
+      },
+      user: { connect: { id: createdUsers[9].id } }, // Maria Santos
     },
   ];
 
