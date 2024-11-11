@@ -1,10 +1,13 @@
+import { Pencil } from "lucide-react";
+
 type EditButtonProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 export default function EditButton({ children }: EditButtonProps) {
   return (
-    <button className="py-2 px-4 border border-black hover:text-white hover:bg-black hover:shadow-lg">
+    <button className="p-2 rounded-full bg-white hover:text-white hover:bg-black hover:shadow-lg">
+      <Pencil />
       {children}
     </button>
   );

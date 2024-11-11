@@ -37,8 +37,13 @@ export default async function Dashboard() {
         <section className="flex flex-col w-full py-12 px-28 rounded-xl gap-8">
           <section className="w-full flex justify-between">
             <Link href="dashboard/createproduct">
-              <Button type="submit">Create product</Button>
+              <Button type="button">Create product</Button>
             </Link>
+            <div>
+              <p>{user?.name}</p>
+              <p>{user?.email}</p>
+              <p>{user?.role}</p>
+            </div>
             <UserInfo user={user} />
           </section>
           <section className="flex flex-col w-full gap-8">

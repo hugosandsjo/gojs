@@ -3,6 +3,8 @@
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
 import { useDraggable } from "@dnd-kit/core";
 import Image from "next/image";
+import Link from "next/link";
+import EditButton from "@/app/components/buttons/EditButton";
 
 type ProductCardProps = {
   id: string;
@@ -39,7 +41,7 @@ export default function ProductCard({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className=" max-w-40 flex flex-col gap-4 hover:text-yellow-700"
+      className="relative max-w-40 flex flex-col gap-4"
       style={style}
     >
       <div className="flex flex-col gap-2">
@@ -68,6 +70,11 @@ export default function ProductCard({
       </div>
       <div>
         <ProductParagraph>{description}</ProductParagraph>
+      </div>
+      <div className="absolute top-1 right-3">
+        <Link href={`/dashboard/${id}`}>
+          <EditButton></EditButton>
+        </Link>
       </div>
     </div>
   );

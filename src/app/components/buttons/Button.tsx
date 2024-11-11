@@ -16,7 +16,7 @@ export default function Button({
     <button
       type={type}
       className={twMerge(
-        "py-4 px-6 border border-black hover:shadow-lg",
+        "py-4 px-6 border border-black hover:shadow-lg rounded-xl",
         primary
           ? "bg-green-300 text-black hover:bg-white hover:text-black"
           : "bg-white text-black hover:bg-black hover:text-white",
