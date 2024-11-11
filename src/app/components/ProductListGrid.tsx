@@ -2,54 +2,20 @@
 
 import ProductList from "@/app/components/ProductList";
 import { getImgixUrl } from "@/lib/utils";
-import { Category } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useState } from "react";
 import { updateProductStatus } from "@/lib/actions";
-
-type ProductImage = {
-  id: number;
-  image_key: string;
-  productId: string;
-};
-
-type ProductUser = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-};
-
-type ProductFromDB = {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  quantity: number | null;
-  height: number | null;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNAVAILABLE";
-  category: Category;
-  images: ProductImage[];
-  user: ProductUser;
-  userId: string;
-};
+import { ProductWithRelations } from "@/lib/types";
 
 type ProductListGridProps = {
-  products: ProductFromDB[];
-  user: ProductUser;
+  products: ProductWithRelations[];
+  user: User;
 };
 
-type ProductWithUrls = {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  quantity: number | null;
-  height: number | null;
+type ProductWithUrls = ProductWithRelations & {
   imageUrls: string[];
   user: string | undefined;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED" | "UNAVAILABLE";
-  category: Category;
 };
 
 export default function ProductListGrid({ products }: ProductListGridProps) {

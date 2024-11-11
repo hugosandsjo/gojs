@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MAX_FILE_SIZE } from "@/lib/constants";
+import { Prisma } from "@prisma/client";
 
 export const formFileSchema = z.object({
   size: z
@@ -111,5 +112,20 @@ export type LoginFormState = {
   };
   success?: boolean;
 };
+
+export type ProductWithRelations = Prisma.ProductGetPayload<{
+  include: {
+    user: {
+      select: {
+        id: true;
+        name: true;
+        email: true;
+        role: true;
+      };
+    };
+    images: true;
+    category: true;
+  };
+}>;
 
 export type LoginFormData = z.infer<typeof loginSchema>;

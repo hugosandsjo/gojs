@@ -1,5 +1,3 @@
-import { UserRoundPen } from "lucide-react";
-
 type User = {
   id: string;
   name: string | null;
@@ -13,8 +11,10 @@ type UserInfoProps = {
 export default function UserInfo({ user }: UserInfoProps) {
   return (
     <>
-      <article className="flex">
-        <UserRoundPen size={40} />
+      <article className="flex flex-col">
+        <p>{user?.name}</p>
+        <p>{user?.email}</p>
+        <p>{user?.role}</p>
       </article>
     </>
   );
