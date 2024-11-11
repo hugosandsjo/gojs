@@ -70,6 +70,7 @@ export default function ProductList({ products, status }: ProductListProps) {
                 category={product.category.title}
                 imageUrls={product.imageUrls}
                 user={product.user}
+                variant="dashboard"
               />
             </div>
           ))

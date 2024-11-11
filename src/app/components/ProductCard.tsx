@@ -15,6 +15,7 @@ type ProductCardProps = {
   imageUrls: string[];
   user: string | undefined;
   category: string;
+  variant?: "shop" | "dashboard";
 };
 
 export default function ProductCard({
@@ -26,6 +27,7 @@ export default function ProductCard({
   user,
   category,
   id,
+  variant = "shop",
 }: ProductCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: id,
@@ -71,11 +73,13 @@ export default function ProductCard({
       <div>
         <ProductParagraph>{description}</ProductParagraph>
       </div>
-      <div className="absolute top-1 right-3">
-        <Link href={`/dashboard/${id}`}>
-          <EditButton></EditButton>
-        </Link>
-      </div>
+      {variant === "dashboard" && (
+        <div className="absolute top-1 right-3">
+          <Link href={`/dashboard/${id}`}>
+            <EditButton />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
