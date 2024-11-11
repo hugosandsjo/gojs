@@ -31,14 +31,12 @@ export default async function UpdateProductPage({
   }
   return (
     <section className="flex flex-col px-36 py-16 justify-center gap-8 items-center">
-      <Suspense fallback={<p>Loading form...</p>}>
-        <UpdateProductForm
-          productId={params.id}
-          userId={user.id}
-          product={product}
-          category={category}
-        />
-      </Suspense>
+      <UpdateProductForm
+        productId={params.id}
+        userId={user.id}
+        product={product}
+        category={category}
+      />
     </section>
   );
 }
