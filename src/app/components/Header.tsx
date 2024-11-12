@@ -6,33 +6,31 @@ import Link from "next/link";
 export default async function Header() {
   const session = await auth();
   return (
-    <>
-      <header className="flex justify-between items-center py-6 px-6 ">
-        <div className="flex flex-col">
-          <Link href={"/shop"}>
-            {" "}
-            <NavbarParagraph>Shop</NavbarParagraph>
-          </Link>
-        </div>
-        <Link href={"/"}>
-          <h1 className="text-6xl font-serif">Gojs</h1>
+    <header className="flex justify-between items-center py-6 px-16 ">
+      <div className="flex flex-col">
+        <Link href={"/shop"}>
+          {" "}
+          <NavbarParagraph>Shop</NavbarParagraph>
         </Link>
+      </div>
+      <Link href={"/"}>
+        <h1 className="text-6xl font-serif">Gojs</h1>
+      </Link>
 
-        {session ? (
-          <div className="text-right">
-            <Link href={"/dashboard"}>
-              {" "}
-              <NavbarParagraph>Dashboard</NavbarParagraph>{" "}
-            </Link>
-            <SignOut />
-          </div>
-        ) : (
-          <Link href={"/signin"}>
+      {session ? (
+        <div className="text-right">
+          <Link href={"/dashboard"}>
             {" "}
-            <NavbarParagraph>Login </NavbarParagraph>
+            <NavbarParagraph>Dashboard</NavbarParagraph>{" "}
           </Link>
-        )}
-      </header>
-    </>
+          <SignOut />
+        </div>
+      ) : (
+        <Link href={"/signin"}>
+          {" "}
+          <NavbarParagraph>Login</NavbarParagraph>
+        </Link>
+      )}
+    </header>
   );
 }

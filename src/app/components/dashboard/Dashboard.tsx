@@ -28,7 +28,7 @@ export default function Dashboard({ user, products }: DashboardProps) {
           <Button type="button">Create product</Button>
         </Link>
         <button onClick={toggleModal}>
-          <UserEdit user={user} />
+          <UserEdit />
           <AnimatePresence>
             {modal && (
               <>
@@ -55,7 +55,7 @@ export default function Dashboard({ user, products }: DashboardProps) {
                     duration: 0.8,
                     ease: [0.76, 0, 0.24, 1],
                   }}
-                  className="bg-white absolute top-[2%] left-[8%] right-[8%] bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] p-8"
+                  className="bg-white absolute top-[2%] left-[5%] right-[5%] bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] p-8"
                 >
                   <div className="flex justify-end">
                     <button onClick={toggleModal}>Close</button>

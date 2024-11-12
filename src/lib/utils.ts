@@ -29,27 +29,20 @@ export function cn(...inputs: ClassValue[]) {
   twMerge(clsx(inputs));
 }
 
-// Captilize first letter
 export function capitalizeFirstLetter(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
 // Convert ZOD-errors
 export const convertZodErrors = (error: ZodError): StringMap => {
-  const { fieldErrors, formErrors } = error.flatten();
-
   const errors: StringMap = {};
 
-  // Map field errors
-  Object.entries(fieldErrors).forEach(([key, messages]) => {
-    if (messages && messages.length > 0) {
-      errors[key] = messages[0];
-    }
-  });
+  error.errors.forEach((err) => {
+    const key = err.path.join(".");
 
-  if (formErrors && formErrors.length > 0) {
-    errors["general"] = formErrors[0];
-  }
+    errors[key] = err.message;
+  });
 
   return errors;
 };

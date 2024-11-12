@@ -29,7 +29,7 @@ export default async function DashboardPage() {
   return (
     <section className="flex flex-col gap-8 items-center border-black my-10 mx-40">
       {" "}
-      <H2>Dashboard</H2>
+      {/* <H2>Dashboard</H2> */}
       <Dashboard user={user} products={products} />
     </section>
   );

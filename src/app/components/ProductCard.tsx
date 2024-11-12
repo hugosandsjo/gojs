@@ -5,6 +5,7 @@ import { useDraggable } from "@dnd-kit/core";
 import Image from "next/image";
 import Link from "next/link";
 import EditButton from "@/app/components/buttons/EditButton";
+import GoToArtButton from "@/app/components/buttons/GoToArtButton";
 
 type ProductCardProps = {
   id: string;
@@ -74,9 +75,12 @@ export default function ProductCard({
         <ProductParagraph>{description}</ProductParagraph>
       </div>
       {variant === "dashboard" && (
-        <div className="absolute top-1 right-3">
+        <div className="flex absolute top-4 w-full px-4 gap-2">
           <Link href={`/dashboard/${id}`}>
             <EditButton />
+          </Link>
+          <Link href={`/shop/${id}`}>
+            <GoToArtButton />
           </Link>
         </div>
       )}
