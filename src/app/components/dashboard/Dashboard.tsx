@@ -23,10 +23,11 @@ export default function Dashboard({ user, products }: DashboardProps) {
   };
   return (
     <section className="flex relative flex-col w-full py-12 px-28 rounded-xl gap-8">
-      <section className="w-full flex justify-between">
+      <section className="w-full flex justify-between items-center">
         <Link href="dashboard/createproduct">
           <Button type="button">Create product</Button>
         </Link>
+        <H3>Good day {user?.name}!</H3>
         <button onClick={toggleModal}>
           <UserEdit />
           <AnimatePresence>
