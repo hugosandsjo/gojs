@@ -65,8 +65,6 @@ export default function Dropzone({
         return [...existingFiles, ...mappedFiles];
       });
 
-      // Notify parent only of the unique valid files
-      console.log("Notifying parent of new files:", mappedFiles.length);
       onFilesChange(mappedFiles);
     },
     [onFilesChange]
@@ -88,7 +86,6 @@ export default function Dropzone({
         if (removedFile && !(removedFile instanceof File) && onImageRemove) {
           onImageRemove(fileName);
         } else {
-          // If it's a File instance, notify parent of remaining files
           const remainingFiles = filteredFiles.filter(
             (file): file is PreviewFile => file instanceof File
           );
@@ -109,7 +106,6 @@ export default function Dropzone({
     preventDropOnDocument: true,
   });
 
-  // Cleanup previews on unmount
   useEffect(() => {
     return () => {
       console.log("Cleaning up file previews");
@@ -125,27 +121,25 @@ export default function Dropzone({
     <div className="my-2">
       <div
         {...getRootProps()}
-        className={`border-2 border-dashed border-gray-300 rounded-lg py-16 transition-colors duration-200 ease-in-out ${
+        className={`relative border-2 border-dashed border-gray-300 rounded-lg h-48 transition-colors duration-200 ease-in-out ${
           isDragActive ? "border-blue-500 bg-blue-50" : "hover:border-gray-400"
         }`}
       >
         <input {...getInputProps()} name="images" />
-        {isDragActive ? (
-          <p className="text-center text-gray-600">Drop the files here...</p>
-        ) : (
-          <div className="text-center">
-            <p className="text-gray-600 mb-2">
-              Drag &apos;n&apos; drop some files here
-            </p>
-            <button
-              type="button"
-              onClick={open}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-            >
-              Select Files
-            </button>
-          </div>
-        )}
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <p className="text-gray-600 mb-4">
+            {isDragActive
+              ? "Drop the files here..."
+              : "Drag 'n' drop some files here"}
+          </p>
+          <button
+            type="button"
+            onClick={open}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+          >
+            Select Files
+          </button>
+        </div>
       </div>
       {files.length > 0 && (
         <aside className="flex flex-wrap mt-4 gap-4">
