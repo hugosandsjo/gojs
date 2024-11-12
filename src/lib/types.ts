@@ -95,12 +95,6 @@ export type StringtoBooleanMap = {
   [key: string]: boolean;
 };
 
-// export type FormDataValue = string | File;
-
-// export type ProductStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
-
-// export default productSchema;
-
 export const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email format"),
   password: z
