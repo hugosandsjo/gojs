@@ -1,9 +1,9 @@
-import { Pencil } from "lucide-react";
+import { CircleArrowRight } from "lucide-react";
 
-export default function EditButton() {
+export default function GoToArtButton() {
   return (
     <button className="p-2 rounded-full bg-white hover:text-white hover:bg-black hover:shadow-lg">
-      <Pencil />
+      <CircleArrowRight />
     </button>
   );
 }

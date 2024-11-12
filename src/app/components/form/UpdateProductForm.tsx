@@ -1,11 +1,11 @@
 "use client";
+
 import { updateProduct } from "@/lib/actions";
 import Dropzone from "@/app/components/form/DropZone";
 import { Product, Image, Category, ProductStatus } from "@prisma/client";
 import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
 import H2 from "@/app/components/typography/H2";
-import H3 from "@/app/components/typography/H3";
 import { getImgixUrl } from "@/lib/utils";
 import { useMemo, useState, useCallback } from "react";
 import TextField from "@/app/components/form/TextField";
@@ -75,7 +75,7 @@ export default function UpdateProductForm({
     setSelectedFiles((prev) => {
       const newMap = new Map(prev);
       files.forEach((file) => {
-        const fileId = file.name; // Using just the name as ID since it's the same file
+        const fileId = file.name;
         if (!newMap.has(fileId)) {
           newMap.set(fileId, file);
         }
@@ -107,7 +107,7 @@ export default function UpdateProductForm({
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-8 py-8 p-14 border border-black"
+        className="flex flex-col gap-8 py-8 p-14 border rounded-xl border-black"
       >
         <input type="hidden" name="userId" value={userId} />
         <section className="flex flex-wrap gap-4 w-full">

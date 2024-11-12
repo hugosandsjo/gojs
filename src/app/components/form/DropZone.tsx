@@ -122,7 +122,7 @@ export default function Dropzone({
   }, [files]);
 
   return (
-    <div className="mt-2">
+    <div className="my-2">
       <div
         {...getRootProps()}
         className={`border-2 border-dashed border-gray-300 rounded-lg py-16 transition-colors duration-200 ease-in-out ${

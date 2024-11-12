@@ -18,9 +18,27 @@ export const formFileSchema = z.object({
 export const productSchema = z.object({
   userId: z.string().cuid(),
   title: z.string().min(1, "Title is required"),
-  price: z.preprocess((value) => {
-    return value === "" ? undefined : parseFloat(value as string);
-  }, z.number().positive("Price must be a positive number")),
+  price: z
+    .string()
+    .min(1, "Price is required")
+    .transform((val, ctx) => {
+      const parsed = parseFloat(val);
+      if (isNaN(parsed)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please enter a valid price",
+        });
+        return z.NEVER;
+      }
+      if (parsed <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Price must be greater than 0",
+        });
+        return z.NEVER;
+      }
+      return parsed;
+    }),
   description: z.string().optional(),
   category: z.string().min(1, "Category is required"),
   status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
@@ -77,11 +95,11 @@ export type StringtoBooleanMap = {
   [key: string]: boolean;
 };
 
-export type FormDataValue = string | File;
+// export type FormDataValue = string | File;
 
-export type ProductStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+// export type ProductStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
-export default productSchema;
+// export default productSchema;
 
 export const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email format"),

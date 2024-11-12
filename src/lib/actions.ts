@@ -146,7 +146,6 @@ export async function createProduct(
     console.error("Error creating product:", error);
     return { errors: { general: "Failed to create product." } };
   }
-
   redirect("/dashboard");
 }
 

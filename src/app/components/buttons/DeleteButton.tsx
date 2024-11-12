@@ -27,15 +27,15 @@ export default function DeleteButton({ id }: DeleteButtonProps) {
   };
 
   return (
-    <div>
+    <>
       <button
         onClick={handleDeleteClick}
         disabled={isDeleting}
-        className="py-4 px-6 border border-black hover:text-white hover:bg-red-600 hover:shadow-lg hover:border-red-600"
+        className="py-4 px-6 border border-black hover:text-white hover:bg-red-600 hover:shadow-lg hover:border-red-600 rounded-xl"
       >
         {isDeleting ? "Deleting..." : "Delete"}
       </button>
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-    </div>
+    </>
   );
 }

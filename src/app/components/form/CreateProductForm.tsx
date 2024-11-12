@@ -66,7 +66,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
       </div>
       <form
         action={handleFormAction}
-        className="flex flex-col gap-8 py-14 px-20 border border-black"
+        className="flex flex-col gap-8 py-14 px-20 border border-black rounded-xl"
       >
         <input type="hidden" name="userId" value={userId} />
         <H3>INFO</H3>
