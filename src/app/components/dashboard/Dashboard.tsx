@@ -23,10 +23,13 @@ export default function Dashboard({ user, products }: DashboardProps) {
   };
   return (
     <section className="flex relative flex-col w-full py-12 px-28 rounded-xl gap-8">
-      <section className="w-full flex justify-between">
+      <section className="w-full flex justify-between items-center">
         <Link href="dashboard/createproduct">
           <Button type="button">Create product</Button>
         </Link>
+        <div>
+          <H3>Hi {user?.name}!</H3>
+        </div>
         <button onClick={toggleModal}>
           <UserEdit />
           <AnimatePresence>
@@ -37,7 +40,7 @@ export default function Dashboard({ user, products }: DashboardProps) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="fixed inset-0 bg-black/50 z-40"
+                  className="fixed inset-0 bg-black/30 z-40"
                   onClick={toggleModal}
                 />
 
@@ -55,7 +58,7 @@ export default function Dashboard({ user, products }: DashboardProps) {
                     duration: 0.8,
                     ease: [0.76, 0, 0.24, 1],
                   }}
-                  className="bg-white absolute top-[2%] left-[5%] right-[5%] bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] p-8"
+                  className="bg-white absolute top-[2%] left-[5%] right-[5%] bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] p-12"
                 >
                   <div className="flex justify-end">
                     <button onClick={toggleModal}>Close</button>

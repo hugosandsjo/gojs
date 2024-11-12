@@ -83,6 +83,7 @@ export default function Dropzone({
         );
 
         const removedFile = prevFiles.find((file) => file.name === fileName);
+
         if (removedFile && !(removedFile instanceof File) && onImageRemove) {
           onImageRemove(fileName);
         } else {
