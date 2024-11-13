@@ -4,7 +4,6 @@ import { updateProduct } from "@/lib/actions";
 import Dropzone from "@/app/components/form/DropZone";
 import { Product, Image, Category, ProductStatus } from "@prisma/client";
 import { DealFormState, StringMap } from "@/lib/types";
-import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
 import H2 from "@/app/components/typography/H2";
 import { getImgixUrl } from "@/lib/utils";
@@ -20,6 +19,7 @@ import { toast } from "react-hot-toast";
 import { bytesToMB } from "@/lib/utils";
 import { MAX_FILE_SIZE } from "@/lib/constants";
 import SubmitButton from "@/app/components/buttons/SubmitButton";
+import H3 from "@/app/components/typography/H3";
 
 type UpdateProductFormProps = {
   productId: string;
@@ -106,14 +106,12 @@ export default function UpdateProductForm({
       if (key !== "images") {
         newFormData.append(key, value);
       }
-    } // Remove the semicolon here
+    }
 
-    // Add selected files
     selectedFiles.forEach((file) => {
       newFormData.append("images", file);
     });
 
-    // Add removed image IDs
     removedImages.forEach((id) => {
       newFormData.append("removedImages", id);
     });
@@ -131,9 +129,10 @@ export default function UpdateProductForm({
 
       <form
         action={handleFormAction}
-        className="flex flex-col gap-8 py-8 p-14 border rounded-xl border-black"
+        className="flex flex-col gap-8 py-14 px-20 border rounded-xl border-black"
       >
         <input type="hidden" name="userId" value={userId} />
+        <H3>INFO</H3>
         <section className="flex flex-wrap gap-4 w-full">
           <article className="w-full flex gap-6">
             <div className="flex flex-col gap-2 w-2/3">

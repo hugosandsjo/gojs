@@ -53,8 +53,6 @@ export default function Dropzone({
     (acceptedFiles: File[]) => {
       if (isDisabled) return;
 
-      console.log("onDrop called with files:", acceptedFiles.length);
-
       if (acceptedFiles.length === 0) return;
 
       const validFiles = acceptedFiles.filter((file) => {

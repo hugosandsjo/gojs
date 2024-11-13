@@ -4,6 +4,7 @@ type ButtonProps = {
   type: "submit" | "reset" | "button";
   className?: string;
   primary?: boolean;
+  onClick?: () => void;
 };
 
 export default function Button({
