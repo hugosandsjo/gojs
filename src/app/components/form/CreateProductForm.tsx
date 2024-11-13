@@ -10,6 +10,8 @@ import H2 from "@/app/components/typography/H2";
 import AlertModal from "@/app/components/AlertModal";
 import { useRouter } from "next/navigation";
 import FormFields from "@/app/components/form/FormFields";
+import SubmitButton from "@/app/components/buttons/SubmitButton";
+import Button from "@/app/components/buttons/Button";
 
 type CreateProductFormProps = {
   userId: string;
@@ -96,6 +98,15 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
             handleFilesChange={handleFilesChange}
             serverState={serverState}
           />
+          <div className="flex justify-between">
+            <Button type="button" onClick={showCancelAlert}>
+              Cancel
+            </Button>
+
+            <div className="flex gap-4">
+              <SubmitButton />
+            </div>
+          </div>
         </form>
       </section>
     </>

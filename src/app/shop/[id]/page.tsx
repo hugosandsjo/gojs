@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { getImgixUrl } from "@/lib/utils";
 import SingleProductParagraph from "@/app/components/typography/SingleProductParagraph";
 import BackButton from "@/app/components/buttons/BackButton";
-import { Product, Category, Image as PrismaImage } from "@prisma/client";
+import { Product, Category, Image as PrismaImage, User } from "@prisma/client";
 import Image from "next/image";
 
 type ProductWithCategoryAndImages = Product & {
   category: Category;
   images: PrismaImage[];
   imageUrls: string[];
+  user: User;
 };
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
@@ -21,7 +22,6 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
   useEffect(() => {
     (async () => {
       const data = await getProduct(params.id);
-      console.log("Data from product id:", data);
       if (data) {
         const imageUrls = data.images.map((image) =>
           getImgixUrl(image.image_key, {
@@ -41,6 +41,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
   if (!product) {
     return <p>Loading...</p>;
   }
+
   return (
     <section className="flex flex-col justify-center gap-44 p-10 w-full h-auto">
       <div className="flex">
@@ -85,6 +86,9 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
               <SingleProductParagraph>
                 {product.category.title}
+              </SingleProductParagraph>
+              <SingleProductParagraph>
+                {product.user.name}
               </SingleProductParagraph>
               <SingleProductParagraph>
                 {product.price} kr
