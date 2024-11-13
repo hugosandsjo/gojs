@@ -173,15 +173,6 @@ export default function FormFields({
           <p className="text-red-500">{serverState.errors.images}</p>
         )}
       </div>
-
-      <div className="flex gap-4 justify-end">
-        <button type="button" onClick={showCancelAlert}>
-          Cancel
-        </button>
-        {productId && <DeleteButton id={productId} />}
-        <SubmitButton />
-      </div>
-
       {serverState.errors?.general && (
         <p className="text-red-500">{serverState.errors.general}</p>
       )}

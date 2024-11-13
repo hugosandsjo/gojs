@@ -154,6 +154,7 @@ export async function getProduct(productId: string) {
     include: {
       images: true,
       category: true,
+      user: true,
     },
   });
   return product;

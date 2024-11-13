@@ -13,6 +13,8 @@ import FormFields from "@/app/components/form/FormFields";
 import AlertModal from "@/app/components/AlertModal";
 import { useRouter } from "next/navigation";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
+import SubmitButton from "@/app/components/buttons/SubmitButton";
+import Button from "@/app/components/buttons/Button";
 
 type UpdateProductFormProps = {
   productId: string;
@@ -125,8 +127,6 @@ export default function UpdateProductForm({
   };
 
   const showDeleteAlert = () => {
-    // No need to handle deletion here anymore since DeleteButton handles it
-    // Just pass the DeleteButton component where needed
     return <DeleteButton id={productId} />;
   };
 
@@ -180,12 +180,17 @@ export default function UpdateProductForm({
             productId={productId}
             serverState={serverState}
           />
+          <div className="flex justify-between">
+            <Button type="button" onClick={showCancelAlert}>
+              Cancel
+            </Button>
+            <div className="flex gap-4">
+              <DeleteButton id={productId} />
+              <SubmitButton />
+            </div>
+          </div>
         </form>
       </section>
-      <div className="flex gap-4">
-        <button onClick={showCancelAlert}>Cancel</button>
-        <DeleteButton id={productId} />
-      </div>
     </>
   );
 }

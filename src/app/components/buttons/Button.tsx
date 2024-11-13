@@ -12,9 +12,11 @@ export default function Button({
   type,
   className,
   primary,
+  onClick,
 }: ButtonProps) {
   return (
     <button
+      onClick={onClick}
       type={type}
       className={twMerge(
         "py-4 px-6 border border-black hover:shadow-lg rounded-xl",

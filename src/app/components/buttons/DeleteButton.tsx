@@ -33,7 +33,8 @@ export default function DeleteButton({ id }: DeleteButtonProps) {
     }
   };
 
-  const showAlert = () => {
+  const showDeleteAlert = (e: React.MouseEvent) => {
+    e.preventDefault();
     setAlertState({
       isOpen: true,
       title: "Delete Product",
@@ -54,7 +55,8 @@ export default function DeleteButton({ id }: DeleteButtonProps) {
         message={alertState.message}
       />
       <button
-        onClick={showAlert}
+        type="button"
+        onClick={showDeleteAlert}
         disabled={isDeleting}
         className="py-4 px-6 border border-black hover:text-white hover:bg-red-600 hover:shadow-lg hover:border-red-600 rounded-xl"
       >
