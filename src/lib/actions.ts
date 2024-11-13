@@ -321,13 +321,12 @@ export async function deleteProduct(productId: string) {
         id: productId,
       },
     });
-
-    revalidatePath("/dashboard");
-    return { success: true };
   } catch (error) {
     console.error("Error deleting product:", error);
     throw new Error("Failed to delete product");
   }
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
 
 export async function updateProductStatus(
