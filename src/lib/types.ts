@@ -15,7 +15,7 @@ export const formFileSchema = z.object({
   lastModified: z.number().optional(),
 });
 
-export const productSchema = z.object({
+const baseProductSchema = z.object({
   userId: z.string().cuid(),
   title: z.string().min(1, "Title is required"),
   price: z
@@ -72,10 +72,15 @@ export const productSchema = z.object({
       return value === "" ? undefined : parseFloat(value as string);
     }, z.number().positive())
     .optional(),
+});
+
+export const createProductSchema = baseProductSchema.extend({
   images: z.array(formFileSchema).min(1, "At least one image is required"),
 });
 
-export type ProductFormData = z.infer<typeof productSchema>;
+export const updateProductSchema = baseProductSchema;
+
+export type ProductFormData = z.infer<typeof createProductSchema>;
 
 export type FormFile = File;
 
