@@ -58,8 +58,8 @@ export default function FormFields({
       <input type="hidden" name="userId" value={userId} />
       <H3>INFO</H3>
       <section className="flex flex-wrap gap-4 w-full">
-        <article className="w-full flex gap-6">
-          <div className="flex flex-col gap-2 w-2/3">
+        <article className="w-full flex flex-wrap gap-6">
+          <div className="flex flex-col flex-wrap gap-2 w-full">
             <TextField
               title="Title"
               name="title"
@@ -68,13 +68,7 @@ export default function FormFields({
               defaultValue={title || ""}
               error={serverState.errors?.title}
             />
-            <div className="flex gap-4">
-              <NumberPicker
-                title="Quantity"
-                name="quantity"
-                defaultValue={quantity || ""}
-                error={serverState.errors?.quantity}
-              />
+            <div className="flex flex-wrap gap-4">
               <TextField
                 title="Price"
                 name="price"
@@ -83,28 +77,36 @@ export default function FormFields({
                 defaultValue={price || ""}
                 error={serverState.errors?.price}
               />
+              <NumberPicker
+                title="Quantity"
+                name="quantity"
+                defaultValue={quantity || ""}
+                error={serverState.errors?.quantity}
+              />
               <DropdownStatus
                 title="Status"
                 name="status"
                 defaultValue={status || "Draft"}
                 error={serverState.errors?.status}
               />
+              <Dropdown
+                title="Category"
+                name="category"
+                defaultValue={category || ""}
+                error={serverState.errors?.category}
+              />
             </div>
-          </div>
-          <div className="w-1/3">
-            <Dropdown
-              title="Category"
-              name="category"
-              defaultValue={category || ""}
-              error={serverState.errors?.category}
-            />
+
+            {/* <div className="flex flex-wrap gap-4">
+            
+            </div> */}
           </div>
         </article>
       </section>
 
       <H3>PROPERTIES</H3>
-      <section className="flex gap-4">
-        <article className="flex gap-4">
+      <section className="flex flex-wrap gap-4">
+        <article className="flex flex-wrap gap-4">
           <TextField
             title="Height"
             name="height"
