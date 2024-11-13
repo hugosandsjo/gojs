@@ -19,6 +19,8 @@ import { MAX_FILE_SIZE } from "@/lib/constants";
 import { bytesToMB } from "@/lib/utils";
 import BackButton from "@/app/components/buttons/BackButton";
 import H2 from "@/app/components/typography/H2";
+import AlertModal from "@/app/components/AlertModal";
+import { useRouter } from "next/navigation";
 
 type CreateProductFormProps = {
   userId: string;
@@ -27,8 +29,15 @@ type CreateProductFormProps = {
 const initialState: DealFormState<StringMap> = {};
 
 export default function CreateProductForm({ userId }: CreateProductFormProps) {
+  const router = useRouter();
   const [serverState, formAction] = useFormState(createProduct, initialState);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [alertState, setAlertState] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
+  const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
     if (serverState.errors) {
@@ -57,136 +66,167 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
     formAction(newFormData);
   };
 
+  const showAlert = () => {
+    setAlertState({
+      isOpen: true,
+      title: "Confirm Navigation",
+      message:
+        "Are you sure you want to leave? Any unsaved changes will be lost.",
+    });
+  };
+
+  const handleNavigate = () => {
+    router.push("/dashboard");
+  };
+
+  const closeAlert = useCallback(() => {
+    setAlertState((prev) => ({ ...prev, isOpen: false }));
+  }, []);
+
   return (
-    <section className="flex flex-col gap-10 max-w-screen-lg">
-      <div className="flex justify-between w-full">
-        <BackButton size={12} />
-        <H2>Create Product</H2>
-        <div></div>
-      </div>
-      <form
-        action={handleFormAction}
-        className="flex flex-col gap-8 py-14 px-20 border border-black rounded-xl"
-      >
-        <input type="hidden" name="userId" value={userId} />
-        <H3>INFO</H3>
-        <section className="flex flex-wrap gap-4 w-full">
-          <article className="w-full flex gap-6">
-            {" "}
-            <div className="flex flex-col gap-2 w-2/3">
-              <TextField
-                title="Title"
-                name="title"
-                placeholder="Choose a title"
-                type="text"
-                error={serverState.errors?.title}
-              />{" "}
-              <div className="flex gap-4">
-                <NumberPicker
-                  title="Quantity"
-                  name="quantity"
-                  error={serverState.errors?.quantity}
-                />
+    <>
+      <AlertModal
+        isOpen={alertState.isOpen}
+        onClose={closeAlert}
+        onConfirm={handleNavigate}
+        title={alertState.title}
+        message={alertState.message}
+      />
+      <section className="flex flex-col gap-10 max-w-screen-lg">
+        <div className="flex justify-between w-full">
+          <BackButton size={12} />
+          <H2>Create Product</H2>
+          <div></div>
+        </div>
+        <form
+          action={handleFormAction}
+          className="flex flex-col gap-8 py-14 px-20 border border-black rounded-xl"
+        >
+          <input type="hidden" name="userId" value={userId} />
+          <H3>INFO</H3>
+          <section className="flex flex-wrap gap-4 w-full">
+            <article className="w-full flex gap-6">
+              {" "}
+              <div className="flex flex-col gap-2 w-2/3">
                 <TextField
-                  title="Price"
-                  name="price"
-                  placeholder="kr"
+                  title="Title"
+                  name="title"
+                  placeholder="Choose a title"
                   type="text"
-                  error={serverState.errors?.price}
-                />
-                <DropdownStatus
-                  title="Status"
-                  name="status"
-                  defaultValue="Draft"
-                  error={serverState.errors?.status}
+                  error={serverState.errors?.title}
+                />{" "}
+                <div className="flex gap-4">
+                  <NumberPicker
+                    title="Quantity"
+                    name="quantity"
+                    error={serverState.errors?.quantity}
+                  />
+                  <TextField
+                    title="Price"
+                    name="price"
+                    placeholder="kr"
+                    type="text"
+                    error={serverState.errors?.price}
+                  />
+                  <DropdownStatus
+                    title="Status"
+                    name="status"
+                    defaultValue="Draft"
+                    error={serverState.errors?.status}
+                  />
+                </div>
+              </div>
+              <div className="w-1/3">
+                <Dropdown
+                  title="Category"
+                  name="category"
+                  error={serverState.errors?.category}
                 />
               </div>
-            </div>
-            <div className="w-1/3">
-              <Dropdown
-                title="Category"
-                name="category"
-                error={serverState.errors?.category}
+            </article>
+
+            <div className="w-full flex gap-4"></div>
+          </section>
+          <H3>PROPERTIES</H3>
+          <section className="flex gap-4">
+            <article className="flex gap-4">
+              <TextField
+                title="Height"
+                name="height"
+                placeholder="mm"
+                type="text"
+                error={serverState.errors?.height}
               />
-            </div>
-          </article>
+              <TextField
+                title="Width"
+                name="width"
+                placeholder="mm"
+                type="text"
+                error={serverState.errors?.width}
+              />
+            </article>
+            <article className="flex gap-4">
+              <TextField
+                title="Depth"
+                name="depth"
+                placeholder="mm"
+                type="text"
+                error={serverState.errors?.depth}
+              />
+              <TextField
+                title="Weight"
+                name="weight"
+                placeholder="kg"
+                type="text"
+                error={serverState.errors?.weight}
+              />
+            </article>
+          </section>
+          <div className="flex flex-col w-full">
+            <TextArea
+              title="Description"
+              name="description"
+              placeholder="Write something about your artwork"
+              error={serverState.errors?.description}
+            />
+          </div>
 
-          <div className="w-full flex gap-4"></div>
-        </section>
-        <H3>PROPERTIES</H3>
-        <section className="flex gap-4">
-          <article className="flex gap-4">
-            <TextField
-              title="Height"
-              name="height"
-              placeholder="mm"
-              type="text"
-              error={serverState.errors?.height}
-            />
-            <TextField
-              title="Width"
-              name="width"
-              placeholder="mm"
-              type="text"
-              error={serverState.errors?.width}
-            />
-          </article>
-          <article className="flex gap-4">
-            <TextField
-              title="Depth"
-              name="depth"
-              placeholder="mm"
-              type="text"
-              error={serverState.errors?.depth}
-            />
-            <TextField
-              title="Weight"
-              name="weight"
-              placeholder="kg"
-              type="text"
-              error={serverState.errors?.weight}
-            />
-          </article>
-        </section>
-        <div className="flex flex-col w-full">
-          <TextArea
-            title="Description"
-            name="description"
-            placeholder="Write something about your artwork"
-            error={serverState.errors?.description}
-          />
-        </div>
+          <div>
+            <label>
+              <div className="flex justify-between">
+                <div>Select Images</div>
+                <div>Max {bytesToMB(MAX_FILE_SIZE)}</div>
+              </div>
+              <Dropzone onFilesChange={handleFilesChange} />
+            </label>
+            {serverState.errors?.images && (
+              <p className="text-red-500">{serverState.errors.images}</p>
+            )}
 
-        <div>
-          <label>
-            <div className="flex justify-between">
-              <div>Select Images</div>
-              <div>Max {bytesToMB(MAX_FILE_SIZE)}</div>
-            </div>
-            <Dropzone onFilesChange={handleFilesChange} />
-          </label>
-          {serverState.errors?.images && (
-            <p className="text-red-500">{serverState.errors.images}</p>
+            {(serverState.errors ?? {})["images[0].image_key"] && (
+              <p className="text-red-500">
+                {(serverState.errors ?? {})["images[0].image_key"]}
+              </p>
+            )}
+          </div>
+
+          <div className="flex gap-4 justify-end">
+            {/* <Link href="/dashboard"> */}
+            {/* <Button type="button" onclick={showAlert}>
+                Cancel
+              </Button> */}
+            <button type="button" onClick={showAlert}>
+              Cancel
+            </button>
+            {/* </Link> */}
+            <SubmitButton />
+          </div>
+
+          {serverState.errors?.general && (
+            <p className="text-red-500">{serverState.errors.general}</p>
           )}
-
-          {(serverState.errors ?? {})["images[0].image_key"] && (
-            <p className="text-red-500">
-              {(serverState.errors ?? {})["images[0].image_key"]}
-            </p>
-          )}
-        </div>
-
-        <div className="flex gap-4 justify-end">
-          <Link href="/dashboard">
-            <Button type="button">Cancel</Button>
-          </Link>
-          <SubmitButton />
-        </div>
-
-        {serverState.errors?.general && (
-          <p className="text-red-500">{serverState.errors.general}</p>
-        )}
-      </form>
-    </section>
+        </form>
+      </section>
+    </>
   );
 }
