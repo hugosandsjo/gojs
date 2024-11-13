@@ -13,6 +13,7 @@ import {
   loginSchema,
   LoginActionResponse,
   LoginFormState,
+  ProductFormData,
 } from "@/lib/types";
 import { bucketName, s3 } from "@/lib/s3";
 import { compare } from "bcryptjs";
@@ -25,7 +26,6 @@ export async function createProduct(
 ): Promise<DealFormState<StringMap>> {
   try {
     const formDataObject: Record<string, unknown> = {};
-
     const imageFiles: File[] = [];
 
     formData.getAll("images").forEach((item) => {
@@ -33,9 +33,6 @@ export async function createProduct(
         imageFiles.push(item);
       }
     });
-
-    // Add this at the start of your createProduct function:
-    console.log("Number of images received:", formData.getAll("images").length);
 
     formDataObject.images = imageFiles;
 
@@ -337,7 +334,7 @@ export async function updateProductStatus(
   productId: string,
   newStatus: ProductStatus
 ) {
-  const updatedProduct = await prisma.product.update({
+  await prisma.product.update({
     where: { id: productId },
     data: {
       status: newStatus,
@@ -345,25 +342,57 @@ export async function updateProductStatus(
   });
 
   revalidatePath("/shop");
-  // return updatedProduct;
 }
 
-export async function updateProduct(productId: string, formData: FormData) {
+export async function updateProduct(
+  prevState: DealFormState<StringMap>,
+  formData: FormData,
+  productId: string
+): Promise<DealFormState<StringMap>> {
   try {
-    const removedImageIds = formData.getAll("removedImages") as string[];
-    console.log("formData provided:", formData);
-    const userId = formData.get("userId") as string;
-    const title = formData.get("title") as string;
-    const price = parseFloat(formData.get("price") as string);
-    const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
-    const status = formData.get("status") as string;
+    const formDataObject: Record<string, unknown> = {};
+    const imageFiles: File[] = [];
 
-    if (!userId || !title || !price || !description || !category) {
-      throw new Error("All required fields must be filled.");
+    formData.getAll("images").forEach((item) => {
+      if (item instanceof File) {
+        imageFiles.push(item);
+      }
+    });
+
+    formDataObject.images = imageFiles;
+
+    formData.forEach((value, key) => {
+      if (key !== "images" && key !== "removedImages") {
+        formDataObject[key] = value === "" ? undefined : value;
+      }
+    });
+
+    // Validate data
+    const validated = productSchema.safeParse(formDataObject);
+
+    if (!validated.success) {
+      const errors = convertZodErrors(validated.error);
+      return { errors };
     }
 
-    const pickedCategory = await prisma.category.findUnique({
+    const data = validated.data;
+
+    const {
+      userId,
+      title,
+      price,
+      status,
+      description,
+      category,
+      quantity,
+      available_stock,
+      height,
+      width,
+      depth,
+      weight,
+    } = data;
+
+    const pickedCategory: Category | null = await prisma.category.findUnique({
       where: { title: category },
     });
 
@@ -371,88 +400,85 @@ export async function updateProduct(productId: string, formData: FormData) {
       throw new Error(`Category with title "${category}" not found.`);
     }
 
-    // Optional fields with type conversion
-    const quantity = formData.get("quantity")
-      ? parseInt(formData.get("quantity") as string, 10)
-      : null;
-    const available_stock = formData.get("available_stock")
-      ? parseInt(formData.get("available_stock") as string, 10)
-      : null;
-    const height = formData.get("height")
-      ? parseInt(formData.get("height") as string, 10)
-      : null;
-    const width = formData.get("width")
-      ? parseInt(formData.get("width") as string, 10)
-      : null;
-    const depth = formData.get("depth")
-      ? parseInt(formData.get("depth") as string, 10)
-      : null;
-    const weight = formData.get("weight")
-      ? parseFloat(formData.get("weight") as string)
-      : null;
-
-    const data: Prisma.ProductUpdateInput = {
+    // Prepare product data
+    const productData: Prisma.ProductUpdateInput = {
       title,
       price,
       description,
-      status: status.toUpperCase() as ProductStatus,
+      status,
       category: {
         connect: { id: pickedCategory.id },
       },
       user: {
         connect: { id: userId },
       },
+      quantity,
+      available_stock,
+      height,
+      width,
+      depth,
+      weight,
     };
 
-    if (quantity !== null) data.quantity = quantity;
-    if (available_stock !== null) data.available_stock = available_stock;
-    if (height !== null) data.height = height;
-    if (width !== null) data.width = width;
-    if (depth !== null) data.depth = depth;
-    if (weight !== null) data.weight = weight;
-
+    // Update product
     const updatedProduct = await prisma.product.update({
       where: { id: productId },
-      data,
+      data: productData,
     });
 
-    await prisma.image.deleteMany({
-      where: {
-        id: { in: removedImageIds.map((id) => parseInt(id, 10)) },
-        productId: productId,
-      },
-    });
-    const imageFiles: File[] = formData.getAll("images") as File[];
+    // Handle removed images
+    const removedImageIds = formData.getAll("removedImages") as string[];
+    if (removedImageIds.length > 0) {
+      await prisma.image.deleteMany({
+        where: {
+          id: { in: removedImageIds.map((id) => parseInt(id, 10)) },
+          productId: productId,
+        },
+      });
+    }
 
+    // Handle image uploads
     for (const imageFile of imageFiles) {
-      if (imageFile.size > 0) {
-        const imageName = randomImageName();
-        const arrayBuffer = await imageFile.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+      if (imageFile instanceof File && imageFile.size > 0) {
+        try {
+          const imageName = randomImageName();
 
-        const params = {
-          Bucket: bucketName,
-          Key: imageName,
-          Body: buffer,
-          ContentType: imageFile.type,
-        };
+          // Convert to buffer
+          const arrayBuffer = await imageFile.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
 
-        const command = new PutObjectCommand(params);
-        await s3.send(command);
+          const params = {
+            Bucket: bucketName,
+            Key: imageName,
+            Body: buffer,
+            ContentType: imageFile.type,
+          };
 
-        await prisma.image.create({
-          data: {
-            image_key: imageName,
-            product: {
-              connect: { id: updatedProduct.id },
+          const command = new PutObjectCommand(params);
+          await s3.send(command);
+
+          await prisma.image.create({
+            data: {
+              image_key: imageName,
+              product: {
+                connect: { id: updatedProduct.id },
+              },
             },
-          },
-        });
+          });
+        } catch (imageError) {
+          if (imageError instanceof Error) {
+            throw new Error(`Failed to upload image: ${imageError.message}`);
+          } else {
+            throw new Error("Failed to upload image due to an unknown error.");
+          }
+        }
       }
     }
+
+    revalidatePath("/dashboard");
   } catch (error) {
     console.error("Error updating product:", error);
+    return { errors: { general: "Failed to update product." } };
   }
-  revalidatePath("/dashboard");
   redirect("/dashboard");
 }
