@@ -3,17 +3,23 @@
 import { updateProduct } from "@/lib/actions";
 import Dropzone from "@/app/components/form/DropZone";
 import { Product, Image, Category, ProductStatus } from "@prisma/client";
+import { DealFormState, StringMap } from "@/lib/types";
 import Button from "@/app/components/buttons/Button";
 import DeleteButton from "@/app/components/buttons/DeleteButton";
 import H2 from "@/app/components/typography/H2";
 import { getImgixUrl } from "@/lib/utils";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import TextField from "@/app/components/form/TextField";
 import TextArea from "@/app/components/form/TextArea";
 import Dropdown from "@/app/components/form/Dropdown";
 import NumberPicker from "@/app/components/form/NumberPicker";
 import BackButton from "@/app/components/buttons/BackButton";
 import DropdownStatus from "@/app/components/form/DropDownStatus";
+import { useFormState } from "react-dom";
+import { toast } from "react-hot-toast";
+import { bytesToMB } from "@/lib/utils";
+import { MAX_FILE_SIZE } from "@/lib/constants";
+import SubmitButton from "@/app/components/buttons/SubmitButton";
 
 type UpdateProductFormProps = {
   productId: string;
@@ -23,6 +29,8 @@ type UpdateProductFormProps = {
   status?: ProductStatus;
 };
 
+const initialState: DealFormState<StringMap> = {};
+
 type ProductWithImages = Product & { images: Image[] };
 
 export default function UpdateProductForm({
@@ -31,6 +39,19 @@ export default function UpdateProductForm({
   product,
   category,
 }: UpdateProductFormProps) {
+  const updateProductWithId = useCallback(
+    async (state: DealFormState<StringMap>, formData: FormData) => {
+      return updateProduct(state, formData, productId);
+    },
+    [productId]
+  );
+
+  // Use the wrapped version in useFormState
+  const [serverState, formAction] = useFormState(
+    updateProductWithId,
+    initialState
+  );
+
   const [selectedFiles, setSelectedFiles] = useState<Map<string, File>>(
     new Map()
   );
@@ -43,35 +64,15 @@ export default function UpdateProductForm({
     }));
   }, [product]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-
-    // Clear any existing 'images' fields
-    formData.delete("images");
-
-    // Add each file only once
-    const uniqueFiles = new Map(
-      Array.from(selectedFiles.values()).map((file) => [file.name, file])
-    );
-    uniqueFiles.forEach((file) => {
-      formData.append("images", file);
-    });
-
-    // Add each removed image ID only once
-    Array.from(removedImages).forEach((id) => {
-      formData.append("removedImages", id);
-    });
-
-    await updateProduct(productId, formData);
-  };
+  useEffect(() => {
+    if (serverState.errors) {
+      Object.entries(serverState.errors).forEach(([field, message]) => {
+        toast.error(`${field}: ${message}`);
+      });
+    }
+  }, [serverState.errors]);
 
   const handleFilesChange = useCallback((files: File[]) => {
-    console.log(
-      "UpdateProductForm: handleFilesChange called with files:",
-      files.length
-    );
-
     setSelectedFiles((prev) => {
       const newMap = new Map(prev);
       files.forEach((file) => {
@@ -97,6 +98,29 @@ export default function UpdateProductForm({
       return newMap;
     });
   }, []);
+
+  const handleFormAction = async (formData: FormData) => {
+    const newFormData = new FormData();
+
+    for (const [key, value] of formData.entries()) {
+      if (key !== "images") {
+        newFormData.append(key, value);
+      }
+    } // Remove the semicolon here
+
+    // Add selected files
+    selectedFiles.forEach((file) => {
+      newFormData.append("images", file);
+    });
+
+    // Add removed image IDs
+    removedImages.forEach((id) => {
+      newFormData.append("removedImages", id);
+    });
+
+    formAction(newFormData);
+  };
+
   return (
     <section className="flex flex-col gap-10">
       <section className="w-full flex justify-between px-2">
@@ -106,7 +130,7 @@ export default function UpdateProductForm({
       </section>
 
       <form
-        onSubmit={handleSubmit}
+        action={handleFormAction}
         className="flex flex-col gap-8 py-8 p-14 border rounded-xl border-black"
       >
         <input type="hidden" name="userId" value={userId} />
@@ -118,23 +142,27 @@ export default function UpdateProductForm({
                 name="title"
                 type="text"
                 defaultValue={product?.title || ""}
+                error={serverState.errors?.title}
               />
               <div className="flex gap-4">
                 <NumberPicker
                   title="Quantity"
                   name="quantity"
                   defaultValue={product?.quantity || ""}
+                  error={serverState.errors?.quantity}
                 />
                 <TextField
                   title="Price"
                   name="price"
                   type="text"
                   defaultValue={product?.price || ""}
+                  error={serverState.errors?.price}
                 />
                 <DropdownStatus
                   title="Status"
                   name="status"
                   defaultValue={product?.status || ""}
+                  error={serverState.errors?.status}
                 />
               </div>
             </div>
@@ -144,6 +172,7 @@ export default function UpdateProductForm({
                 title="Category"
                 name="category"
                 defaultValue={category.title}
+                error={serverState.errors?.category}
               />
             </div>
           </article>
@@ -158,12 +187,14 @@ export default function UpdateProductForm({
               name="height"
               type="text"
               defaultValue={product?.height || ""}
+              error={serverState.errors?.height}
             />
             <TextField
               title="Width"
               name="width"
               type="text"
               defaultValue={product?.width || ""}
+              error={serverState.errors?.width}
             />
           </article>
           <article className="flex gap-4">
@@ -172,12 +203,14 @@ export default function UpdateProductForm({
               name="depth"
               type="text"
               defaultValue={product?.depth || ""}
+              error={serverState.errors?.depth}
             />
             <TextField
               title="Weight"
               name="weight"
               type="text"
               defaultValue={product?.weight || ""}
+              error={serverState.errors?.weight}
             />
           </article>
         </section>
@@ -187,12 +220,16 @@ export default function UpdateProductForm({
             title="Description"
             name="description"
             defaultValue={product?.description || ""}
+            error={serverState.errors?.description}
           />
         </div>
 
         <div>
           <label>
-            Select Images:
+            <div className="flex justify-between">
+              <div>Select Images</div>
+              <div>Max {bytesToMB(MAX_FILE_SIZE)}</div>
+            </div>
             <Dropzone
               defaultImages={defaultImages}
               onFilesChange={handleFilesChange}
@@ -202,7 +239,7 @@ export default function UpdateProductForm({
         </div>
         <div className="flex gap-4 justify-end">
           {product?.id && <DeleteButton id={product.id} />}
-          <Button type="submit">Update product</Button>
+          <SubmitButton />
         </div>
       </form>
     </section>
