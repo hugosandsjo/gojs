@@ -160,6 +160,16 @@ export async function getProduct(productId: string) {
   return product;
 }
 
+export async function getArtist(artistId: string) {
+  const artist = await prisma.user.findUnique({
+    where: {
+      id: artistId,
+    },
+  });
+
+  return artist;
+}
+
 export async function getCategory(categoryId: string) {
   const category = await prisma.category.findUnique({
     where: {
@@ -230,6 +240,11 @@ export async function getPublishedProducts() {
   });
 
   return publishedProducts;
+}
+
+export async function getAllArtists() {
+  const allArtists = await prisma.user.findMany();
+  return allArtists;
 }
 
 export async function loginAction(
