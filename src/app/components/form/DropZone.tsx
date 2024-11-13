@@ -3,6 +3,7 @@ import { MAX_FILE_SIZE, ALLOWED_FORMATS } from "@/lib/constants";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import AlertModal from "@/app/components/AlertModal";
+import { useRouter } from "next/navigation";
 
 type PreviewFile = File & { preview: string };
 type PreviewImage = { name: string; preview: string };
@@ -18,6 +19,7 @@ export default function Dropzone({
   onFilesChange,
   onImageRemove,
 }: DropzoneProps) {
+  const router = useRouter();
   const [files, setFiles] = useState<(PreviewFile | PreviewImage)[]>([]);
   const [alertState, setAlertState] = useState({
     isOpen: false,
@@ -41,9 +43,17 @@ export default function Dropzone({
     });
   };
 
+  // const handleNavigate = () => {
+  //   redirect("/dashboard");
+  // };
+
+  const handleNavigate = () => {
+    router.push("/dashboard");
+  };
+
   const closeAlert = useCallback(() => {
     setAlertState((prev) => ({ ...prev, isOpen: false }));
-    // Add a delay before re-enabling the dropzone
+    // Add delay to not make window reappear
     setTimeout(() => {
       setIsDisabled(false);
     }, 100);
@@ -153,6 +163,7 @@ export default function Dropzone({
     <div className="my-2">
       <AlertModal
         isOpen={alertState.isOpen}
+        onConfirm={handleNavigate}
         onClose={closeAlert}
         title={alertState.title}
         message={alertState.message}
