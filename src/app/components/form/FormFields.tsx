@@ -5,11 +5,9 @@ import TextArea from "@/app/components/form/TextArea";
 import Dropdown from "@/app/components/form/Dropdown";
 import NumberPicker from "@/app/components/form/NumberPicker";
 import H3 from "@/app/components/typography/H3";
-import SubmitButton from "@/app/components/buttons/SubmitButton";
 import DropdownStatus from "@/app/components/form/DropDownStatus";
 import { MAX_FILE_SIZE } from "@/lib/constants";
 import { bytesToMB } from "@/lib/utils";
-import DeleteButton from "@/app/components/buttons/DeleteButton";
 
 type FormFieldsProps = {
   userId: string;
@@ -36,13 +34,10 @@ type FormFieldsProps = {
 
 export default function FormFields({
   userId,
-  showCancelAlert,
-  showDeleteAlert,
   handleFilesChange,
   defaultValues = {},
   defaultImages,
   onImageRemove,
-  productId,
   serverState,
 }: FormFieldsProps) {
   const {

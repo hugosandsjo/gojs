@@ -59,11 +59,10 @@ export default function ProductCard({
         ) : (
           <div className="w-32 h-40 bg-lime-300"></div>
         )}
-
         <p className="font-sans underline-offset-2 underline text-xs">
           {title}
         </p>
-        <ProductParagraph>{user} </ProductParagraph>
+        <ProductParagraph>{user}</ProductParagraph>
       </div>
       <div>
         <ProductParagraph>{price} kr</ProductParagraph>

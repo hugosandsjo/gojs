@@ -6,6 +6,7 @@ import SingleProductParagraph from "@/app/components/typography/SingleProductPar
 import BackButton from "@/app/components/buttons/BackButton";
 import { Product, Category, Image as PrismaImage, User } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 
 type ProductWithCategoryAndImages = Product & {
   category: Category;
@@ -87,9 +88,11 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
               <SingleProductParagraph>
                 {product.category.title}
               </SingleProductParagraph>
-              <SingleProductParagraph>
-                {product.user.name}
-              </SingleProductParagraph>
+              <Link href={`/artists/${product.user.id}`}>
+                <SingleProductParagraph>
+                  {product.user.name}
+                </SingleProductParagraph>
+              </Link>
               <SingleProductParagraph>
                 {product.price} kr
               </SingleProductParagraph>

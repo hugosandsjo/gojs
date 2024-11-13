@@ -12,6 +12,9 @@ export default async function Header() {
           {" "}
           <NavbarParagraph>Shop</NavbarParagraph>
         </Link>
+        <Link href={"/artists"}>
+          <NavbarParagraph>Artists</NavbarParagraph>
+        </Link>
       </div>
       <Link href={"/"}>
         <h1 className="text-6xl font-serif">Gojs</h1>
