@@ -7,13 +7,13 @@ import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import {
-  productSchema,
   DealFormState,
   StringMap,
   loginSchema,
   LoginActionResponse,
   LoginFormState,
-  ProductFormData,
+  updateProductSchema,
+  createProductSchema,
 } from "@/lib/types";
 import { bucketName, s3 } from "@/lib/s3";
 import { compare } from "bcryptjs";
@@ -43,7 +43,7 @@ export async function createProduct(
     });
 
     // Validate data
-    const validated = productSchema.safeParse(formDataObject);
+    const validated = createProductSchema.safeParse(formDataObject);
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
@@ -351,15 +351,17 @@ export async function updateProduct(
 ): Promise<DealFormState<StringMap>> {
   try {
     const formDataObject: Record<string, unknown> = {};
-    const imageFiles: File[] = [];
 
+    const imageFiles: File[] = [];
     formData.getAll("images").forEach((item) => {
       if (item instanceof File) {
         imageFiles.push(item);
       }
     });
 
-    formDataObject.images = imageFiles;
+    if (imageFiles.length > 0) {
+      formDataObject.images = imageFiles;
+    }
 
     formData.forEach((value, key) => {
       if (key !== "images" && key !== "removedImages") {
@@ -367,8 +369,22 @@ export async function updateProduct(
       }
     });
 
+    const removedImageIds = formData.getAll("removedImages") as string[];
+
+    const currentImages = await prisma.image.count({
+      where: { productId: productId },
+    });
+
+    if (removedImageIds.length >= currentImages && imageFiles.length === 0) {
+      return {
+        errors: {
+          images: "At least one image is required",
+        },
+      };
+    }
+
     // Validate data
-    const validated = productSchema.safeParse(formDataObject);
+    const validated = updateProductSchema.safeParse(formDataObject);
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
@@ -427,7 +443,6 @@ export async function updateProduct(
     });
 
     // Handle removed images
-    const removedImageIds = formData.getAll("removedImages") as string[];
     if (removedImageIds.length > 0) {
       await prisma.image.deleteMany({
         where: {
