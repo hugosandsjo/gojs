@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import FormFields from "@/app/components/form/FormFields";
 import AlertModal from "@/app/components/AlertModal";
 import { useRouter } from "next/navigation";
+import DeleteButton from "@/app/components/buttons/DeleteButton";
 
 type UpdateProductFormProps = {
   productId: string;
@@ -114,13 +115,19 @@ export default function UpdateProductForm({
     formAction(newFormData);
   };
 
-  const showAlert = () => {
+  const showCancelAlert = () => {
     setAlertState({
       isOpen: true,
       title: "Confirm Navigation",
       message:
         "Are you sure you want to leave? Any unsaved changes will be lost.",
     });
+  };
+
+  const showDeleteAlert = () => {
+    // No need to handle deletion here anymore since DeleteButton handles it
+    // Just pass the DeleteButton component where needed
+    return <DeleteButton id={productId} />;
   };
 
   const handleNavigate = () => {
@@ -153,7 +160,8 @@ export default function UpdateProductForm({
         >
           <FormFields
             userId={userId}
-            showAlert={showAlert}
+            showCancelAlert={showCancelAlert}
+            showDeleteAlert={showDeleteAlert}
             handleFilesChange={handleFilesChange}
             defaultValues={{
               title: product?.title,
@@ -174,6 +182,10 @@ export default function UpdateProductForm({
           />
         </form>
       </section>
+      <div className="flex gap-4">
+        <button onClick={showCancelAlert}>Cancel</button>
+        <DeleteButton id={productId} />
+      </div>
     </>
   );
 }

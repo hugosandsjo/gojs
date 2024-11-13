@@ -54,7 +54,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
     formAction(newFormData);
   };
 
-  const showAlert = () => {
+  const showCancelAlert = () => {
     setAlertState({
       isOpen: true,
       title: "Confirm Navigation",
@@ -92,7 +92,7 @@ export default function CreateProductForm({ userId }: CreateProductFormProps) {
         >
           <FormFields
             userId={userId}
-            showAlert={showAlert}
+            showCancelAlert={showCancelAlert}
             handleFilesChange={handleFilesChange}
             serverState={serverState}
           />

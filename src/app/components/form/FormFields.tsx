@@ -13,7 +13,8 @@ import DeleteButton from "@/app/components/buttons/DeleteButton";
 
 type FormFieldsProps = {
   userId: string;
-  showAlert: () => void;
+  showCancelAlert?: () => void;
+  showDeleteAlert?: () => void;
   handleFilesChange: (files: File[]) => void;
   defaultValues?: {
     title?: string | null;
@@ -35,7 +36,8 @@ type FormFieldsProps = {
 
 export default function FormFields({
   userId,
-  showAlert,
+  showCancelAlert,
+  showDeleteAlert,
   handleFilesChange,
   defaultValues = {},
   defaultImages,
@@ -173,7 +175,7 @@ export default function FormFields({
       </div>
 
       <div className="flex gap-4 justify-end">
-        <button type="button" onClick={showAlert}>
+        <button type="button" onClick={showCancelAlert}>
           Cancel
         </button>
         {productId && <DeleteButton id={productId} />}
