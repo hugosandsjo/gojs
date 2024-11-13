@@ -6,7 +6,7 @@ import Link from "next/link";
 export default async function Header() {
   const session = await auth();
   return (
-    <header className="flex justify-between items-center py-6 px-16 ">
+    <header className="flex justify-between items-center py-6 px-8 md:px-12">
       <div className="flex flex-col">
         <Link href={"/shop"}>
           {" "}

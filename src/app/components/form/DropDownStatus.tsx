@@ -22,7 +22,7 @@ export default function DropdownStatus({
         name={name}
         id={name}
         defaultValue={defaultValue}
-        className={`border py-2.5 px-6 ${
+        className={`border py-3.5 px-6 ${
           error ? "border-red-500" : "border-black"
         }`}
       >

@@ -22,8 +22,8 @@ export default function Dashboard({ user, products }: DashboardProps) {
     setmodal(!modal);
   };
   return (
-    <section className="flex relative flex-col w-full py-12 px-28 rounded-xl gap-8">
-      <section className="w-full flex justify-between items-center">
+    <section className="flex relative flex-col w-full py-12 lg:px-28 rounded-xl gap-8 ">
+      <section className="w-full flex justify-between items-center gap-8">
         <Link href="dashboard/createproduct">
           <Button type="button">Create product</Button>
         </Link>

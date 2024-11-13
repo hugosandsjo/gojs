@@ -32,7 +32,7 @@ export default function TextField({
         id={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className={`border px-3 py-2 ${
+        className={`border px-4 py-3 ${
           errorMessage ? "border-red-500" : "border-black"
         }`}
       />
