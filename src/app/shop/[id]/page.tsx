@@ -33,7 +33,6 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
             q: "75",
           })
         );
-
         setProduct({ ...data, imageUrls });
       }
     })();
@@ -105,18 +104,19 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                 {product.description || "No description available"}
               </SingleProductParagraph>
             </div>
+
             <div>
               <SingleProductParagraph>
-                Height: {product.height ? `${product.height} cm` : "N/A"}
+                {product.height ? `Height: ${product.height} mm` : null}
               </SingleProductParagraph>
               <SingleProductParagraph>
-                Weight: {product.weight ? `${product.weight} kg` : "N/A"}
+                {product.weight ? `Weight: ${product.weight} kg` : null}
               </SingleProductParagraph>
               <SingleProductParagraph>
-                Depth: {product.weight ? `${product.depth} mm` : "N/A"}
+                {product.weight ? `Depth: ${product.depth} mm` : null}
               </SingleProductParagraph>
               <SingleProductParagraph>
-                Width: {product.weight ? `${product.width} mm` : "N/A"}
+                {product.weight ? ` Width: ${product.width} mm` : null}
               </SingleProductParagraph>
             </div>
           </section>
