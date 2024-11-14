@@ -3,7 +3,13 @@
 import ProductList from "@/app/components/ProductList";
 import { getImgixUrl } from "@/lib/utils";
 import type { User } from "@prisma/client";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { useState } from "react";
 import { updateProductStatus } from "@/lib/actions";
 import { ProductWithRelations } from "@/lib/types";
@@ -59,9 +65,17 @@ export default function ProductListGrid({ products }: ProductListGridProps) {
     await updateProductStatus(productId, newStatus);
   }
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3,
+      },
+    })
+  );
+
   return (
     <>
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         <ProductList products={publishedProducts} status="PUBLISHED" />
         <ProductList products={draftProducts} status="DRAFT" />
         <ProductList products={archivedProducts} status="ARCHIVED" />

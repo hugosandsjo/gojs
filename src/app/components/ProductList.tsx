@@ -4,6 +4,7 @@ import { Category } from "@prisma/client";
 import { truncateText } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
 import { ProductWithRelations } from "@/lib/types";
+import { capitalizeFirstLetter } from "@/lib/utils";
 
 type ProductWithUrls = {
   id: string;
@@ -53,7 +54,7 @@ export default function ProductList({ products, status }: ProductListProps) {
           className={`w-3 h-3 rounded-full ${getStatusColor(status)}`}
           aria-label={`${status} status indicator`}
         ></div>
-        <H3>{status}</H3>
+        <H3>{capitalizeFirstLetter(status)}</H3>
       </div>
       <article className="flex gap-8">
         {!products || products.length === 0 ? (
