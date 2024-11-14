@@ -1,9 +1,8 @@
 "use client";
+
 import Circleloader from "react-spinners/ClipLoader";
 
-type SpinnerProps = {};
-
-export default function Spinner({}: SpinnerProps) {
+export default function Spinner() {
   return (
     <div className="pb-20">
       <Circleloader

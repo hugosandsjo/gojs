@@ -6,9 +6,7 @@ import { useFormState } from "react-dom";
 import { loginAction } from "@/lib/actions";
 import { LoginActionResponse } from "@/lib/types";
 
-type SignInFormProps = {};
-
-export default function SignInForm({}: SignInFormProps) {
+export default function SignInForm() {
   const [serverState, formAction] = useFormState<LoginActionResponse, FormData>(
     loginAction,
     { status: "error" }
