@@ -19,6 +19,7 @@ import { bucketName, s3 } from "@/lib/s3";
 import { compare } from "bcryptjs";
 import { AuthError } from "next-auth";
 import { signIn } from "@/lib/auth";
+import { signOut } from "@/lib/auth";
 
 export async function createProduct(
   prevState: DealFormState<StringMap>,
@@ -511,4 +512,8 @@ export async function updateProduct(
     return { errors: { general: "Failed to update product." } };
   }
   redirect("/dashboard");
+}
+
+export async function handleSignOut() {
+  await signOut({ redirectTo: "/" });
 }
