@@ -2,9 +2,6 @@ import { auth } from "@/lib/auth";
 import { getProduct, getUser, getCategory } from "@/lib/actions";
 import { redirect, notFound } from "next/navigation";
 import UpdateProductForm from "@/app/components/form/UpdateProductForm";
-import { Suspense } from "react";
-import BackButton from "@/app/components/buttons/BackButton";
-import H2 from "@/app/components/typography/H2";
 
 export default async function UpdateProductPage({
   params,

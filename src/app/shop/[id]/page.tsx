@@ -1,4 +1,5 @@
 "use client";
+
 import { getProduct } from "@/lib/actions";
 import { useEffect, useState } from "react";
 import { getImgixUrl } from "@/lib/utils";
