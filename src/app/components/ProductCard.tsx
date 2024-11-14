@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import EditButton from "@/app/components/buttons/EditButton";
 import GoToArtButton from "@/app/components/buttons/GoToArtButton";
+import { Suspense } from "react";
 
 type ProductCardProps = {
   id: string;
@@ -18,6 +19,15 @@ type ProductCardProps = {
   category: string;
   variant?: "shop" | "dashboard";
 };
+
+function ImageSkeleton() {
+  return (
+    <div
+      className="w-32 h-40 animate-pulse bg-gray-200 rounded"
+      aria-label="Loading image..."
+    />
+  );
+}
 
 export default function ProductCard({
   title,
@@ -33,7 +43,6 @@ export default function ProductCard({
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: id,
   });
-  console.log("id from ProductCard", id);
 
   const style = transform
     ? { transform: `translate(${transform.x}px, ${transform.y}px)` }
@@ -59,6 +68,7 @@ export default function ProductCard({
         ) : (
           <div className="w-32 h-40 bg-lime-300"></div>
         )}
+
         <p className="font-sans underline-offset-2 underline text-xs">
           {title}
         </p>

@@ -20,7 +20,7 @@ type ProductWithUrls = {
 
 type ProductListProps = {
   products: ProductWithUrls[] | undefined;
-  status: ProductWithRelations["status"]; // This will automatically stay in sync with your schema
+  status: ProductWithRelations["status"];
 };
 
 function getStatusColor(status: ProductListProps["status"]) {
@@ -40,7 +40,6 @@ export default function ProductList({ products, status }: ProductListProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
   });
-  console.log("Status:", status);
   return (
     <section
       id={status}

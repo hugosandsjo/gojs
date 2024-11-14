@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import ShopProductList from "@/app/components/ShopProductList";
 function ProductSkeleton() {
   return (
     <div className="max-w-40 flex flex-col gap-4">
