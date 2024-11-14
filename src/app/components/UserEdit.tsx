@@ -1,7 +1,5 @@
 import { UserRoundPen } from "lucide-react";
 
-type UserEditProps = {};
-
-export default function UserEdit({}: UserEditProps) {
+export default function UserEdit() {
   return <UserRoundPen size={40} />;
 }

@@ -42,11 +42,6 @@ export default function Dropzone({
       message,
     });
   };
-
-  // const handleNavigate = () => {
-  //   redirect("/dashboard");
-  // };
-
   const handleNavigate = () => {
     router.push("/dashboard");
   };

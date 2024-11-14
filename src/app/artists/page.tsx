@@ -2,9 +2,7 @@ import H2 from "@/app/components/typography/H2";
 import { getAllArtists } from "@/lib/actions";
 import Link from "next/link";
 
-type pageProps = {};
-
-export default async function ArtistsPage({}: pageProps) {
+export default async function ArtistsPage() {
   const artists = await getAllArtists();
   console.log(artists);
 

@@ -1,11 +1,11 @@
+import { CATEGORIES } from "@/lib/constants";
+
 type DropdownProps = {
   title: string;
   name: string;
   defaultValue?: string | number;
   error?: string;
 };
-
-const categories = ["Painting", "Sculpture", "Digital Art"]; //Hardcoded for now
 
 export default function Dropdown({
   title,
@@ -25,7 +25,7 @@ export default function Dropdown({
         }`}
       >
         <option value="">Select Category</option>
-        {categories.map((formCategory) => (
+        {CATEGORIES.map((formCategory) => (
           <option key={formCategory} value={formCategory}>
             {formCategory}
           </option>

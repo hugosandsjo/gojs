@@ -1,7 +1,5 @@
 import { getArtist } from "@/lib/actions";
 
-type pageProps = {};
-
 export default async function ArtistPage({
   params,
 }: {
