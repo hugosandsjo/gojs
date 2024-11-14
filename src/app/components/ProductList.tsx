@@ -41,7 +41,6 @@ export default function ProductList({ products, status }: ProductListProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
   });
-  console.log("Status:", status);
   return (
     <section
       id={status}
