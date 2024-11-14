@@ -1,3 +1,5 @@
+"use client";
+
 import { SignOut } from "@/app/components/buttons/SignOut";
 import { User } from "@prisma/client";
 import H2 from "@/app/components/typography/H3";
@@ -6,7 +8,7 @@ import H3 from "@/app/components/typography/H3";
 type UserInfoProps = {
   user: User;
 };
-export default function UserInfo({ user }: UserInfoProps) {
+export default function UserModal({ user }: UserInfoProps) {
   return (
     <section className="flex flex-col px-20 gap-20">
       <H2>Profile</H2>
@@ -32,7 +34,9 @@ export default function UserInfo({ user }: UserInfoProps) {
         <div className="flex items-center justify-between">
           <H3>Location</H3> <H3>{user?.location}</H3>
         </div>
-        {/* <SignOut /> */}
+      </article>
+      <article className="flex justify-right w-full">
+        <SignOut />
       </article>
     </section>
   );

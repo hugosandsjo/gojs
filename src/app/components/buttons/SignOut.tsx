@@ -1,18 +1,13 @@
-import { signOut } from "@/lib/auth";
+import { handleSignOut } from "@/lib/actions";
 import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
+import Button from "@/app/components/buttons/Button";
 
 export function SignOut() {
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut({ redirectTo: "/" });
-      }}
-    >
-      <button type="submit">
-        {" "}
+    <form action={handleSignOut}>
+      <Button type="submit">
         <NavbarParagraph>Sign Out</NavbarParagraph>
-      </button>
+      </Button>
     </form>
   );
 }

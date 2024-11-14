@@ -26,7 +26,6 @@ export default async function Header() {
             {" "}
             <NavbarParagraph>Dashboard</NavbarParagraph>{" "}
           </Link>
-          <SignOut />
         </div>
       ) : (
         <Link href={"/signin"}>
