@@ -2,24 +2,24 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { convertZodErrors, randomImageName } from "@/lib/utils";
 import { Category, Prisma, ProductStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { productSchema, DealFormState, StringMap } from "@/lib/types";
-
-const bucketName = process.env.BUCKET_NAME;
-const bucketRegion = process.env.BUCKET_REGION;
-const accessKey = process.env.ACCESS_KEY;
-const secretAccessKey = process.env.SECRET_ACCESS_KEY;
-
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: accessKey!,
-    secretAccessKey: secretAccessKey!,
-  },
-  region: bucketRegion!,
-});
+import {
+  DealFormState,
+  StringMap,
+  loginSchema,
+  LoginActionResponse,
+  LoginFormState,
+  updateProductSchema,
+  createProductSchema,
+} from "@/lib/types";
+import { bucketName, s3 } from "@/lib/s3";
+import { compare } from "bcryptjs";
+import { AuthError } from "next-auth";
+import { signIn } from "@/lib/auth";
+import { signOut } from "@/lib/auth";
 
 export async function createProduct(
   prevState: DealFormState<StringMap>,
@@ -27,7 +27,6 @@ export async function createProduct(
 ): Promise<DealFormState<StringMap>> {
   try {
     const formDataObject: Record<string, unknown> = {};
-
     const imageFiles: File[] = [];
 
     formData.getAll("images").forEach((item) => {
@@ -44,10 +43,8 @@ export async function createProduct(
       }
     });
 
-    console.log("formDataObject:", formDataObject);
-
     // Validate data
-    const validated = productSchema.safeParse(formDataObject);
+    const validated = createProductSchema.safeParse(formDataObject);
 
     if (!validated.success) {
       const errors = convertZodErrors(validated.error);
@@ -158,9 +155,20 @@ export async function getProduct(productId: string) {
     include: {
       images: true,
       category: true,
+      user: true,
     },
   });
   return product;
+}
+
+export async function getArtist(artistId: string) {
+  const artist = await prisma.user.findUnique({
+    where: {
+      id: artistId,
+    },
+  });
+
+  return artist;
 }
 
 export async function getCategory(categoryId: string) {
@@ -183,10 +191,44 @@ export async function getUser(userId: string | undefined) {
   return user;
 }
 
-export async function getUserProducts(id: string | undefined) {
-  if (!id) return null;
-  const products = await prisma.product.findMany({
-    where: { userId: id },
+export async function getUserFromDb(email: string, password: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        role: true,
+      },
+    });
+
+    if (!user || !user.password) {
+      return null;
+    }
+
+    const isPasswordValid = await compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return null;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  } catch (error) {
+    console.error("Error in getUserFromDb:", error);
+    return null;
+  }
+}
+
+export async function getPublishedProducts() {
+  const publishedProducts = await prisma.product.findMany({
+    where: {
+      status: "PUBLISHED",
+    },
     include: {
       images: true,
       user: {
@@ -194,6 +236,89 @@ export async function getUserProducts(id: string | undefined) {
           name: true,
         },
       },
+      category: true,
+    },
+  });
+
+  return publishedProducts;
+}
+
+export async function getAllArtists() {
+  const allArtists = await prisma.user.findMany();
+  return allArtists;
+}
+
+export async function loginAction(
+  prevState: LoginFormState,
+  formData: FormData
+): Promise<LoginActionResponse> {
+  // Validate fields
+  const validatedFields = loginSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      status: "error",
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { email, password } = validatedFields.data;
+
+  const user = await getUserFromDb(email, password);
+
+  if (!user) {
+    return {
+      status: "error",
+      errors: {
+        form: "Invalid email or password",
+      },
+    };
+  }
+
+  const result = await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  });
+
+  if (result?.error) {
+    return {
+      status: "error",
+      errors: {
+        form: "Authentication failed",
+      },
+    };
+  }
+
+  if (result instanceof AuthError) {
+    return {
+      status: "error",
+      errors: {
+        form: `Authentication error: ${result.type}`,
+      },
+    };
+  }
+
+  redirect("/dashboard");
+}
+
+export async function getUserProducts(id: string | undefined) {
+  if (!id) return null;
+  const products = await prisma.product.findMany({
+    where: { userId: id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      },
+      images: true,
       category: true,
     },
   });
@@ -213,31 +338,93 @@ export async function deleteProduct(productId: string) {
         id: productId,
       },
     });
-
-    revalidatePath("/dashboard");
-    return { success: true };
   } catch (error) {
     console.error("Error deleting product:", error);
     throw new Error("Failed to delete product");
   }
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
 
-export async function updateProduct(productId: string, formData: FormData) {
-  try {
-    const removedImageIds = formData.getAll("removedImages") as string[];
-    console.log("formData provided:", formData);
-    const userId = formData.get("userId") as string;
-    const title = formData.get("title") as string;
-    const price = parseFloat(formData.get("price") as string);
-    const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
-    const status = formData.get("status") as string;
+export async function updateProductStatus(
+  productId: string,
+  newStatus: ProductStatus
+) {
+  await prisma.product.update({
+    where: { id: productId },
+    data: {
+      status: newStatus,
+    },
+  });
 
-    if (!userId || !title || !price || !description || !category) {
-      throw new Error("All required fields must be filled.");
+  revalidatePath("/shop");
+}
+
+export async function updateProduct(
+  prevState: DealFormState<StringMap>,
+  formData: FormData,
+  productId: string
+): Promise<DealFormState<StringMap>> {
+  try {
+    const formDataObject: Record<string, unknown> = {};
+
+    const imageFiles: File[] = [];
+    formData.getAll("images").forEach((item) => {
+      if (item instanceof File) {
+        imageFiles.push(item);
+      }
+    });
+
+    if (imageFiles.length > 0) {
+      formDataObject.images = imageFiles;
     }
 
-    const pickedCategory = await prisma.category.findUnique({
+    formData.forEach((value, key) => {
+      if (key !== "images" && key !== "removedImages") {
+        formDataObject[key] = value === "" ? undefined : value;
+      }
+    });
+
+    const removedImageIds = formData.getAll("removedImages") as string[];
+
+    const currentImages = await prisma.image.count({
+      where: { productId: productId },
+    });
+
+    if (removedImageIds.length >= currentImages && imageFiles.length === 0) {
+      return {
+        errors: {
+          images: "At least one image is required",
+        },
+      };
+    }
+
+    // Validate data
+    const validated = updateProductSchema.safeParse(formDataObject);
+
+    if (!validated.success) {
+      const errors = convertZodErrors(validated.error);
+      return { errors };
+    }
+
+    const data = validated.data;
+
+    const {
+      userId,
+      title,
+      price,
+      status,
+      description,
+      category,
+      quantity,
+      available_stock,
+      height,
+      width,
+      depth,
+      weight,
+    } = data;
+
+    const pickedCategory: Category | null = await prisma.category.findUnique({
       where: { title: category },
     });
 
@@ -245,91 +432,88 @@ export async function updateProduct(productId: string, formData: FormData) {
       throw new Error(`Category with title "${category}" not found.`);
     }
 
-    // Optional fields with type conversion
-    const quantity = formData.get("quantity")
-      ? parseInt(formData.get("quantity") as string, 10)
-      : null;
-    const available_stock = formData.get("available_stock")
-      ? parseInt(formData.get("available_stock") as string, 10)
-      : null;
-    const height = formData.get("height")
-      ? parseInt(formData.get("height") as string, 10)
-      : null;
-    const width = formData.get("width")
-      ? parseInt(formData.get("width") as string, 10)
-      : null;
-    const depth = formData.get("depth")
-      ? parseInt(formData.get("depth") as string, 10)
-      : null;
-    const weight = formData.get("weight")
-      ? parseFloat(formData.get("weight") as string)
-      : null;
-
-    const data: Prisma.ProductUpdateInput = {
+    // Prepare product data
+    const productData: Prisma.ProductUpdateInput = {
       title,
       price,
       description,
-      status: status.toUpperCase() as ProductStatus,
+      status,
       category: {
         connect: { id: pickedCategory.id },
       },
       user: {
         connect: { id: userId },
       },
+      quantity,
+      available_stock,
+      height,
+      width,
+      depth,
+      weight,
     };
 
-    console.log("Data updated:", data);
-
-    // Add optional fields only if they are not null
-    if (quantity !== null) data.quantity = quantity;
-    if (available_stock !== null) data.available_stock = available_stock;
-    if (height !== null) data.height = height;
-    if (width !== null) data.width = width;
-    if (depth !== null) data.depth = depth;
-    if (weight !== null) data.weight = weight;
-
+    // Update product
     const updatedProduct = await prisma.product.update({
       where: { id: productId },
-      data,
+      data: productData,
     });
 
-    await prisma.image.deleteMany({
-      where: {
-        id: { in: removedImageIds.map((id) => parseInt(id, 10)) },
-        productId: productId,
-      },
-    });
-    const imageFiles: File[] = formData.getAll("images") as File[];
+    // Handle removed images
+    if (removedImageIds.length > 0) {
+      await prisma.image.deleteMany({
+        where: {
+          id: { in: removedImageIds.map((id) => parseInt(id, 10)) },
+          productId: productId,
+        },
+      });
+    }
 
+    // Handle image uploads
     for (const imageFile of imageFiles) {
-      if (imageFile.size > 0) {
-        const imageName = randomImageName();
-        const arrayBuffer = await imageFile.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+      if (imageFile instanceof File && imageFile.size > 0) {
+        try {
+          const imageName = randomImageName();
 
-        const params = {
-          Bucket: bucketName,
-          Key: imageName,
-          Body: buffer,
-          ContentType: imageFile.type,
-        };
+          // Convert to buffer
+          const arrayBuffer = await imageFile.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
 
-        const command = new PutObjectCommand(params);
-        await s3.send(command);
+          const params = {
+            Bucket: bucketName,
+            Key: imageName,
+            Body: buffer,
+            ContentType: imageFile.type,
+          };
 
-        await prisma.image.create({
-          data: {
-            image_key: imageName,
-            product: {
-              connect: { id: updatedProduct.id },
+          const command = new PutObjectCommand(params);
+          await s3.send(command);
+
+          await prisma.image.create({
+            data: {
+              image_key: imageName,
+              product: {
+                connect: { id: updatedProduct.id },
+              },
             },
-          },
-        });
+          });
+        } catch (imageError) {
+          if (imageError instanceof Error) {
+            throw new Error(`Failed to upload image: ${imageError.message}`);
+          } else {
+            throw new Error("Failed to upload image due to an unknown error.");
+          }
+        }
       }
     }
+
+    revalidatePath("/dashboard");
   } catch (error) {
     console.error("Error updating product:", error);
+    return { errors: { general: "Failed to update product." } };
   }
-  revalidatePath("/dashboard");
   redirect("/dashboard");
+}
+
+export async function handleSignOut() {
+  await signOut({ redirectTo: "/" });
 }

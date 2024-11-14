@@ -1,29 +1,31 @@
 "use client";
+
 import { updateProduct } from "@/lib/actions";
-import Dropzone from "@/app/components/form/DropZone";
-import { Product, Image, Category, ProductStatus } from "@prisma/client";
-import Button from "@/app/components/buttons/Button";
-import DeleteButton from "@/app/components/buttons/DeleteButton";
+import { Product, Image, Category } from "@prisma/client";
+import { DealFormState, StringMap } from "@/lib/types";
 import H2 from "@/app/components/typography/H2";
-import H3 from "@/app/components/typography/H3";
 import { getImgixUrl } from "@/lib/utils";
-import { useMemo, useState, useCallback } from "react";
-import TextField from "@/app/components/form/TextField";
-import TextArea from "@/app/components/form/TextArea";
-import Dropdown from "@/app/components/form/Dropdown";
-import NumberPicker from "@/app/components/form/NumberPicker";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import BackButton from "@/app/components/buttons/BackButton";
-import DropdownStatus from "@/app/components/form/DropDownStatus";
+import { useFormState } from "react-dom";
+import { toast } from "react-hot-toast";
+import FormFields from "@/app/components/form/FormFields";
+import AlertModal from "@/app/components/AlertModal";
+import { useRouter } from "next/navigation";
+import DeleteButton from "@/app/components/buttons/DeleteButton";
+import SubmitButton from "@/app/components/buttons/SubmitButton";
+import Button from "@/app/components/buttons/Button";
 
 type UpdateProductFormProps = {
   productId: string;
   userId: string;
   product: ProductWithImages;
   category: Category;
-  status?: ProductStatus;
 };
 
 type ProductWithImages = Product & { images: Image[] };
+
+const initialState: DealFormState<StringMap> = {};
 
 export default function UpdateProductForm({
   productId,
@@ -31,10 +33,27 @@ export default function UpdateProductForm({
   product,
   category,
 }: UpdateProductFormProps) {
+  const router = useRouter();
+  const updateProductWithId = useCallback(
+    async (state: DealFormState<StringMap>, formData: FormData) => {
+      return updateProduct(state, formData, productId);
+    },
+    [productId]
+  );
+
+  const [serverState, formAction] = useFormState(
+    updateProductWithId,
+    initialState
+  );
   const [selectedFiles, setSelectedFiles] = useState<Map<string, File>>(
     new Map()
   );
   const [removedImages, setRemovedImages] = useState<Set<string>>(new Set());
+  const [alertState, setAlertState] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
 
   const defaultImages = useMemo(() => {
     return product?.images.map((img) => ({
@@ -43,39 +62,19 @@ export default function UpdateProductForm({
     }));
   }, [product]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-
-    // Clear any existing 'images' fields
-    formData.delete("images");
-
-    // Add each file only once
-    const uniqueFiles = new Map(
-      Array.from(selectedFiles.values()).map((file) => [file.name, file])
-    );
-    uniqueFiles.forEach((file) => {
-      formData.append("images", file);
-    });
-
-    // Add each removed image ID only once
-    Array.from(removedImages).forEach((id) => {
-      formData.append("removedImages", id);
-    });
-
-    await updateProduct(productId, formData);
-  };
+  useEffect(() => {
+    if (serverState.errors) {
+      Object.entries(serverState.errors).forEach(([field, message]) => {
+        toast.error(`${field}: ${message}`);
+      });
+    }
+  }, [serverState.errors]);
 
   const handleFilesChange = useCallback((files: File[]) => {
-    console.log(
-      "UpdateProductForm: handleFilesChange called with files:",
-      files.length
-    );
-
     setSelectedFiles((prev) => {
       const newMap = new Map(prev);
       files.forEach((file) => {
-        const fileId = file.name; // Using just the name as ID since it's the same file
+        const fileId = file.name;
         if (!newMap.has(fileId)) {
           newMap.set(fileId, file);
         }
@@ -97,108 +96,101 @@ export default function UpdateProductForm({
       return newMap;
     });
   }, []);
-  return (
-    <section className="flex flex-col gap-6">
-      <section className="flex flex-col gap-6"></section>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-8 py-8 p-14 border border-black"
-      >
-        <section className="w-full flex gap-4 justify-between px-2">
-          <BackButton destination="/dashboard" size={12} />
+  const handleFormAction = async (formData: FormData) => {
+    const newFormData = new FormData();
+
+    for (const [key, value] of formData.entries()) {
+      if (key !== "images") {
+        newFormData.append(key, value);
+      }
+    }
+
+    selectedFiles.forEach((file) => {
+      newFormData.append("images", file);
+    });
+
+    removedImages.forEach((id) => {
+      newFormData.append("removedImages", id);
+    });
+
+    formAction(newFormData);
+  };
+
+  const showCancelAlert = () => {
+    setAlertState({
+      isOpen: true,
+      title: "Confirm Navigation",
+      message:
+        "Are you sure you want to leave? Any unsaved changes will be lost.",
+    });
+  };
+
+  const showDeleteAlert = () => {
+    return <DeleteButton id={productId} />;
+  };
+
+  const handleNavigate = () => {
+    router.push("/dashboard");
+  };
+
+  const closeAlert = useCallback(() => {
+    setAlertState((prev) => ({ ...prev, isOpen: false }));
+  }, []);
+
+  return (
+    <>
+      <AlertModal
+        isOpen={alertState.isOpen}
+        onClose={closeAlert}
+        onConfirm={handleNavigate}
+        title={alertState.title}
+        message={alertState.message}
+      />
+      <section className="flex flex-col gap-10">
+        <section className="w-full flex justify-between px-2">
+          <BackButton size={12} />
           <H2>Update product</H2>
           <div></div>
         </section>
-        <input type="hidden" name="userId" value={userId} />
-        <H3>INFO</H3>
-        <section className="flex flex-wrap gap-4 w-full">
-          <article className="w-full flex gap-6">
-            <div className="flex flex-col gap-2 w-2/3">
-              <TextField
-                title="Title"
-                name="title"
-                defaultValue={product?.title || ""}
-              />
-              <div className="flex gap-4">
-                <NumberPicker
-                  title="Quantity"
-                  name="quantity"
-                  defaultValue={product?.quantity || ""}
-                />
-                <TextField
-                  title="Price"
-                  name="price"
-                  defaultValue={product?.price || ""}
-                />
-                <DropdownStatus
-                  title="Status"
-                  name="status"
-                  defaultValue={product?.status || ""}
-                />
-              </div>
-            </div>
 
-            <div className="w-1/3">
-              <Dropdown
-                title="Category"
-                name="category"
-                defaultValue={category.title}
-              />
-            </div>
-          </article>
-        </section>
-        <H3>PROPERTIES</H3>
-        <section className="flex gap-4">
-          <article className="flex flex-col gap-4">
-            <TextField
-              title="Height"
-              name="height"
-              defaultValue={product?.height || ""}
-            />
-            <TextField
-              title="Width"
-              name="width"
-              defaultValue={product?.width || ""}
-            />
-          </article>
-          <article className="flex flex-col gap-4">
-            <TextField
-              title="Depth"
-              name="depth"
-              defaultValue={product?.depth || ""}
-            />
-            <TextField
-              title="Weight"
-              name="weight"
-              defaultValue={product?.weight || ""}
-            />
-          </article>
-        </section>
-
-        <div className="flex flex-col">
-          <TextArea
-            title="Description"
-            name="description"
-            defaultValue={product?.description || ""}
+        <form
+          action={handleFormAction}
+          className="flex flex-col gap-8 py-14 px-20 border rounded-xl border-black"
+        >
+          <FormFields
+            userId={userId}
+            showCancelAlert={showCancelAlert}
+            showDeleteAlert={showDeleteAlert}
+            handleFilesChange={handleFilesChange}
+            defaultValues={{
+              title: product?.title,
+              quantity: product?.quantity,
+              price: product?.price,
+              status: product?.status,
+              category: category.title,
+              height: product?.height,
+              width: product?.width,
+              depth: product?.depth,
+              weight: product?.weight,
+              description: product?.description,
+            }}
+            defaultImages={defaultImages}
+            onImageRemove={handleImageRemove}
+            productId={productId}
+            serverState={serverState}
           />
-        </div>
-
-        <div>
-          <label>
-            Select Images:
-            <Dropzone
-              defaultImages={defaultImages}
-              onFilesChange={handleFilesChange}
-              onImageRemove={handleImageRemove}
-            />
-          </label>
-        </div>
-        <div className="flex gap-4">
-          {product?.id && <DeleteButton id={product.id} />}
-          <Button type="submit">Update product</Button>
-        </div>
-      </form>
-    </section>
+          <div className="flex justify-between">
+            <Button type="button" onClick={showCancelAlert}>
+              Cancel
+            </Button>
+            <div className="flex gap-4">
+              <DeleteButton id={productId} />
+              <SubmitButton />
+            </div>
+          </div>
+        </form>
+      </section>
+    </>
   );
 }

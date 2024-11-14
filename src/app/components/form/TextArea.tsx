@@ -21,7 +21,7 @@ export default function TextArea({
         id={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className={`border p-2 min-h-52 ${
+        className={`border px-4 py-4  min-h-52 ${
           error ? "border-red-500" : "border-black"
         }`}
       />

@@ -1,41 +1,65 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
+import { getUserFromDb } from "@/lib/actions";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/db";
-import Credentials from "next-auth/providers/credentials";
-import type { Provider } from "next-auth/providers";
-import Resend from "next-auth/providers/resend";
-
-const providers: Provider[] = [
-  Credentials({
-    credentials: { password: { label: "Password", type: "password" } },
-    authorize(c) {
-      if (c.password !== "password") return null;
-      return {
-        id: "test",
-        name: "Test User",
-        email: "test@example.com",
-      };
-    },
-  }),
-  Google,
-  Resend,
-];
-
-export const providerMap = providers
-  .map((provider) => {
-    if (typeof provider === "function") {
-      const providerData = provider();
-      return { id: providerData.id, name: providerData.name };
-    } else {
-      return { id: provider.id, name: provider.name };
-    }
-  })
-  .filter((provider) => provider.id !== "credentials");
+import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  providers: providers,
+  session: {
+    strategy: "jwt",
+  },
+  providers: [
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
+      },
+      authorize: async (credentials) => {
+        let user = null;
+
+        const email = credentials.email as string;
+        const password = credentials.password as string;
+
+        user = await getUserFromDb(email, password);
+
+        if (!user) {
+          throw new Error("Invalid credentials.");
+        }
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        };
+      },
+    }),
+    Google,
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+      }
+      return session;
+    },
+  },
   pages: {
     signIn: "/signin",
   },
