@@ -44,7 +44,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
   }
 
   return (
-    <section className="flex flex-col justify-center gap-44 p-10 w-full h-auto">
+    <section className="flex flex-col justify-center p-10 w-full h-auto gap-10">
       <div className="flex">
         <BackButton size={12} />
       </div>
