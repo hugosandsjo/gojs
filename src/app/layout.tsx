@@ -1,10 +1,7 @@
-"use client";
-
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/app/components/Header";
-import { Toaster } from "react-hot-toast";
-import { SessionProvider } from "next-auth/react";
+import Providers from "@/app/components/Providers";
 
 export const metadata: Metadata = {
   title: "Gojs",
@@ -19,11 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
+        <Providers>
           <Header />
           {children}
-          <Toaster position="top-center" />
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );
