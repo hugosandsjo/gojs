@@ -4,7 +4,6 @@ import Link from "next/link";
 
 export default async function ArtistsPage() {
   const artists = await getAllArtists();
-  console.log(artists);
 
   return (
     <>
