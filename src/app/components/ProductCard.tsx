@@ -7,7 +7,7 @@ import EditButton from "@/app/components/buttons/EditButton";
 import GoToArtButton from "@/app/components/buttons/GoToArtButton";
 import { Grip } from "lucide-react";
 
-type ProductCardProps = {
+export type ProductCardProps = {
   id: string;
   title: string;
   description?: string | null;

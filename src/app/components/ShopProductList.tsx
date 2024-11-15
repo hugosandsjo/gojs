@@ -1,13 +1,28 @@
 import ProductCard from "@/app/components/ProductCard";
+import { Suspense } from "react";
 import { getImgixUrl } from "@/lib/utils";
 import Link from "next/link";
-import { truncateText } from "@/lib/utils";
 import { getPublishedProducts } from "@/lib/actions";
+import { ProductCardProps } from "@/app/components/ProductCard";
+import { ProductCardSkeleton } from "@/app/shop/loading";
+
+interface Product {
+  id: string;
+  title: string;
+  description?: string | null;
+  price: number;
+  quantity?: number | null;
+  images: { image_key: string }[];
+  user?: { name: string };
+  category: { title: string };
+}
+
+type ProcessedProduct = Omit<ProductCardProps, "variant">;
 
 export default async function ShopProductList() {
   const products = await getPublishedProducts();
 
-  const productsWithUrls = products.map((product) => {
+  async function processProduct(product: Product): Promise<ProcessedProduct> {
     const imageUrls = product.images.map((image) =>
       getImgixUrl(image.image_key, {
         w: "400",
@@ -19,26 +34,27 @@ export default async function ShopProductList() {
     );
 
     return {
-      ...product,
+      id: product.id,
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
       imageUrls,
-      user: product.user?.name,
-      shortDescription: truncateText(product.description || "", 90),
+      user: product.user?.name || "",
+      category: product.category.title,
     };
-  });
+  }
 
-  return productsWithUrls.map((product) => (
-    <Link key={product.id} href={`shop/${product.id}`}>
-      <ProductCard
-        key={product.id}
-        id={product.id}
-        title={product.title}
-        description={product.shortDescription}
-        price={product.price}
-        category={product.category.title}
-        quantity={product.quantity}
-        imageUrls={product.imageUrls}
-        user={product.user}
-      />
-    </Link>
-  ));
+  return Promise.all(
+    products.map(async (product) => {
+      const processedProduct = await processProduct(product);
+      return (
+        <Suspense key={product.id} fallback={<ProductCardSkeleton />}>
+          <Link href={`shop/${product.id}`}>
+            <ProductCard {...processedProduct} />
+          </Link>
+        </Suspense>
+      );
+    })
+  );
 }
