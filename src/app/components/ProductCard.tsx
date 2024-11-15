@@ -44,32 +44,30 @@ export default function ProductCard({
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex flex-col gap-4 max-w-40 rounded-xl ${
+      className={`relative flex flex-col gap-4 sm:w-40 w-full rounded-xl  ${
         variant === "dashboard"
-          ? "shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] py-6 px-8 max-w-96"
+          ? "shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] py-6 px-8 sm:40 "
           : ""
       }`}
       style={style}
     >
-      {/* Drag Handle */}
+      {/* Drag Handle and Buttons */}
       {variant === "dashboard" && (
-        <div
-          {...listeners}
-          {...attributes}
-          className={`${handleClass} absolute left-5 top-5 z-10 shadow-[0_4px_14px_0_rgb(0,0,0,0.2)]`}
-        >
-          <Grip className="w-5 h-5 text-gray-600" />
+        <div className="absolute left-5 top-5 z-10 flex items-center gap-2">
+          <div
+            {...listeners}
+            {...attributes}
+            className={`${handleClass} shadow-[0_4px_14px_0_rgb(0,0,0,0.2)]`}
+          >
+            <Grip className="w-5 h-5 text-gray-600" />
+          </div>
+          <EditButton id={id} />
+          <GoToArtButton id={id} />
         </div>
       )}
 
       <div className="flex flex-col gap-2">
         <div className="relative">
-          {variant === "dashboard" && (
-            <div className="flex flex-col justify-start absolute bottom-4 w-full px-2 gap-2">
-              <EditButton id={id} />
-              <GoToArtButton id={id} />
-            </div>
-          )}
           {imageUrls ? (
             <Image
               src={imageUrls[0]}
@@ -85,18 +83,20 @@ export default function ProductCard({
         <p className="font-sans underline-offset-2 underline text-xs">
           {title}
         </p>
-        <ProductParagraph>{user}</ProductParagraph>
       </div>
-      <div>
-        <ProductParagraph>{price} kr</ProductParagraph>
 
-        <ProductParagraph>{quantity} st</ProductParagraph>
-        <ProductParagraph>{category}</ProductParagraph>
-      </div>
       {variant === "shop" && (
-        <div>
-          <ProductParagraph>{description}</ProductParagraph>
-        </div>
+        <>
+          <div>
+            <ProductParagraph>{user}</ProductParagraph>
+            <ProductParagraph>{price} kr</ProductParagraph>
+            <ProductParagraph>{quantity} st</ProductParagraph>
+            <ProductParagraph>{category}</ProductParagraph>
+          </div>
+          <div>
+            <ProductParagraph>{description}</ProductParagraph>
+          </div>
+        </>
       )}
     </div>
   );
