@@ -1,6 +1,7 @@
 import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
+import AuthLinks from "@/app/components/AuthLinks";
 
 export default async function Header() {
   const session = await auth();
@@ -19,19 +20,7 @@ export default async function Header() {
         <h1 className="text-6xl font-serif">Gojs</h1>
       </Link>
 
-      {session ? (
-        <div className="text-right">
-          <Link href={"/dashboard"}>
-            {" "}
-            <NavbarParagraph>Dashboard</NavbarParagraph>{" "}
-          </Link>
-        </div>
-      ) : (
-        <Link href={"/signin"}>
-          {" "}
-          <NavbarParagraph>Login</NavbarParagraph>
-        </Link>
-      )}
+      <AuthLinks />
     </header>
   );
 }
