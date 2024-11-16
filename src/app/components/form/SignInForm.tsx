@@ -13,6 +13,11 @@ export default function SignInForm() {
   );
   return (
     <form action={formAction} className="w-full">
+      {serverState.errors?.form && (
+        <div className="py-2">
+          <p className="text-red-500">{serverState.errors.form}</p>
+        </div>
+      )}
       <div className="flex flex-col gap-6">
         <TextField
           title="Email"
