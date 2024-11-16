@@ -515,5 +515,6 @@ export async function updateProduct(
 }
 
 export async function handleSignOut() {
+  revalidatePath("/");
   await signOut({ redirectTo: "/" });
 }
