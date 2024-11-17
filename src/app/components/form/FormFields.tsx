@@ -58,7 +58,9 @@ export default function FormFields({
       <input type="hidden" name="userId" value={userId} />
       <H3>INFO</H3>
       <section className="flex flex-wrap gap-4 w-full">
-        <article className="w-full flex flex-wrap gap-6">
+        <article className="w-full flex flex-col gap-6">
+          {" "}
+          {/* Changed from flex-wrap to flex-col */}
           <div className="flex flex-col flex-wrap gap-2 w-full">
             <TextField
               title="Title"
@@ -68,7 +70,9 @@ export default function FormFields({
               defaultValue={title || ""}
               error={serverState.errors?.title}
             />
-            <div className="flex flex-wrap gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {" "}
+              {/* Changed from flex to grid */}
               <TextField
                 title="Price"
                 name="price"
@@ -96,17 +100,17 @@ export default function FormFields({
                 error={serverState.errors?.category}
               />
             </div>
-
-            {/* <div className="flex flex-wrap gap-4">
-            
-            </div> */}
           </div>
         </article>
       </section>
 
       <H3>PROPERTIES</H3>
-      <section className="flex flex-wrap gap-4">
-        <article className="flex flex-wrap gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {" "}
+        {/* Changed to grid */}
+        <article className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {" "}
+          {/* Changed to grid */}
           <TextField
             title="Height"
             name="height"
@@ -124,7 +128,9 @@ export default function FormFields({
             error={serverState.errors?.width}
           />
         </article>
-        <article className="flex gap-4">
+        <article className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {" "}
+          {/* Changed to grid */}
           <TextField
             title="Depth"
             name="depth"

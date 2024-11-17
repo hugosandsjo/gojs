@@ -19,7 +19,9 @@ export default function TextField({
 }: TextFieldProps) {
   const errorMessage = Array.isArray(error) ? error[0] : error;
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 min-w-0 w-full">
+      {" "}
+      {/* Added min-w-0 and w-full */}
       <div className="flex justify-between">
         <label htmlFor={name}>{title}</label>
         {unitOfMeasure ? (
@@ -32,7 +34,8 @@ export default function TextField({
         id={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className={`border px-4 py-3 ${
+        className={`border px-4 py-3 w-full ${
+          /* Added w-full */
           errorMessage ? "border-red-500" : "border-black"
         }`}
       />
