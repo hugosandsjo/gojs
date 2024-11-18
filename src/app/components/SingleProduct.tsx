@@ -2,7 +2,7 @@ import { getProduct } from "@/lib/actions";
 import { getImgixUrl } from "@/lib/utils";
 import SingleProductParagraph from "@/app/components/typography/SingleProductParagraph";
 import BackButton from "@/app/components/buttons/BackButton";
-import Image from "next/image";
+import AsyncImage from "@/app/components/AsyncImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -37,7 +37,7 @@ export default async function SingleProduct({
             {/* Main Image */}
             <div className="w-[400px] h-[400px] relative">
               {imageUrls.length > 0 ? (
-                <Image
+                <AsyncImage
                   src={imageUrls[0]}
                   alt={product.title}
                   fill
@@ -54,7 +54,7 @@ export default async function SingleProduct({
             <div className="flex gap-4 flex-wrap">
               {imageUrls.map((url, index) => (
                 <div key={index} className="relative w-24 h-24">
-                  <Image
+                  <AsyncImage
                     src={url}
                     alt={`${product.title} ${index + 1}`}
                     fill
