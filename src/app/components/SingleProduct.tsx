@@ -19,9 +19,9 @@ export default async function SingleProduct({
 
   const imageUrls = product.images.map((image) =>
     getImgixUrl(image.image_key, {
-      w: "400",
-      h: "400",
-      fit: "crop",
+      w: "1200",
+      // h: "1400",
+      // fit: "contain",
       auto: "format",
       q: "75",
     })
@@ -33,16 +33,19 @@ export default async function SingleProduct({
         <BackButton size={12} />
       </div>
 
-      <section className="flex gap-20 w-full items-center md:px-20">
-        <div className="md:p-10 flex flex-col md:flex-row justify-center gap-8 w-full">
-          <div className="flex flex-col gap-4">
+      <section className="flex flex-col w-full items-center bg-pink-600 min-h-screen">
+        <div className="md:p-10 md:flex-row flex flex-col justify-center gap-8 w-full bg-orange-300">
+          <div className="flex flex-col gap-4 h-full relative bg-gray-400">
             {imageUrls.length > 0 ? (
               <Image
                 src={imageUrls[0]}
                 alt={product.title}
+                // fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority={true}
                 width={400}
                 height={400}
-                className="w-80 h-80 object-cover"
               />
             ) : (
               <div className="w-80 h-80 flex items-center justify-center">
@@ -57,7 +60,7 @@ export default async function SingleProduct({
                   alt={`${product.title} ${index + 1}`}
                   width={100}
                   height={100}
-                  className="w-20 h-20 object-cover"
+                  className="object-contain"
                 />
               ))}
             </div>
