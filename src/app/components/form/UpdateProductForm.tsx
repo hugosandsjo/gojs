@@ -156,7 +156,7 @@ export default function UpdateProductForm({
 
         <form
           action={handleFormAction}
-          className="flex flex-col gap-8 py-14 px-4 sm:px-8 md:px-20 border border-black rounded-xl w-full max-w-full overflow-hidden"
+          className="flex flex-col gap-8 py-14 px-8 sm:px-8 md:px-20 border border-black rounded-xl w-full max-w-full overflow-hidden"
         >
           <FormFields
             userId={userId}
