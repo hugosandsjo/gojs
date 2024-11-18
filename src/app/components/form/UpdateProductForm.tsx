@@ -147,16 +147,16 @@ export default function UpdateProductForm({
         title={alertState.title}
         message={alertState.message}
       />
-      <section className="flex flex-col gap-10">
-        <section className="w-full flex justify-between px-2">
+      <section className="flex flex-col gap-10 w-full">
+        <div className="flex justify-between w-full">
           <BackButton size={12} />
           <H2>Update product</H2>
           <div></div>
-        </section>
+        </div>
 
         <form
           action={handleFormAction}
-          className="flex flex-col gap-8 py-14 px-20 border rounded-xl border-black"
+          className="flex flex-col gap-8 py-14 px-4 sm:px-8 md:px-20 border border-black rounded-xl w-full max-w-full overflow-hidden"
         >
           <FormFields
             userId={userId}

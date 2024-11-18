@@ -2,7 +2,7 @@
 
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
 import { useDraggable } from "@dnd-kit/core";
-import Image from "next/image";
+import ProductCardImage from "@/app/components/ProductCardImage";
 import EditButton from "@/app/components/buttons/EditButton";
 import GoToArtButton from "@/app/components/buttons/GoToArtButton";
 import { Grip } from "lucide-react";
@@ -69,13 +69,7 @@ export default function ProductCard({
       <div className="flex flex-col gap-2">
         <div className="relative">
           {imageUrls ? (
-            <Image
-              src={imageUrls[0]}
-              alt={title}
-              width={400}
-              height={400}
-              className="w-32 h-40 object-cover"
-            />
+            <ProductCardImage src={imageUrls[0]} alt={title} />
           ) : (
             <div className="w-32 h-40 bg-lime-300"></div>
           )}

@@ -80,7 +80,7 @@ export const createProductSchema = baseProductSchema.extend({
 
 export const updateProductSchema = baseProductSchema;
 
-export type ProductFormData = z.infer<typeof createProductSchema>;
+// export type ProductFormData = z.infer<typeof createProductSchema>;
 
 export type FormFile = File;
 
@@ -144,5 +144,3 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
     category: true;
   };
 }>;
-
-export type LoginFormData = z.infer<typeof loginSchema>;
