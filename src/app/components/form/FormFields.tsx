@@ -60,7 +60,6 @@ export default function FormFields({
       <section className="flex flex-wrap gap-4 w-full">
         <article className="w-full flex flex-col gap-6">
           {" "}
-          {/* Changed from flex-wrap to flex-col */}
           <div className="flex flex-col flex-wrap gap-2 w-full">
             <TextField
               title="Title"
@@ -72,7 +71,6 @@ export default function FormFields({
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {" "}
-              {/* Changed from flex to grid */}
               <TextField
                 title="Price"
                 name="price"
@@ -106,45 +104,39 @@ export default function FormFields({
 
       <H3>PROPERTIES</H3>
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {" "}
-        {/* Changed to grid */}
         <article className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {" "}
-          {/* Changed to grid */}
           <TextField
             title="Height"
             name="height"
-            placeholder="mm"
             type="text"
+            unit="mm"
             defaultValue={height || ""}
             error={serverState.errors?.height}
           />
           <TextField
             title="Width"
             name="width"
-            placeholder="mm"
             type="text"
+            unit="mm"
             defaultValue={width || ""}
             error={serverState.errors?.width}
           />
         </article>
         <article className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {" "}
-          {/* Changed to grid */}
           <TextField
             title="Depth"
             name="depth"
-            placeholder="mm"
             type="text"
+            unit="mm"
             defaultValue={depth || ""}
             error={serverState.errors?.depth}
           />
           <TextField
             title="Weight"
             name="weight"
-            placeholder="kg"
             type="text"
             defaultValue={weight || ""}
+            unit="kg"
             error={serverState.errors?.weight}
           />
         </article>

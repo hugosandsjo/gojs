@@ -1,32 +1,24 @@
-import NavbarParagraph from "@/app/components/typography/NavbarParagraph";
-import Link from "next/link";
+import { ActiveLink } from "./ActiveLink";
 import { auth } from "@/lib/auth";
+import Link from "next/link";
 
 export default async function Header() {
   const session = await auth();
+
   return (
-    <header className="flex justify-between items-center py-6 px-8 md:px-12">
+    <header className="flex justify-between items-center py-6 px-8 md:px-20">
       <div className="flex flex-col">
-        <Link href={"/shop"}>
-          {" "}
-          <NavbarParagraph>Shop</NavbarParagraph>
-        </Link>
-        <Link href={"/artists"}>
-          <NavbarParagraph>Artists</NavbarParagraph>
-        </Link>
+        <ActiveLink href="/shop">Shop</ActiveLink>
+        <ActiveLink href="/artists">Artists</ActiveLink>
       </div>
-      <Link href={"/"}>
+      <Link href="/">
         <h1 className="text-6xl font-serif">Gojs</h1>
       </Link>
       <div className="text-right">
         {session ? (
-          <Link href="/dashboard">
-            <NavbarParagraph>Dashboard</NavbarParagraph>
-          </Link>
+          <ActiveLink href="/dashboard">Dashboard</ActiveLink>
         ) : (
-          <Link href="/signin">
-            <NavbarParagraph>Login</NavbarParagraph>
-          </Link>
+          <ActiveLink href="/signin">Login</ActiveLink>
         )}
       </div>
     </header>
