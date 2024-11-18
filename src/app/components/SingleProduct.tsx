@@ -20,8 +20,6 @@ export default async function SingleProduct({
   const imageUrls = product.images.map((image) =>
     getImgixUrl(image.image_key, {
       w: "1200",
-      // h: "1400",
-      // fit: "contain",
       auto: "format",
       q: "75",
     })
@@ -33,35 +31,37 @@ export default async function SingleProduct({
         <BackButton size={12} />
       </div>
 
-      <section className="flex flex-col w-full items-center bg-pink-600 min-h-screen">
-        <div className="md:p-10 md:flex-row flex flex-col justify-center gap-8 w-full bg-orange-300">
-          <div className="flex flex-col gap-4 h-full relative bg-gray-400">
-            {imageUrls.length > 0 ? (
-              <Image
-                src={imageUrls[0]}
-                alt={product.title}
-                // fill
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority={true}
-                width={400}
-                height={400}
-              />
-            ) : (
-              <div className="w-80 h-80 flex items-center justify-center">
-                <span>No Image Available</span>
-              </div>
-            )}
-            <div className="flex gap-4">
-              {imageUrls.map((url, index) => (
+      <section className="flex flex-col w-full items-center min-h-screen">
+        <div className="md:p-10 md:flex-row flex flex-col justify-center gap-8 w-full">
+          <div className="flex justify-start flex-col gap-8">
+            {/* Main Image */}
+            <div className="w-[400px] h-[400px] relative">
+              {imageUrls.length > 0 ? (
                 <Image
-                  key={index}
-                  src={url}
-                  alt={`${product.title} ${index + 1}`}
-                  width={100}
-                  height={100}
-                  className="object-contain"
+                  src={imageUrls[0]}
+                  alt={product.title}
+                  fill
+                  className="object-contain object-left md:object-top"
                 />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span>No Image Available</span>
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnail Images */}
+            <div className="flex gap-4 flex-wrap">
+              {imageUrls.map((url, index) => (
+                <div key={index} className="relative w-24 h-24">
+                  <Image
+                    src={url}
+                    alt={`${product.title} ${index + 1}`}
+                    fill
+                    className="object-contain object-left"
+                    sizes="100px"
+                  />
+                </div>
               ))}
             </div>
           </div>
