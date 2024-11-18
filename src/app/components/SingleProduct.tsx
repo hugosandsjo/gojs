@@ -19,9 +19,7 @@ export default async function SingleProduct({
 
   const imageUrls = product.images.map((image) =>
     getImgixUrl(image.image_key, {
-      w: "400",
-      h: "400",
-      fit: "crop",
+      w: "1200",
       auto: "format",
       q: "75",
     })
@@ -33,32 +31,37 @@ export default async function SingleProduct({
         <BackButton size={12} />
       </div>
 
-      <section className="flex gap-20 w-full items-center md:px-20">
-        <div className="md:p-10 flex flex-col md:flex-row justify-center gap-8 w-full">
-          <div className="flex flex-col gap-4">
-            {imageUrls.length > 0 ? (
-              <Image
-                src={imageUrls[0]}
-                alt={product.title}
-                width={400}
-                height={400}
-                className="w-80 h-80 object-cover"
-              />
-            ) : (
-              <div className="w-80 h-80 flex items-center justify-center">
-                <span>No Image Available</span>
-              </div>
-            )}
-            <div className="flex gap-4">
-              {imageUrls.map((url, index) => (
+      <section className="flex flex-col w-full items-center min-h-screen">
+        <div className="md:p-10 md:flex-row flex flex-col justify-center gap-8 w-full">
+          <div className="flex justify-start flex-col gap-8">
+            {/* Main Image */}
+            <div className="w-[400px] h-[400px] relative">
+              {imageUrls.length > 0 ? (
                 <Image
-                  key={index}
-                  src={url}
-                  alt={`${product.title} ${index + 1}`}
-                  width={100}
-                  height={100}
-                  className="w-20 h-20 object-cover"
+                  src={imageUrls[0]}
+                  alt={product.title}
+                  fill
+                  className="object-contain object-left md:object-top"
                 />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span>No Image Available</span>
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnail Images */}
+            <div className="flex gap-4 flex-wrap">
+              {imageUrls.map((url, index) => (
+                <div key={index} className="relative w-24 h-24">
+                  <Image
+                    src={url}
+                    alt={`${product.title} ${index + 1}`}
+                    fill
+                    className="object-contain object-left"
+                    sizes="100px"
+                  />
+                </div>
               ))}
             </div>
           </div>
