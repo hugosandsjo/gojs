@@ -44,7 +44,7 @@ export default function ProductList({ products, status }: ProductListProps) {
   return (
     <section
       id={status}
-      className={`flex flex-col rounded-xl py-12 px-16 gap-8 shadow-[0_4px_14px_0_rgb(0,0,0,0.2)]
+      className={`flex flex-col rounded-xl p-8 md:py-12 md:px-16 gap-8 shadow-[0_4px_14px_0_rgb(0,0,0,0.2)]
         ${isOver ? "bg-slate-200" : null}`}
       ref={setNodeRef}
     >
