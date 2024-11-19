@@ -27,7 +27,7 @@ export default async function UpdateProductPage({
     notFound();
   }
   return (
-    <section className="flex flex-col px-10 lg:px-36 py-16 justify-center gap-12 items-center">
+    <section className="flex flex-col px-6 lg:px-36 py-16 justify-center gap-12 items-center">
       <UpdateProductForm
         productId={params.id}
         userId={user.id}

@@ -1,9 +1,9 @@
-import ProductCard from "@/app/components/ProductCard";
+import ProductCard from "@/app/components/product/ProductCard";
 import { Suspense } from "react";
 import { getImgixUrl } from "@/lib/utils";
 import Link from "next/link";
 import { getPublishedProducts } from "@/lib/actions";
-import { ProductCardProps } from "@/app/components/ProductCard";
+import { ProductCardProps } from "@/app/components/product/ProductCard";
 import { ProductCardSkeleton } from "@/app/shop/loading";
 
 interface Product {

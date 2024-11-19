@@ -1,4 +1,4 @@
-import ProductGrid from "@/app/components/ProductGrid";
+import ProductGrid from "@/app/components/product/ProductGrid";
 
 export default async function Shop() {
   return (

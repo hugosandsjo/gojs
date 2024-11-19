@@ -1,4 +1,4 @@
-import ShopProductList from "@/app/components/ShopProductList";
+import ShopProductList from "@/app/components/product/ShopProductList";
 
 export default function ProductGrid() {
   return (

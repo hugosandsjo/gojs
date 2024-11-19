@@ -4,7 +4,7 @@ import UserEdit from "@/app/components/UserEdit";
 import Link from "next/link";
 import Button from "@/app/components/buttons/Button";
 import H3 from "@/app/components/typography/H3";
-import ProductListGrid from "@/app/components/ProductListGrid";
+import ProductListGrid from "@/app/components/product/ProductListGrid";
 import { ProductWithRelations } from "@/lib/types";
 import { User } from "@prisma/client";
 import { useState } from "react";
@@ -27,7 +27,9 @@ export default function Dashboard({ products, user }: DashboardWrapperProps) {
         <Link href="dashboard/createproduct">
           <Button type="button">Create product</Button>
         </Link>
-        <H3>Good day {user?.name}!</H3>
+        <div className="hidden md:block">
+          <H3>Hello {user?.name}!</H3>
+        </div>
         <button onClick={toggleModal}>
           <UserEdit />
         </button>
@@ -59,9 +61,9 @@ export default function Dashboard({ products, user }: DashboardWrapperProps) {
                 duration: 0.8,
                 ease: [0.76, 0, 0.24, 1],
               }}
-              className="bg-white absolute top-[2%] left-[5%] right-[4%] bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] p-8"
+              className="bg-white absolute md:top-[2%] md:left-[5%] md:right-[4%] md:bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] py-5 px-2 md:p-8"
             >
-              <div className="flex justify-end">
+              <div className="flex justify-end md:px-4">
                 <button onClick={toggleModal}>
                   {" "}
                   <CircleX size={40} />
