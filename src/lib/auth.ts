@@ -4,6 +4,7 @@ import { getUserFromDb } from "@/lib/actions";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/db";
 import Google from "next-auth/providers/google";
+import { UserRole } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -61,6 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.role = user.role;
       }
 
       if (account) {
@@ -73,16 +75,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
+        session.user.role = token.role as UserRole;
       }
       return session;
     },
     async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
+      const isProductPage = nextUrl.pathname.startsWith("/product/");
 
       if (isOnDashboard) {
         if (isLoggedIn) return true;
-        return false; // Redirects to sign in
+        return false;
+      }
+
+      if (isProductPage) {
+        const productId = nextUrl.pathname.split("/").pop();
+        if (!productId) return false;
+
+        try {
+          const product = await prisma.product.findUnique({
+            where: { id: productId },
+            include: { user: true },
+          });
+
+          if (!product) return false;
+          if (product.status === "PUBLISHED") return true;
+
+          if (!isLoggedIn) return false;
+
+          return auth.user
+            ? product.userId === auth.user.id || auth.user.role === "ARTIST"
+            : false;
+        } catch (error) {
+          console.error("Product authorization error:", error);
+          return false; // Block access on error instead of allowing it
+        }
       }
 
       return true;
