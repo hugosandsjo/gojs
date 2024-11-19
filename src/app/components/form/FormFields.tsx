@@ -74,7 +74,7 @@ export default function FormFields({
               <TextField
                 title="Price"
                 name="price"
-                placeholder="kr"
+                unit="kr"
                 type="text"
                 defaultValue={price || ""}
                 error={serverState.errors?.price}

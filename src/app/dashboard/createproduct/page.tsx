@@ -13,7 +13,7 @@ export default async function CreateProductPage() {
   }
 
   return (
-    <section className="flex flex-col px-10 lg:px-36 py-16 justify-center gap-12 items-center">
+    <section className="flex flex-col px-6 lg:px-36 py-16 justify-center gap-12 items-center">
       <CreateProductForm userId={user.id} />
     </section>
   );

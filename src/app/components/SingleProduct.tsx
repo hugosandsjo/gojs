@@ -2,7 +2,7 @@ import { getProduct } from "@/lib/actions";
 import { getImgixUrl } from "@/lib/utils";
 import SingleProductParagraph from "@/app/components/typography/SingleProductParagraph";
 import BackButton from "@/app/components/buttons/BackButton";
-import AsyncImage from "@/app/components/AsyncImage";
+import AsyncImage from "@/app/components/product/AsyncImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -35,7 +35,7 @@ export default async function SingleProduct({
         <div className="md:p-10 md:flex-row flex flex-col justify-center gap-8 w-full">
           <div className="flex justify-start flex-col gap-8">
             {/* Main Image */}
-            <div className="w-[400px] h-[400px] relative">
+            <div className="w-full md:w-[400px] h-[400px] relative">
               {imageUrls.length > 0 ? (
                 <AsyncImage
                   src={imageUrls[0]}
