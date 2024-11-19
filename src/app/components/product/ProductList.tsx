@@ -1,5 +1,5 @@
 import H3 from "@/app/components/typography/H3";
-import ProductCard from "@/app/components/ProductCard";
+import ProductCard from "@/app/components/product/ProductCard";
 import { Category } from "@prisma/client";
 import { truncateText } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
@@ -21,7 +21,7 @@ type ProductWithUrls = {
 
 type ProductListProps = {
   products: ProductWithUrls[] | undefined;
-  status: ProductWithRelations["status"]; // This will automatically stay in sync with your schema
+  status: ProductWithRelations["status"];
 };
 
 function getStatusColor(status: ProductListProps["status"]) {
@@ -55,27 +55,33 @@ export default function ProductList({ products, status }: ProductListProps) {
         ></div>
         <H3>{capitalizeFirstLetter(status)}</H3>
       </div>
-      <article className="flex gap-8">
-        {!products || products.length === 0 ? (
-          <p className="text-gray-500">No {status.toLowerCase()} products</p>
-        ) : (
-          products.map((product) => (
-            <div key={product.id} className="flex flex-col gap-4">
-              <ProductCard
-                id={product.id}
-                title={product.title}
-                description={truncateText(product.description, 90)}
-                price={product.price}
-                quantity={product.quantity}
-                category={product.category.title}
-                imageUrls={product.imageUrls}
-                user={product.user}
-                variant="dashboard"
-              />
-            </div>
-          ))
-        )}
-      </article>
+      <div className="relative w-full">
+        <div className="overflow-x-auto py-4 px-4">
+          <article className="flex gap-8 min-w-min">
+            {!products || products.length === 0 ? (
+              <p className="text-gray-500">
+                No {status.toLowerCase()} products
+              </p>
+            ) : (
+              products.map((product) => (
+                <div key={product.id} className="flex-none">
+                  <ProductCard
+                    id={product.id}
+                    title={product.title}
+                    description={truncateText(product.description, 90)}
+                    price={product.price}
+                    quantity={product.quantity}
+                    category={product.category.title}
+                    imageUrls={product.imageUrls}
+                    user={product.user}
+                    variant="dashboard"
+                  />
+                </div>
+              ))
+            )}
+          </article>
+        </div>
+      </div>
     </section>
   );
 }

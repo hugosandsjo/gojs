@@ -1,6 +1,6 @@
 "use client";
 
-import ProductList from "@/app/components/ProductList";
+import ProductList from "@/app/components/product/ProductList";
 import { getImgixUrl } from "@/lib/utils";
 import type { User } from "@prisma/client";
 import {

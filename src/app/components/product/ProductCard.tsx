@@ -2,7 +2,7 @@
 
 import ProductParagraph from "@/app/components/typography/ProductParagraph";
 import { useDraggable } from "@dnd-kit/core";
-import ProductCardImage from "@/app/components/ProductCardImage";
+import ProductCardImage from "@/app/components/product/ProductCardImage";
 import EditButton from "@/app/components/buttons/EditButton";
 import GoToArtButton from "@/app/components/buttons/GoToArtButton";
 import { Grip } from "lucide-react";
@@ -44,9 +44,9 @@ export default function ProductCard({
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex flex-col gap-4 sm:w-40 w-full rounded-xl  ${
+      className={`relative flex flex-col gap-4 sm:w-40 w-full rounded-xl ${
         variant === "dashboard"
-          ? "shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] py-6 px-8 sm:40 "
+          ? "shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] py-6 px-8 sm:40 min-w-40 "
           : ""
       }`}
       style={style}
