@@ -61,7 +61,6 @@ export default function Dashboard({ products, user }: DashboardWrapperProps) {
                 duration: 0.8,
                 ease: [0.76, 0, 0.24, 1],
               }}
-              // className="bg-white absolute md:top-[2%] md:left-[5%] md:right-[4%] md:bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] py-5 px-2 md:p-8"
               className="bg-white absolute left-0 right-0 md:top-[2%] md:left-[5%] md:right-[4%] md:bottom-[10%] rounded-xl z-50 overflow-auto h-full shadow-[0_4px_14px_0_rgb(0,0,0,0.2)] py-5 px-2 md:p-8"
             >
               <div className="flex justify-end md:px-4">
