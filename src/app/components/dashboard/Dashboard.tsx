@@ -22,7 +22,7 @@ export default function Dashboard({ products, user }: DashboardWrapperProps) {
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   return (
-    <section className="flex relative flex-col w-full py-12 lg:px-28 rounded-xl gap-8">
+    <section className="flex relative flex-col w-full py-12 md:px-28 rounded-xl gap-8">
       <div className="w-full flex justify-between items-center gap-8">
         <Link href="dashboard/createproduct">
           <Button type="button">Create product</Button>

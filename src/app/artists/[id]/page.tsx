@@ -1,4 +1,7 @@
 import { getArtist } from "@/lib/actions";
+import SingleProductParagraph from "@/app/components/typography/SingleProductParagraph";
+import H2 from "@/app/components/typography/H2";
+import BackButton from "@/app/components/buttons/BackButton";
 
 export default async function ArtistPage({
   params,
@@ -7,13 +10,21 @@ export default async function ArtistPage({
 }) {
   const artist = await getArtist(params.id);
   return (
-    <section className="flex w-full justify-center h-svh items-center gap-20">
-      <div className="bg-slate-700 h-60 w-48"></div>
-      <div className="flex flex-col gap-4">
-        <p>Singe artist page:</p>
-        <p>{artist?.name}</p>
-        <p>{artist?.email}</p>
-      </div>
+    <section className="flex flex-col h-svh">
+      <article className="flex items-center flex-col w-full justify-center gap-20 md:p-44 p-8">
+        <div className="flex w-full">
+          <BackButton size={16} />
+        </div>
+        <div className="bg-slate-300 h-96 w-80"></div>
+        <div className="flex flex-col gap-6 max-w-96">
+          <H2>{artist?.name}</H2>
+          <SingleProductParagraph>{artist?.email}</SingleProductParagraph>
+          <SingleProductParagraph>{artist?.bio}</SingleProductParagraph>
+          <SingleProductParagraph>{artist?.facebook}</SingleProductParagraph>
+          <SingleProductParagraph>{artist?.instagram}</SingleProductParagraph>
+          <SingleProductParagraph>{artist?.website}</SingleProductParagraph>
+        </div>
+      </article>
     </section>
   );
 }
