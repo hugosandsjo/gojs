@@ -70,6 +70,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
+      if (!token || (token.exp && Date.now() / 1000 > token.exp)) {
+        return { ...session, expires: "0" }; // Return invalid session instead of null
+      }
+
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
