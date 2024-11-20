@@ -5,6 +5,7 @@ import BackButton from "@/app/components/buttons/BackButton";
 import AsyncImage from "@/app/components/product/AsyncImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import H3 from "@/app/components/typography/H3";
 
 export default async function SingleProduct({
   params,
@@ -66,10 +67,10 @@ export default async function SingleProduct({
             </div>
           </div>
 
-          <section className="text-lg flex md:flex-col justify-between gap-2">
+          <section className="flex flex-col justify-between gap-2">
             <div>
-              <div className="mb-2 underline-offset-2 underline">
-                <SingleProductParagraph>{product.title}</SingleProductParagraph>
+              <div className="mb-2 underline-offset-2">
+                <H3>{product.title}</H3>
               </div>
 
               <SingleProductParagraph>

@@ -48,7 +48,7 @@ export default function Dropzone({
 
   const closeAlert = useCallback(() => {
     setAlertState((prev) => ({ ...prev, isOpen: false }));
-    // Add delay to not make window reappear
+    // Add small delay to prevent window reappearing
     setTimeout(() => {
       setIsDisabled(false);
     }, 100);
@@ -145,7 +145,6 @@ export default function Dropzone({
 
   useEffect(() => {
     return () => {
-      console.log("Cleaning up file previews");
       files.forEach((file) => {
         if (file instanceof File && "preview" in file) {
           URL.revokeObjectURL(file.preview);
@@ -158,7 +157,7 @@ export default function Dropzone({
     <div className="my-2">
       <AlertModal
         isOpen={alertState.isOpen}
-        onConfirm={handleNavigate}
+        onConfirm={closeAlert}
         onClose={closeAlert}
         title={alertState.title}
         message={alertState.message}

@@ -17,25 +17,47 @@ export default function UserModal({ user }: UserInfoProps) {
       </article>
       <article className="w-full flex flex-col gap-8 text-left">
         <UserModalArticle>
-          <H3>Name</H3> <H3>{user?.name}</H3>
+          <H3>Name</H3>{" "}
+          <div className="max-w-md pt-2">
+            {" "}
+            <p>{user?.name}</p>{" "}
+          </div>
         </UserModalArticle>
         <UserModalArticle>
-          <H3>Email</H3> <H3>{user?.email}</H3>
+          <H3>Email</H3>
+          <div className="max-w-md pt-2">
+            <p>{user?.email}</p>
+          </div>
         </UserModalArticle>
         <UserModalArticle>
-          <H3>Role</H3> <H3>{user?.role}</H3>
+          <H3>Role</H3>
+          <div className="max-w-md pt-2">
+            <p>{user?.role}</p>
+          </div>
         </UserModalArticle>
         <UserModalArticle>
-          <H3>Bio</H3> <H3>{user?.bio}</H3>
+          <H3>Bio</H3>{" "}
+          <div className="max-w-md pt-2">
+            <p>{user?.bio}</p>
+          </div>
         </UserModalArticle>
         <UserModalArticle>
-          <H3>Facebook</H3> <H3>{user?.facebook}</H3>
+          <H3>Facebook</H3>
+          <div className="max-w-md pt-2">
+            <p>{user?.facebook}</p>
+          </div>
         </UserModalArticle>
         <UserModalArticle>
-          <H3>Instagram</H3> <H3>{user?.instagram}</H3>
+          <H3>Instagram</H3>
+          <div className="max-w-md pt-2">
+            <p>{user?.instagram}</p>
+          </div>
         </UserModalArticle>
         <UserModalArticle>
-          <H3>Location</H3> <H3>{user?.location}</H3>
+          <H3>Location</H3>
+          <div className="max-w-md pt-2">
+            <p>{user?.location}</p>
+          </div>
         </UserModalArticle>
       </article>
     </section>
