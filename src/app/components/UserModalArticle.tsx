@@ -5,7 +5,7 @@ type UserModalArticleProps = {
 export default function UserModalArticle({ children }: UserModalArticleProps) {
   return (
     <>
-      <div className="flex items-center justify-between flex-col md:flex-row gap-2">
+      <div className="flex items-start justify-between flex-col md:flex-row gap-2">
         {children}
       </div>
     </>

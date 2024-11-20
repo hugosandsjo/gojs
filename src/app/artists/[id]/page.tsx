@@ -15,7 +15,9 @@ export default async function ArtistPage({
         <div className="flex w-full">
           <BackButton size={16} />
         </div>
-        <div className="bg-slate-300 h-96 w-80"></div>
+        <div className="bg-slate-100 h-96 w-80 flex justify-center items-center">
+          No image available
+        </div>
         <div className="flex flex-col gap-6 max-w-96">
           <H2>{artist?.name}</H2>
           <SingleProductParagraph>{artist?.email}</SingleProductParagraph>

@@ -180,7 +180,7 @@ export default function UpdateProductForm({
             productId={productId}
             serverState={serverState}
           />
-          <div className="flex justify-between">
+          <div className="flex flex-wrap gap-4 justify-between">
             <Button type="button" onClick={showCancelAlert}>
               Cancel
             </Button>
