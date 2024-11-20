@@ -55,32 +55,28 @@ export default function ProductList({ products, status }: ProductListProps) {
         ></div>
         <H3>{capitalizeFirstLetter(status)}</H3>
       </div>
-      <div className="relative w-full">
-        <div className="overflow-x-auto py-4 px-4">
-          <article className="flex gap-8 min-w-min">
-            {!products || products.length === 0 ? (
-              <p className="text-gray-500">
-                No {status.toLowerCase()} products
-              </p>
-            ) : (
-              products.map((product) => (
-                <div key={product.id} className="flex-none">
-                  <ProductCard
-                    id={product.id}
-                    title={product.title}
-                    description={truncateText(product.description, 90)}
-                    price={product.price}
-                    quantity={product.quantity}
-                    category={product.category.title}
-                    imageUrls={product.imageUrls}
-                    user={product.user}
-                    variant="dashboard"
-                  />
-                </div>
-              ))
-            )}
-          </article>
-        </div>
+      <div className="w-full">
+        <article className="flex flex-wrap gap-8">
+          {!products || products.length === 0 ? (
+            <p className="text-gray-500">No {status.toLowerCase()} products</p>
+          ) : (
+            products.map((product) => (
+              <div key={product.id}>
+                <ProductCard
+                  id={product.id}
+                  title={product.title}
+                  description={truncateText(product.description, 90)}
+                  price={product.price}
+                  quantity={product.quantity}
+                  category={product.category.title}
+                  imageUrls={product.imageUrls}
+                  user={product.user}
+                  variant="dashboard"
+                />
+              </div>
+            ))
+          )}
+        </article>
       </div>
     </section>
   );
