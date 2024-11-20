@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/app/components/Header";
 import { Toaster } from "react-hot-toast";
-import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Gojs",
@@ -17,11 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
-          <Header />
-          {children}
-          <Toaster position="top-center" />
-        </SessionProvider>
+        <Header />
+        {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   );
