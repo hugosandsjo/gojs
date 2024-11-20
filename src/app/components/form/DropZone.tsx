@@ -42,9 +42,6 @@ export default function Dropzone({
       message,
     });
   };
-  const handleNavigate = () => {
-    router.push("/dashboard");
-  };
 
   const closeAlert = useCallback(() => {
     setAlertState((prev) => ({ ...prev, isOpen: false }));
