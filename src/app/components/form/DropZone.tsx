@@ -3,7 +3,6 @@ import { MAX_FILE_SIZE, ALLOWED_FORMATS } from "@/lib/constants";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import AlertModal from "@/app/components/AlertModal";
-import { useRouter } from "next/navigation";
 
 type PreviewFile = File & { preview: string };
 type PreviewImage = { name: string; preview: string };
@@ -19,7 +18,6 @@ export default function Dropzone({
   onFilesChange,
   onImageRemove,
 }: DropzoneProps) {
-  const router = useRouter();
   const [files, setFiles] = useState<(PreviewFile | PreviewImage)[]>([]);
   const [alertState, setAlertState] = useState({
     isOpen: false,
