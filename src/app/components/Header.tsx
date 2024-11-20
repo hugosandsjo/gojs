@@ -1,14 +1,17 @@
 import { ActiveLink } from "./ActiveLink";
-import { auth } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
 import Link from "next/link";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 export default async function Header() {
   headers();
   const session = await auth();
+
+  if (!session?.user) {
+    await signOut({ redirect: false });
+  }
 
   return (
     <header className="flex justify-between items-center py-6 px-8 md:px-20">
