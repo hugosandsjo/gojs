@@ -1,8 +1,13 @@
 import { ActiveLink } from "./ActiveLink";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
+import { headers } from "next/headers";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function Header() {
+  headers();
   const session = await auth();
 
   return (
