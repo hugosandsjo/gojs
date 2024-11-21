@@ -11,9 +11,9 @@ export default async function ArtistPage({
   const artist = await getArtist(params.id);
   return (
     <section className="flex flex-col h-svh">
-      <article className="flex items-center flex-col w-full justify-center gap-20 md:p-44 p-8">
+      <article className="flex items-center flex-col w-full justify-center gap-10 md:px-44 p-8">
         <div className="flex w-full">
-          <BackButton size={16} />
+          <BackButton size={12} />
         </div>
         <div className="bg-slate-100 h-96 w-80 flex justify-center items-center">
           No image available
