@@ -13,7 +13,8 @@ export default async function CreateProductPage() {
   }
 
   return (
-    <section className="flex flex-col px-6 lg:px-36 py-16 justify-center gap-12 items-center">
+    // <section className="flex flex-col px-6 lg:px-36 py-16 justify-center mx-auto gap-12 items-center">
+    <section className="flex flex-col gap-10 w-full max-w-4xl mx-auto px-6 py-16">
       <CreateProductForm userId={user.id} />
     </section>
   );
