@@ -1,5 +1,4 @@
 import { ActiveLink } from "./ActiveLink";
-import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { unstable_noStore } from "next/cache";
@@ -9,7 +8,6 @@ export const dynamic = "force-dynamic";
 export default async function Header() {
   unstable_noStore();
   headers();
-  const session = await auth();
 
   return (
     <header className="flex justify-between items-center py-6 px-8 md:px-20">
@@ -20,13 +18,6 @@ export default async function Header() {
       <Link href="/">
         <h1 className="text-6xl font-serif">Gojs</h1>
       </Link>
-      {/* <div className="text-right">
-        {session ? (
-          <ActiveLink href="/dashboard">Dashboard</ActiveLink>
-        ) : (
-          <ActiveLink href="/signin">Login</ActiveLink>
-        )}
-      </div> */}
       <div></div>
     </header>
   );
