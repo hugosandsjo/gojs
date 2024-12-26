@@ -20,13 +20,14 @@ export default async function Header() {
       <Link href="/">
         <h1 className="text-6xl font-serif">Gojs</h1>
       </Link>
-      <div className="text-right">
+      {/* <div className="text-right">
         {session ? (
           <ActiveLink href="/dashboard">Dashboard</ActiveLink>
         ) : (
           <ActiveLink href="/signin">Login</ActiveLink>
         )}
-      </div>
+      </div> */}
+      <div></div>
     </header>
   );
 }
